@@ -1,4 +1,4 @@
-# CSC510-9
+# CSC510-9 | FileBot
 
 ## Team Members
 
