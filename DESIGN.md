@@ -9,8 +9,7 @@ To address this problem, we are proposing a bot that hooks to the collaboration 
 
 To generate the configuration file the bot uses the question-answer format to get details from the user. It also listens for keywords on the slack application and triggers action (unix file commands) associated with the keyword. 
 
-
-## Use Cases
+To uncover some under-the-hood details on how our bot will work...
  
  - **File Operations**: We are planning to write a rule based verb-to-unix command matcher. 
 
