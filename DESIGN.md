@@ -1,4 +1,7 @@
-## Problem Statement
+# Alfred - Your Very Own File Butler!
+
+
+## Problems Statement
 
 Today software development happens across multiple applications. The developer has to toggle between applications like IDE’s, text editors, web browsers, CLI and what not! Also, at the same time, the developer needs to keep context of all these applications. Switching between these applications often leads to losing context of what needs to be done and where. What is common to all these applications is that they interact with files in one way or another. Keeping track of all of these files results in a lot of mental overhead for the developer which results in loss of productivity.
 
