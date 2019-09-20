@@ -12,8 +12,8 @@ To generate the configuration file the bot uses the question-answer format to ge
 
 ## Use Cases
  
-File Operations: We are planning to write a rule based verb-to-unix command matcher. 
+ - **File Operations**: We are planning to write a rule based verb-to-unix command matcher. 
 
-File Sharing: We are planning to use either file.io (for ephemeral sharing), a cloud object store for simple persistence based sharing and google docs api for collab invites (the idea here is to ask the bot to create a file on google docs and add collaborators) We haven’t finalized yet but plan to provide at least two out of three file sharing use cases.
+ - **File Sharing**: We are planning to use either file.io (for ephemeral sharing), a cloud object store for simple persistence based sharing and google docs api for collab invites (the idea here is to ask the bot to create a file on google docs and add collaborators) We haven’t finalized yet but plan to provide at least two out of three file sharing use cases.
 
-Generating Config Files: We will use a question answer style bot-user interaction and the bot will generate the config file accordingly (for instance let’s consider a docker file; the bot will ask the questions related to the basic attributes that the conf file contains and based on the answers from user, bot will generate the file).
+ - **Generating Config Files**: We will use a question answer style bot-user interaction and the bot will generate the config file accordingly (for instance let’s consider a docker file; the bot will ask the questions related to the basic attributes that the conf file contains and based on the answers from user, bot will generate the file).
