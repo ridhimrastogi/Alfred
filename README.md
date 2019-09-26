@@ -9,4 +9,8 @@
 * Akash Pramod Pateria (apateri)
 * Jaymin Desai (jddesai2)
 
+## Problem Statement
+
+## Bot Description
+
 #### Other details can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
