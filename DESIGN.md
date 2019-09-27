@@ -235,7 +235,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 ```
   Create file Design.docx    (Valid request)
   Make file Design.docx      (Valid request)
-  Go file Desin.docx         (Invalid request)
+  Go file Design.docx        (Invalid request)
 ```
 - Users as well as the collborators must be part of the same Mattermost workspace.
 - Mattermost users must be registred with thier Google account.
