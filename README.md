@@ -6,7 +6,7 @@
 
 * Ridhim Rastogi (rrastog3)
 * Shubham Dilip Pampattiwar (sdpampat)
-* Akash Pramodkmar Pateria (apateri)
+* Akash Pramodkumar Pateria (apateri)
 * Jaymin Desai (jddesai2)
 
 ## Design details can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
