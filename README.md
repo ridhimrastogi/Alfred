@@ -49,7 +49,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
  
   - **Preconditions**:
   
-    ç and other users (collaborators with whom this file will be shared) should be a part of the same team.
+    User should have necessary authentication details in place and other users (collaborators with whom this file will be shared) should be a part of the same team.
     
   - **Main Flow**:
     
