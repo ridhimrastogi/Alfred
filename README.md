@@ -15,16 +15,16 @@ Sharing is difficult. Everytime you share a file with one of your teammates, it 
 
 ## Bot Description
 
-### Alfred, your very own file butler
+### Alfred, your very own file butler!
 
 We are proposing Alfred, a bot that hooks to a collaboration tool (Mattermost) and provides functionalities to reduce overhead for file sharing. Alfred allows users to create a file using the collaboration tool on a file sharing platform (Google Drive) or share an existing file with other team members by their mattermost username. It also allows additional functionalities including downloading the file, deleting and accessing the comment history for the file. It reduces the hassle associated with working on shared files by reducing the number of steps involved in different operations.
 
 Alfred is a conversational bot which activates when the user tags it via @alfred in the team chat or messages it privately. It responds to user commands by listening for pre-defined keywords and taking related actions.
  
 
-## Use Cases
+### Use Cases
 
-### 1A. Create a file on google drive without sharing it with other users
+ #### 1A. Create a file on google drive without sharing it with other users
  
   - **Preconditions**:
   
@@ -45,7 +45,7 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
     - Alfred being a conversational bot will ask user for the file name if user didn't specify it in the first call.
     - If the user is not correctly configured, Alfred will ask him to do so.
   
- ### 1B. Create a file on google drive and share it with other users
+ #### 1B. Create a file on google drive and share it with other users
  
   - **Preconditions**:
   
@@ -67,11 +67,11 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
      - If the user is not correctly configured, Alfred will ask him to do so.
      - If the collaborators are not part of the same team, Alfred will inform the same.
 
-### 1C. Create a file on google drive and share it with other users using the channel
+#### 1C. Create a file on google drive and share it with other users using the channel
 
   - **Main Flow**: This use case is same as 1B, but this time user will ping Alfred on the channel to create the new file and Alfred will provide necessary permissions to all other users on the channel.
   
-### 2. Edit file permissions
+#### 2. Edit file permissions
 
   - **Preconditions**:
   
@@ -94,4 +94,4 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
 
-#### Other details can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
+## Architecture Design can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
