@@ -203,7 +203,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
 
 ## Software Constraints
 
-- Command grammar guideline must be followed by the users while requesting file operations. For example, user needs to use a well known delimeter to separate data and command phrase.
+- Command grammar guideline must be followed by the users while requesting file operations.
 - Users as well as the collborators must be part of the same Mattermost workspace.
 - Mattermost users must be registred with thier Google account.
 
