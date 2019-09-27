@@ -163,19 +163,19 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ### Create a file using Alfred. Share it with all members on the channel.
 
-![Wireframe1](wireframe_1.png)
+![Wireframe1](img/wireframe_1.png)
 
 ## Wireframe 2
 
 ### Fetch comments on an existing file. 
 
-![Wireframe2](wireframe_2.png)
+![Wireframe2](img/wireframe_2.png)
 
 # Architecture Design
 
 ## Components Overview
 
-![Alfred Coponents](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Alfred%20Architecture.png)
+![Alfred Coponents](img/Alfred%20Architecture.png)
 
 ## Architecture Components
 
@@ -205,7 +205,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ## Software Constraints
 
-- Command grammar guideline must be followed by the users while requesting file operations.
+- Command must follow defined grammar guideline while requesting file operations. 
 - Users as well as the collborators must be part of the same Mattermost workspace.
 - Mattermost users must be registred with thier Google account.
 
