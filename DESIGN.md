@@ -1,5 +1,9 @@
 # Architecture Design
 
+## Component Diagram
+
+![Alfred Coponents](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Alfred%20Architecture.jpg)
+
 ## Architecture Components
 
 ### 1. Deployment platform:
