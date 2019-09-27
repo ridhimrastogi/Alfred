@@ -19,7 +19,7 @@ Sharing is difficult. Everytime you share a file with one of your teammates, it 
 
 We are proposing Alfred, a bot that hooks to a collaboration tool (Mattermost) and provides functionalities to reduce overhead for file sharing. Alfred allows users to create a file using the collaboration tool on a file sharing platform (Google Drive) or share an existing file with other team members by their mattermost username. It also allows additional functionalities including downloading the file, deleting and accessing the comment history for the file. It reduces the hassle associated with working on shared files by reducing the number of steps involved in different operations.
 
-Alfred is a conversational bot which activates when the user tags it via @alfred in the team chat or messages it privately. It responds to user commands by listening for pre-defined keywords and taking related actions.
+Alfred is a conversational bot which activates when the user tags it via _@alfred_ in the team chat or messages it privately. It responds to user commands by listening for pre-defined keywords and taking related actions.
  
 
 ### Use Cases
@@ -36,7 +36,7 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
      
   - **Subflows**:
   
-    - User will ping Alfred using its handle @alfred with some command/phrase to create a file that contains words **create** and **file**.
+    - User will ping Alfred using its handle _@alfred_ with some command/phrase to create a file that contains words    **create** and **file**.
     - Alfred will create the file on users drive with default options.
     - Alfred will then DM user the link to that file.
     
@@ -49,11 +49,11 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
  
   - **Preconditions**:
   
-    User should have necessary authentication details in place and other users (collaborators with whom this file will be shared) should be a part of the same team.
+    ç and other users (collaborators with whom this file will be shared) should be a part of the same team.
     
   - **Main Flow**:
     
-    User will ask Alfred to create a file and also provide mattermost handles (@username) of other users with whom this file will be shared. Alfred will create the file on users google drive and share the link in chat. At the same time, it will also DM all other users, the sharable link for this file.
+    User will ask Alfred to create a file and also provide mattermost handles (_@username_) of other users with whom this file will be shared. Alfred will create the file on users google drive and share the link in chat. At the same time, it will also DM all other users, the sharable link for this file.
     
   - **Subflows**:
   
@@ -75,7 +75,7 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
 
   - **Preconditions**:
   
-    User should have necessary authentication details in place. The file should be present on users drive. Other users to be granted/edited permissions should be a part of the same team.
+    User should have necessary authentication details in place. The file should be present on user's drive. Other users to be granted/edited permissions should be a part of the same team.
     
   - **Main Flow**:
     
@@ -94,4 +94,19 @@ Alfred is a conversational bot which activates when the user tags it via @alfred
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
 
+#### 4. Download an existing file
+  - **Preconditions**:
+  
+    User should have necessary authentication details in place. The file to be downloaded must exist on Google Drive and the user must either be the owner or must be one of the collaborators of the file.
+    
+  - **Main Flow**:
+    User will ask Alfred to download a file. Alfred will respond with the link(file download thumbnail), through which the user can download the file.
+    
+  - **Subflows**:
+  
+     - User will ping Alfred with **download** as a part of the phrase.
+     - Alfred will check whether the file exists on the user's Google drive.
+     - Further, Alfred will validate whether the user is the owner of the file or is one of the collaborators.
+     - Post successful validation of the user, Alfred will ping the user with a link, enabling the user to download the file.
+    
 ## Architecture Design can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
