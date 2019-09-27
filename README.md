@@ -94,7 +94,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
 
-#### 4. Download an existing file
+#### 3. Download an existing file
 
   - **Preconditions**:
   
@@ -117,7 +117,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
      - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
  
- #### 5. Fetching comments on a shared file
+ #### 4. Fetching comments on a shared file
  
   - **Preconditions**:
   
