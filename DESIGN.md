@@ -8,11 +8,11 @@
 
 ### 2. Mattermost
 - This is the component where the major interaction between the user and the bot will take place.
-- The user will request file sharing operations via rule based phrases and file parameters.
+- The user will ask the bot to perform operations via textual commands containing operation specific phrases.
 - These user requests will be caught by the bot's webhook and sent directly to the bot instance residing on the heroku cloud  platform for further processing. 
 
-### 3. Google API Server
-- We are using Google Docs API for processing the file sharing operation requests.
+### 3. Google APIs
+- We are using Google Drive REST API for processing the file specific operation requests received from the bot.
 - Once the user request are caught by the bot's webhook, they will be further cascaded to the Google API server for processing.
 - The API server will accept the bot requests, validate the parameters received, will perform the corresponding file sharing operation and return a response.  
 
