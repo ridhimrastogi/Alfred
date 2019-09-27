@@ -100,6 +100,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
     User should have necessary authentication details in place. The file to be downloaded must exist on Google Drive and the user must either be the owner or must be one of the collaborators of the file.
     
   - **Main Flow**:
+  
     User will ask Alfred to download a file. Alfred will respond with the link(file download thumbnail), through which the user can download the file.
     
   - **Subflows**:
@@ -108,5 +109,12 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
      - Alfred will check whether the file exists on the user's Google drive.
      - Further, Alfred will validate whether the user is the owner of the file or is one of the collaborators.
      - Post successful validation of the user, Alfred will ping the user with a link, enabling the user to download the file.
+  
+  - **Alternative Flows**:
+  
+     - If the user is not correctly configured, Alfred will ask him to do so.
+     - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
+     - If user provides unexpected input, Alfred will ask user to provide the correct options again.
+     
     
 ## Architecture Design can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
