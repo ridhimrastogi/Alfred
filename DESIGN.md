@@ -1,64 +1,65 @@
 ## Problem Statement
 
-Sharing is difficult. Everytime you share a file with one of your teammates, it involves a cat and mouse game of hunting for all email ids, managing permissions and keeping track of changes done to the file. Working on shared documents often leads to dependencies between team members  as they have to check for comments and updates to the documents manually. This leads to time delays in the development lifecycle. 
+Sharing is difficult. Everytime you share a file with one of your teammates, it involves a cat and mouse game of hunting for all email ids, managing permissions and keeping track of the changes done to the file. Working on shared documents often leads to dependencies between team members as they have to manually check for comments and updates to the documents. This leads to time delays and introduces overheads in the development lifecycle. 
 
 ## Bot Description
 
 ### Alfred, your very own file butler!
 
-We are proposing Alfred, a bot that hooks to a collaboration tool (Mattermost) and provides functionalities to reduce overhead for file sharing. Alfred allows users to create a file using the collaboration tool on a file sharing platform (Google Drive) or share an existing file with other team members by their mattermost username. It also allows additional functionalities including downloading the file, deleting and accessing the comment history for the file. It reduces the hassle associated with working on shared files by reducing the number of steps involved in different operations.
+We are proposing Alfred, a bot that hooks to a collaboration tool (Mattermost) and provides functionalities to reduce overhead for file sharing. Alfred allows users to create a file using the collaboration tool on a file sharing platform (Google Drive) or share an existing file with other team members by their mattermost username. In addition, it enables additional features such as downloading and deleting an existing file, accessing the comment history for a particular file, etc. Conseuently, Alfred eliminates the pain points associated with working on the shared files by reducing the number of steps involved in different operations.
 
-Alfred is a conversational bot which activates when the user tags it via _@alfred_ in the team chat or messages it privately. It responds to user commands by listening for pre-defined keywords and taking related actions.
+Alfred is a conversational agent which activates when the user tags it via _@alfred_ in a team chat/channel or pings it privately. It responds back to user commands by listening for pre-defined keywords and performing related actions.
  
 
 ### Use Cases
 
- #### 1A. Create a file on google drive without sharing it with other users
+ #### 1A. Create a file on google drive without any collaborators
  
   - **Preconditions**:
   
-    User should have provided necessary authentication details to the bot (referred to as Alfred from now on)
+    User must provide necessary authentication details to Alfred
     
   - **Main Flow**:
   
-    User will ask Alfred to create a file. Alfred will create the file on users google drive and share the link in chat.
+    User asks Alfred to create a file. Alfred creates the file on google drive corresponding to user. It, then, shares the doc link in chat.
      
   - **Subflows**:
   
-    - User will ping Alfred using its handle _@alfred_ with some command/phrase to create a file that contains words    **create** and **file**.
-    - Alfred will create the file on users drive with default options.
-    - Alfred will then DM user the link to that file.
+    - User pings Alfred using its handle _@alfred_ with some expected natural language phrase to create a file that contains words **create** and **file**.
+    - Alfred will create the file on user's google drive with default options.
+    - Alfred will then DM back the user with its link.
     
   - **Alternative Flows**:
     
-    - Alfred being a conversational bot will ask user for the file name if user didn't specify it in the first call.
+    - Alfred, being a dialog system, asks user for the file name if the user did not specify it in the first instruction.
     - If the user is not correctly configured, Alfred will ask him to do so.
   
  #### 1B. Create a file on google drive and share it with other users
  
   - **Preconditions**:
   
-    User should have necessary authentication details in place and other users (collaborators with whom this file will be shared) should be a part of the same team.
+    User must have necessary authentication details in place and other users (i.e. collaborators) should be part of the same team as creator.
     
   - **Main Flow**:
     
-    User will ask Alfred to create a file and also provide mattermost handles (_@username_) of other users with whom this file will be shared. Alfred will create the file on users google drive and share the link in chat. At the same time, it will also DM all other users, the sharable link for this file.
+    User asks Alfred to create a file and to provide mattermost handles (_@username_) of other users, with whom user wants this file to be shared. Alfred creates the file on respective google drive and shares the link back in creator's chat thread. Simultaneously, it also DMs all the collaborator users with the sharable link to this file.
     
   - **Subflows**:
   
-     - User will ping Alfred to create a new file along with some phrase that contains word **share**. User will provide the usernames of collaborators with this message.
+     - User will ping Alfred to create a new file along with some phrase that contains word **share**. User will provide the usernames and access rights of the collaborators with this message.
      - Alfred will create the file on users drive.
      - Alfred will then DM user the link to that file.
-     - Alfred will provide edit permissions (by default) to collaborators on this file and will DM them the link to this newly created file.
+     - Alfred will provide access rights to collaborators on this file and will DM them the link to this newly created file.
      
   - **Alternative Flows**:
     
      - If the user is not correctly configured, Alfred will ask him to do so.
      - If the collaborators are not part of the same team, Alfred will inform the same.
+     - If creator does not specify access rights for the collaborators, then Alfred would create and share the file with default read access to the collaborators.
 
 #### 1C. Create a file on google drive and share it with other users using the channel
 
-  - **Main Flow**: This use case is same as 1B, but this time user will ping Alfred on the channel to create the new file and Alfred will provide necessary permissions to all other users on the channel.
+  - **Main Flow**: This use case is same as 1B, but in this case, user will ping Alfred on the channel to create the new file and Alfred will provide necessary permissions to all other users on the channel.
   
 #### 2. Edit file permissions
 
@@ -161,19 +162,19 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
 
 ### Create a file using Alfred. Share it with all members on the channel.
 
-![Wireframe1](img/wireframe_1.png)
+![Wireframe1](wireframe_1.png)
 
 ## Wireframe 2
 
 ### Fetch comments on an existing file. 
 
-![Wireframe2](img/wireframe_2.png)
+![Wireframe2](wireframe_2.png)
 
 # Architecture Design
 
 ## Components Overview
 
-![Alfred Coponents](img/Alfred%20Architecture.png)
+![Alfred Coponents](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Alfred%20Architecture.png)
 
 ## Architecture Components
 
