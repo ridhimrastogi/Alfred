@@ -1,6 +1,6 @@
 # Architecture Design
 
-## Component Diagram
+## Components Overview
 
 ![Alfred Coponents](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Alfred%20Architecture.png)
 
@@ -31,6 +31,22 @@
 - The user is the agent who will interact with the bot and submit specific file sharing requests to it.
 
 ## Software Constraints
-- Command grammar guideline must be followed by the users while requesting file operations.
+
+- Command grammar guideline must be followed by the users while requesting file operations. For example, user needs to use a well known delimeter to separate data and command phrase.
 - Users as well as the collborators must be part of the same Mattermost workspace.
 - Mattermost users must be registred with thier Google account.
+
+## Design Patterns
+
+The cloud storage and platform that we are primarily considering for this project are Google Drive and Mattermost respectively. But we are planning to build up the codebase in a way that it becomes easy for Alfred, to integrate other drive based storages like OneDrive and platforms like Slack in future.
+
+We are going to use a mix of some commonly used design patterns to achieve this:
+ 
+ - **Facade Pattern**: In our case, a Facade can be an Interface that provides an abstraction for hiding other tedious implimentation details. Facade classes will have different implementations based on the platforms.
+ 
+ - **Gateway Pattern**: Different platforms will have their own API, each with its own API Gateway.
+ 
+For Example: Two main facada candidates can be as follews; WebHookFacade: This can have different implimentation based on whether it is Slack or Mattermost or some other platform for Bot; FileOpsFacade: This can have different file operations and the implimentation will take care of which API Gateway to use based on user data.
+ 
+ 
+
