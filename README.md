@@ -11,7 +11,16 @@
 
 ## Problem Statement
 
+Sharing is difficult. Everytime you share a file with one of your teammates, it involves a cat and mouse game of hunting for all email ids, managing permissions and keeping track of changes done to the file. Working on shared documents often leads to dependencies between team members  as they have to check for comments and updates to the documents manually. This leads to time delays in the development lifecycle. 
+
 ## Bot Description
+
+### Alfred, your very own file butler
+
+We are proposing Alfred, a bot that hooks to a collaboration tool (eg. Slack/Mattermost) and provides functionalities to reduce overhead for file sharing. Alfred allows users to create a using the collaboration tool on a file sharing platform (eg. Google Drive) or share an existing file with other team members by their mattermost username. It also allows additional functionalities including downloading the file, deleting and accessing the comment history for the file. It reduces the hassle involved with working on shared files by reducing the number of steps involved in different operations.
+
+Alfred is a conversational bot which activates when the user tags it via @alfred in the team chat or messages it privately. It responds to user commands by listening for pre-defined keywords and taking related actions.
+ 
 
 ## Use Cases
 
