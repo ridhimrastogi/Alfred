@@ -25,3 +25,8 @@
 ### 5. User
 
 - The user is the agent who will interact with the bot and submit specific file sharing requests to it.
+
+## Software Constraints
+- Command grammar guideline must be followed by the users while requesting file operations.
+- Users as well as the collborators must be part of the same Mattermost workspace.
+- Mattermost users must be registred with thier Google account.
