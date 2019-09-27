@@ -189,7 +189,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ## Architecture Components
 
-### 1. Deployment platform:
+### 1. Deployment Platform:
 
 - The bot will reside on a server instance running on the Heroku cloud platform
 
@@ -212,6 +212,22 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 ### 5. User
 
 - The user is the agent who will interact with the bot and submit specific file sharing requests to it.
+
+## Architectural Flow
+
+![Architectural Flow](img/Alfred_Architercural_Flow.png)
+
+0. User provides necessary authentication details and sets up Alfred.
+1. User pings Alfred to get a task done.
+2. Listener receives the message and passes relevant messages to the Parser.
+3. Parser differentiates between command and data, figures out the task and asks API Client to make the necessary call.
+4. API Client prepares the request body and uses Google Drive API to make the required call.
+5. Google API Server will make the corresponding changes on the drive after performing auth checks.
+6. Google API Server will respond to the client with some response payload.
+7. API Client will forward this data to Postprocessor along with other user data.
+8. Postprocessor will analyze the user data to check if there is any processing required. For example: in case of a _share_ request, other collaborators mentioned by user with _@username_ identifier will be DMed the link to this file.
+9. Users can access the documents on Drive from Mattermost itself.
+
 
 ## Software Constraints
 
