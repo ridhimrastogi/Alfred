@@ -95,6 +95,7 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
 
 #### 4. Download an existing file
+
   - **Preconditions**:
   
     User should have necessary authentication details in place. The file to be downloaded must exist on Google Drive and the user must either be the owner or must be one of the collaborators of the file.
@@ -115,6 +116,28 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
      - If the user is not correctly configured, Alfred will ask him to do so.
      - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
+ 
+ #### 5. Fetching comments on a shared file
+ 
+  - **Preconditions**:
+  
+ The file to be downloaded must exist on Google Drive and the user must either be the owner or must be one of the collaborators of the file.
+
+  - **Main Flow**:
+  
+    User will ask Alfred to fetch comments for a particular file. Alfred will list all comments if number of comments are less than 5, else it will list the total number of comments and list the last 5 comments.
      
+  - **Subflows**:
+  
+    - User will ping Alfred using its handle _@alfred_ with a command that includes the keywords **fetch/get** and **comments**..
+    - Alfred will check if such a file exists on the users Google Drive.
+    - Alfred will list comments on that file.
+    
+  - **Alternative Flows**:
+      
+    - If there are no comments, Alfred returns with “No comments found” message.  
+    - Alfred being a conversational bot will ask user for the file name if user didn't specify it in the first call.
+    - If the user is not correctly configured, Alfred will ask him to do so.
+
     
 ## Architecture Design can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
