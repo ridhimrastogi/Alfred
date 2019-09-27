@@ -32,7 +32,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   - **Alternative Flows**:
     
     - Alfred, being a dialog system, asks user for the file name if the user did not specify it in the first instruction.
-    - If the user is not correctly configured, Alfred will ask him to do so.
+    - If the user is not correctly configured, Alfred will prompt user to do so.
   
  #### 1B. Create a file on google drive and share it with other users
  
@@ -42,7 +42,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
     
   - **Main Flow**:
     
-    User asks Alfred to create a file and to provide mattermost handles (_@username_) of other users, with whom user wants this file to be shared. Alfred creates the file on respective google drive and shares the link back in creator's chat thread. Simultaneously, it also DMs all the collaborator users with the sharable link to this file.
+    User asks Alfred to create a file and to provide mattermost handles (_@username_) of other users (with whom user wants this file to be shared) along with their respective access rights. Alfred creates the file on respective google drive and shares the link back in creator's chat thread. Simultaneously, Alfred also DMs sharable link to all the collaborator users with appropriate access rights to this file.
     
   - **Subflows**:
   
@@ -53,13 +53,13 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      
   - **Alternative Flows**:
     
-     - If the user is not correctly configured, Alfred will ask him to do so.
+     - If the user is not correctly configured, Alfred will prompt user to do so.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If creator does not specify access rights for the collaborators, then Alfred would create and share the file with default read access to the collaborators.
 
 #### 1C. Create a file on google drive and share it with other users using the channel
 
-  - **Main Flow**: This use case is same as 1B, but in this case, user will ping Alfred on the channel to create the new file and Alfred will provide necessary permissions to all other users on the channel.
+  - **Main Flow**: This use case is same as 1B, but in this case, user pings Alfred on the channel to create the new file. Alfred, in turn, provides requested permissions to all other users on the channel.
   
 #### 2. Edit file permissions
 
@@ -80,7 +80,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      
   - **Alternative Flows**:
     
-     - If the user is not correctly configured, Alfred will ask him to do so.
+     - If the user is not correctly configured, Alfred will prompt user to do so.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
      
@@ -103,6 +103,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      
   - **Alternative Flows**:
   
+     - If the user is not correctly configured, Alfred will prompt user to do so.
      - User provides incomplete commands  like “Delete file”, then Alfred will ask the user to provide the filename or any other relevant info, in order to complete the task.
      - If the user does not have owner rights or the file does not exist, Alfred responds back with an appropriate message.
 
@@ -130,7 +131,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   
   - **Alternative Flows**:
   
-     - If the user is not correctly configured, Alfred will ask him to do so.
+     - If the user is not correctly configured, Alfred will prompt user to do so.
      - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
  
@@ -162,19 +163,19 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ### Create a file using Alfred. Share it with all members on the channel.
 
-![Wireframe1](img/wireframe_1.png)
+![Wireframe1](wireframe_1.png)
 
 ## Wireframe 2
 
 ### Fetch comments on an existing file. 
 
-![Wireframe2](img/wireframe_2.png)
+![Wireframe2](wireframe_2.png)
 
 # Architecture Design
 
 ## Components Overview
 
-![Alfred Coponents](img/Alfred%20Architecture.png)
+![Alfred Coponents](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Alfred%20Architecture.png)
 
 ## Architecture Components
 
