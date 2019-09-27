@@ -44,7 +44,7 @@
     
   - **Main Flow**:
     
-    User will ask Alfred to create a file and also provide mattermost handles (@username) of other users with whom this file will be shared. Alfred will create the file on users google drive and share the link in chat. Alfred at the same time will also DM all other users, the sharable link for this file.
+    User will ask Alfred to create a file and also provide mattermost handles (@username) of other users with whom this file will be shared. Alfred will create the file on users google drive and share the link in chat. At the same time, it will also DM all other users, the sharable link for this file.
     
   - **Subflows**:
   
