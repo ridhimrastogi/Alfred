@@ -159,6 +159,16 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 # Design Sketches
 
+## Storyboard
+
+### Create file
+
+![Create file](img/StroyBoardCreateFile.png)
+
+### Edit file permissions
+
+![Edit file permissions](img/StoryBoardEditPermissions.png)
+
 ## WireFrame 1
 
 ### Create a file using Alfred. Share it with all members on the channel.
