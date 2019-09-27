@@ -38,15 +38,15 @@
 
 ## Design Patterns
 
-The cloud storage and platform that we are primarily considering for this project are Google Drive and Mattermost respectively. But we are planning to build up the codebase in a way that it becomes easy for Alfred, to integrate other drive based storages like OneDrive and platforms like Slack in future.
+The drive storage and platform that we are primarily considering for this project are **Google Drive** and **Mattermost** respectively. But we are planning to build up the codebase in a way that it becomes easy for Alfred, to integrate other drive based storages like **OneDrive** and platforms like **Slack** in future.
 
 We are going to use a mix of some commonly used design patterns to achieve this:
  
  - **Facade Pattern**: In our case, a Facade can be an Interface that provides an abstraction for hiding other tedious implimentation details. Facade classes will have different implementations based on the platforms.
  
- - **Gateway Pattern**: Different platforms will have their own API, each with its own API Gateway.
+ - **Gateway Pattern**: Different platforms will have their own API, each with its own API Gateway implimentation.
  
-For Example: Two main facada candidates can be as follews; WebHookFacade: This can have different implimentation based on whether it is Slack or Mattermost or some other platform for Bot; FileOpsFacade: This can have different file operations and the implimentation will take care of which API Gateway to use based on user data.
+For Example: Two main facada candidates can be as follews; WebHookFacade: This can have different implimentation based on whether it is Slack or Mattermost or some other platform for Bot; FileOpsFacade: This can have different file operations defined and the implimentation will take care of which API Gateway to use based on user data.
  
  
 
