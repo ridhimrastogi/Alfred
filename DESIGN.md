@@ -1,3 +1,11 @@
+## WireFrame 1
+
+### Create a file using Alfred. Share it with all members on the channel.
+
+
+### Fetch comments on an existing file. 
+
+
 # Architecture Design
 
 ## Components Overview
