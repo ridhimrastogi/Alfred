@@ -162,13 +162,13 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ### Create a file using Alfred. Share it with all members on the channel.
 
-![Wireframe1](wireframe_1.png)
+![Wireframe1](img/wireframe_1.png)
 
 ## Wireframe 2
 
 ### Fetch comments on an existing file. 
 
-![Wireframe2](wireframe_2.png)
+![Wireframe2](img/wireframe_2.png)
 
 # Architecture Design
 
