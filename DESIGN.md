@@ -209,15 +209,19 @@ Alfred is a conversational bot which activates when the user tags it via _@alfre
 
 ## Design Patterns
 
-The drive storage and platform that we are primarily considering for this project are **Google Drive** and **Mattermost** respectively. But we are planning to build up the codebase in a way that it becomes easy for Alfred, to integrate other drive based storages like **OneDrive** and platforms like **Slack** in future.
+The storage and platform that we are primarily considering for this project are **Google Drive** and **Mattermost** respectively. But we are planning to build up the codebase in a way that it becomes easy for Alfred, to integrate other storages like **OneDrive** and platforms like **Slack** in future.
 
 We are going to use a mix of some commonly used design patterns to achieve this:
  
- - **Facade Pattern**: In our case, a Facade can be an Interface that provides an abstraction for hiding other tedious implimentation details. Facade classes will have different implementations based on the platforms.
+ - **Facade Pattern**: In our case, a facade can be an interface that provides an abstraction for hiding implementation details. Facade classes will have different implementations based on the platforms.
  
- - **Gateway Pattern**: Different platforms will have their own API, each with its own API Gateway implimentation.
+ - **Gateway Pattern**: Different platforms will have their own API, each with its own API gateway implementation.
  
-For Example: Two main facada candidates can be as follews; WebHookFacade: This can have different implimentation based on whether it is Slack or Mattermost or some other platform for Bot; FileOpsFacade: This can have different file operations defined and the implimentation will take care of which API Gateway to use based on user data.
+Two main facade candidates can be as follows:
+
+- WebHookFacade: This can have different implementation based on whether it is Slack or Mattermost or some other platform for Bot. 
+
+- FileOpsFacade: This can have different file operations defined and the implementation will take care of which API Gateway to use based on user data.
  
  
 
