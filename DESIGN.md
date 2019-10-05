@@ -13,7 +13,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ### Use Cases
 
- #### 1A. Create a file on google drive without any collaborators
+ #### 1A. Create different types of files on google drive without any collaborators
  
   - **Preconditions**:
   
@@ -21,11 +21,12 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
     
   - **Main Flow**:
   
-    User asks Alfred to create a file. Alfred creates the file on google drive corresponding to user. It, then, shares the doc link in chat.
+    User asks Alfred to create a file (a file can be of any format for example: a spreadsheet, doc file or a presentation file). Alfred creates the file on google drive corresponding to that user. It shares the file link in chat once the file is successfully created or informs the user in case of failure.
      
   - **Subflows**:
   
     - User pings Alfred using its handle _@alfred_ with some expected natural language phrase to create a file that contains words **create** and **file**.
+    - Alfred will figure out the type of file based on the extension.
     - Alfred will create the file on user's google drive with default options.
     - Alfred will then DM back the user with its link.
     
