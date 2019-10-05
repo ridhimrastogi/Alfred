@@ -83,36 +83,8 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      - If the user is not correctly configured, Alfred will prompt user to do so.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
-     
-     
-#### 3.  Delete an existing file
 
-  - **Preconditions**: 
-  
-    File must exist on Google Docs and user must have owner rights.
-    
-  - **Main Flow**: 
-  
-    User provides Alfred, filename of the file to be deleted. If the file exists and the user has owner rights, the file gets deleted while notifying all the associated collaborators.
-
-  - **Subflows**:
-  
-     - User asks Alfred to delete a file with query something like “Delete abc.docx”. To double check, Alfred confirms the operation with the user.
-     - If params valid, Alfred, behind the scene, deletes the given file and moves it to trash.
-     - Alfred fetches all the associated collaborators and sends them a DM that the file owner has deleted the file shared.
-     
-  - **Alternative Flows**:
-  
-     - If the user is not correctly configured, Alfred will prompt user to do so.
-     - User provides incomplete commands  like “Delete file”, then Alfred will ask the user to provide the filename or any other relevant info, in order to complete the task.
-     - If the user does not have owner rights or the file does not exist, Alfred responds back with an appropriate message.
-
-  - **Future Scope**:
-
-    Prompts collaborators with a confirmation if they want to keep the copy of the deleted file.
-    
-
-#### 4. Download an existing file
+#### 3. Download an existing file
 
   - **Preconditions**:
   
@@ -135,7 +107,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
  
- #### 5. Fetching comments on a shared file
+ #### 4. Fetching comments on a shared file
  
   - **Preconditions**:
   
