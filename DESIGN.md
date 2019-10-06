@@ -223,7 +223,7 @@ The storage and platform that we are primarily considering for this project are 
 
 We are going to use a mix of some commonly used design patterns to achieve this:
  
- - **Command Pattern**: In a setting where Mattermost Client acting as a Invoker while Google Drive as Receiver, Command pattern can be used to encapsulates a request as an object by binding together a set of actions on a Google Drive. This would allow us to parameterize other objects with different requests, make multiple requests by maintaining them in queue, and support their corresponding reverse operations.
+ - **Command Pattern**: In a setting where Mattermost Client acting as a Invoker while Google Drive as Receiver, Command pattern can be used to encapsulate a request as an object by binding together a set of actions on a Google Drive. This would allow us to parameterize other objects with different requests, make multiple requests by maintaining them in queue, and support their corresponding reverse operations.
  
  - **Facade Pattern**: In our case, a facade can be an interface that provides an abstraction for hiding implementation details. Facade classes will have different implementations based on the platforms.
  
