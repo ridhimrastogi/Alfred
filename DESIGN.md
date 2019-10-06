@@ -55,6 +55,8 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   - **Alternative Flows**:
     
      - If the user is not correctly configured, Alfred will prompt user to do so.
+     - If one or more collaborators do not have their google email id's linked to their mattermost account, Alfred pings the collaboator
+for the information.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If creator does not specify access rights for the collaborators, then Alfred would create and share the file with default read access to the collaborators.
 
@@ -82,6 +84,8 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   - **Alternative Flows**:
     
      - If the user is not correctly configured, Alfred will prompt user to do so.
+     - If one or more collaborators do not have their google email id's linked to their mattermost account, Alfred pings the collaboator
+for the information.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
 
