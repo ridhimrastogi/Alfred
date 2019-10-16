@@ -1,6 +1,6 @@
 # Alfred - FileBot
 
-A Mattermost bot that provides file sharing capabilities on Google Drive
+A Mattermost bot that provides file sharing capabilities on Google Drive!
 
 ## Team: CSC510-9
 
