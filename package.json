@@ -1,0 +1,24 @@
+{
+  "name": "mattermost-bot",
+  "version": "1.0.0",
+  "description": "mattermost-bot",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "mattermost",
+    "bot",
+    "filebot"
+  ],
+  "author": "Alfred Devs",
+  "license": "ISC",
+  "dependencies": {
+    "extend": "^3.0.2",
+    "https-proxy-agent": "^2.1.0",
+    "log": "^1.4.0",
+    "request": "^2.88.0",
+    "text-encoding": "^0.5.5",
+    "ws": ">=3.3.1"
+  }
+}
