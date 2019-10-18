@@ -1,5 +1,13 @@
 const Client = require('./mattermost-client/client');
 const fs = require('fs')
+const drive = require("./drive.js");
+const data = require("./mock.json")
+const nock = require('nock')
+ 
+const scope1 = nock('https://www.googleapis.com/drive/v3/files')
+  .persist()
+  .get('/')
+  .reply(200, JSON.stringify(data.fileList));
 
 let host = "alfred-filebot.herokuapp.com"
 let group = "alfred"
