@@ -34,8 +34,8 @@ async function createFile(file) {
 	};
 
 	// Send a http request to url
-	let file = (await got(url, options)).body;
-	return file;
+	let createdFile = (await got(url, options)).body;
+	return createdFile;
 }
 
 async function getFileId(filename) {
