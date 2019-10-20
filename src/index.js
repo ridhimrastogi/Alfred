@@ -36,24 +36,15 @@ const scope5 = nock('https://www.googleapis.com/drive/v3/files')
 
 let host = "alfred-filebot.herokuapp.com"
 let group = "alfred"
-let bot_name = "alfred";
+let bot_name = "@alfred";
 let client = new Client(host, group, {});
 
 async function main() {
     let request = await client.tokenLogin(process.env.BOTTOKEN);
 
     client.on('message', function (msg) {
-        if (hears(msg, "design")) {
+        if (hears(msg, bot_name)) {
             parseMessage(msg);
-        }
-        else if(hears(msg,"create")){
-            createFile(msg);
-        }
-        else if(hears(msg,"delete")){
-            deleteFile(msg);
-        }
-        else if(hears(msg,"list")){
-            listFiles(msg);
         }
     });
 
@@ -70,6 +61,7 @@ function hears(msg, text) {
     return false;
 }
 
+
 //stub for listing drive files
 async function listFiles(msg){
     let res = await drive.getFiles();
@@ -84,16 +76,29 @@ async function listFiles(msg){
 
 //stub for creating a file 
 async function createFile(msg){
+    let channel = msg.broadcast.channel_id;
     let post = JSON.parse(msg.data.post);
+
     let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
+
+    if(typeof fileName === 'undefined' || fileName.split(".")[0].length == 0) { 
+       return client.postMessage("Please Enter a valid file name",channel);
+    }
+
     let fileExtension = fileName.split(".")[1]
+    
+    if(typeof fileExtension === 'undefined' || getMIMEType(fileExtension) == null) {
+        return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
+    }
+
     let createFileObj = {
         "originalFilename" : fileName,
         "mimeType" : getMIMEType(fileExtension)
     }
+
     let res = await drive.createFile(createFileObj);
-    let channel = msg.broadcast.channel_id;
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + res.webViewLink ,channel);
+    return
 }
 
 //function to get the MIME type of a particular file
@@ -119,35 +124,19 @@ function getMIMEType(fileExtension){
     else if(fileExtension == "pdf"){
         return "application/pdf"
     }
-}
-
-//stub to delete a file
-function deleteFile(msg){
-    let post = JSON.parse(msg.data.post);
-    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
-    let fileExtension = fileName.split(".")[1]
-    
-    let createFileObj = {
-        "originalFilename" : fileName,
-        "mimeType" : getMIMEType(fileExtension)
+    else{
+        return null
     }
 
-    let channel = msg.broadcast.channel_id;
-    client.postMessage("Deleting file with object " + JSON.stringify(createFileObj,null,2),channel);
-
 }
+
 async function parseMessage(msg) {
-    let channel = msg.broadcast.channel_id;
-    client.postMessage("Uploading DESIGN.md", channel);
-    data = fs.createReadStream('../DESIGN.md');
-    client.uploadFile(channel, data, (res) => {
-        files = res.file_infos.map(x => x.id);
-        msg = {
-            message: "PFA, my internals!",
-            file_ids: files,
-        }
-        client.postMessage(msg, channel);
-    });
+    if(hears(msg,"create")){
+        createFile(msg);
+    }
+    else if(hears(msg,"list")){
+        listFiles(msg);
+    }
 }
 
 (async () => {
