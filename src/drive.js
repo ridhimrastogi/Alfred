@@ -5,7 +5,7 @@ const token = "Bearer " + "OAUTH2_TOKEN";
 const urlRoot = "https://www.googleapis.com/drive/v3/files";
 
 async function getFiles() {
-	const url = urlRoot;
+	const url = urlRoot + "/";
 	const options = {
 		method: 'GET',
 		headers: {
@@ -22,7 +22,7 @@ async function getFiles() {
 }
 
 async function createFile(file) {
-	const url = urlRoot;
+	const url = urlRoot + "/";
 	const options = {
 		method: 'POST',
 		headers: {
