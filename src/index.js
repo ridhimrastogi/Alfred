@@ -4,6 +4,8 @@ const drive = require("./drive.js");
 const data = require("./mock.json")
 const nock = require('nock')
 
+var count = 0;
+
 // Scope for listing files
 const scope1 = nock('https://www.googleapis.com/drive/v3/files')
   .persist()
@@ -31,7 +33,7 @@ const scope4 = nock('https://www.googleapis.com/drive/v3/files')
 // Scope for downloading a file
 const scope5 = nock('https://www.googleapis.com/drive/v3/files')
   .persist()
-  .get('/^[a-z0-9]+?alt=media$/')
+  .get(uri => uri.includes('?alt=media'))
   .reply(200, JSON.stringify(data.file));
 
 let host = "alfred-filebot.herokuapp.com"
@@ -54,7 +56,7 @@ function hears(msg, text) {
     if (msg.data.sender_name == bot_name) return false;
     if (msg.data.post) {
         let post = JSON.parse(msg.data.post);
-        if (post.message.indexOf(text) >= 0) {  
+        if (post.message.indexOf(text) >= 0) {
             return true;
         }
     }
@@ -73,10 +75,10 @@ async function listFiles(msg){
     let channel = msg.broadcast.channel_id;
     client.postMessage("Following are the files present in your drive: \n" + fileNames.join(''),channel);
 }
-
+    
 //stub for creating a file 
 async function createFile(msg){
-    //let channel = msg.broadcast.channel_id;
+    let channel = msg.broadcast.channel_id;
     let post = JSON.parse(msg.data.post);
 
     let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
@@ -84,13 +86,13 @@ async function createFile(msg){
     if(typeof fileName === 'undefined' || fileName.split(".")[0].length == 0) { 
        return client.postMessage("Please Enter a valid file name",channel);
     }
-
+    
     let fileExtension = fileName.split(".")[1]
     
     if(typeof fileExtension === 'undefined' || getMIMEType(fileExtension) == null) {
         return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
     }
-
+    
     let userhandles = post.message.split(" ").filter(x => x.includes('@'))
     let usernames = userhandles.map(uh => uh.replace('@',''));
     let userIDS = new Array();
@@ -104,21 +106,51 @@ async function createFile(msg){
 
     let res = await drive.createFile(createFileObj);
     let fileLink = res.webViewLink;
-    
+
     if(post.message.indexOf("collaborators") >= 0){
         for(userID in userIDS){
             //DM to users function called per userID
             client.getUserDirectMessageChannel(userIDS[userID],fileName,fileLink,sendDirecMessageToUsers);
         }
     }
-    
-    let channel = msg.broadcast.channel_id;
+
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink,channel);
 }
 
 //function to DM users
 function sendDirecMessageToUsers(fileName,fileLink,channel){
     client.postMessage("You are being added as a collaborator for " + fileName + "\n" + "Here is the link for the same: " + fileLink,channel.id);
+}
+
+//function to download file
+async function downloadFile(msg){
+    let channel = msg.broadcast.channel_id;
+    let post = JSON.parse(msg.data.post);
+
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
+
+    if(typeof fileName === 'undefined' || fileName.split(".")[0].length == 0) { 
+       return client.postMessage("Please Enter a valid file name",channel);
+    }
+
+    let fileExtension = fileName.split(".")[1]
+
+    if(typeof fileExtension === 'undefined' || getMIMEType(fileExtension) == null) {
+        return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
+    }
+        
+    let res = await drive.getFiles();
+    let files = res.files;
+    let file = files.find(function(element) {
+        return element.name == fileName;
+        });
+
+    if(typeof file === 'undefined'){
+        return client.postMessage("No such file found!",channel);
+    }
+
+    let result = await drive.downloadAFile(file.name)
+    return client.postMessage("Download link: " + result.webViewLink ,channel);
 }
 
 //function to get the MIME type of a particular file
@@ -156,6 +188,9 @@ async function parseMessage(msg) {
     }
     else if(hears(msg,"list")){
         listFiles(msg);
+    }
+    else if(hears(msg,"download")){
+        downloadFile(msg);
     }
 }
 
