@@ -54,7 +54,7 @@ function hears(msg, text) {
     if (msg.data.sender_name == bot_name) return false;
     if (msg.data.post) {
         let post = JSON.parse(msg.data.post);
-        if (post.message.indexOf(text) >= 0) {  //keyword checking if more than one instance of text
+        if (post.message.indexOf(text) >= 0) {  
             return true;
         }
     }
@@ -76,7 +76,7 @@ async function listFiles(msg){
 
 //stub for creating a file 
 async function createFile(msg){
-    let channel = msg.broadcast.channel_id;
+    //let channel = msg.broadcast.channel_id;
     let post = JSON.parse(msg.data.post);
 
     let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
@@ -91,14 +91,34 @@ async function createFile(msg){
         return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
     }
 
+    let userhandles = post.message.split(" ").filter(x => x.includes('@'))
+    let usernames = userhandles.map(uh => uh.replace('@',''));
+    let userIDS = new Array();
+    for(u in usernames){
+        userIDS.push(client.getUserIDByUsername(usernames[u]));
+    }
     let createFileObj = {
         "originalFilename" : fileName,
         "mimeType" : getMIMEType(fileExtension)
     }
 
     let res = await drive.createFile(createFileObj);
-    client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + res.webViewLink ,channel);
-    return
+    let fileLink = res.webViewLink;
+    
+    if(post.message.indexOf("collaborators") >= 0){
+        for(userID in userIDS){
+            //DM to users function called per userID
+            client.getUserDirectMessageChannel(userIDS[userID],fileName,fileLink,sendDirecMessageToUsers);
+        }
+    }
+    
+    let channel = msg.broadcast.channel_id;
+    client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink,channel);
+}
+
+//function to DM users
+function sendDirecMessageToUsers(fileName,fileLink,channel){
+    client.postMessage("You are being added as a collaborator for " + fileName + "\n" + "Here is the link for the same: " + fileLink,channel.id);
 }
 
 //function to get the MIME type of a particular file
