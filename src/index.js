@@ -92,11 +92,17 @@ async function downloadFile(msg){
     if ( ! helper.checkValidFileExtension(fileExtension) )
         return client.postMessage("Please enter a supported file extension.\n" + 
                                     "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);        
-    let file = await drive.getAFile(fileName);
-
-    if ( file === undefined )
+    
+    let res = await drive.getFiles();
+    let files = res.files;
+    let file = files.find(function(element) {
+        return element.name == fileName;
+    });
+                                    
+    if(typeof file === 'undefined'){
         return client.postMessage("No such file found!",channel);
-
+    }
+                                    
     let result = await drive.downloadAFile(file.name)
     return client.postMessage("Download link: " + result.webViewLink ,channel);
 }
