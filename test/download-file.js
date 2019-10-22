@@ -34,7 +34,6 @@ async function postMessage(page, msg)
 }
 
 describe('Test file download usecase', function () {
-
     var browser;
     var page;
 
@@ -42,24 +41,23 @@ describe('Test file download usecase', function () {
 
     beforeEach(async () => {
         browser = await puppeteer.launch({headless: false, args: ["--no-sandbox", "--disable-web-security"]});
-        page = await login( browser, `${mattermostUrl}/login` );
-        
+        page = await login(browser, `${mattermostUrl}/login`); 
     });
 
     afterEach(async () => {
+        await page.waitFor(PROCESSING);
         await browser.close();
     });
  
 
-    it ('should download an existing file', async () => {
-        
+    it ('should provide download link to an existing file', async () => {
         let filename = 'Resource.pdf';
         let msg =  "@alfred download " + filename;
-        await postMessage(page,msg);
+        await postMessage(page, msg);
 
         await page.waitFor(PROCESSING);
         await page.waitForSelector('button[aria-label="alfred"]');
-        //await page.waitForSelector('#postContent > div:nth-child(2) > div.post__header > div.col.col__name > div > div > span');
+        
         const botResponse = await page.evaluate(() => {
             // fetches latest response from the bot
             return Array.from(document.querySelectorAll('div[class=post-message__text]')).pop().children[0].textContent;
