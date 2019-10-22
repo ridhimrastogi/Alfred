@@ -1,40 +1,9 @@
 const Client = require('./mattermost-client/client');
 const fs = require('fs')
 const drive = require("./drive.js");
-const data = require("./mock.json")
-const nock = require('nock')
+const helper = require("./helper.js")
 
 var count = 0;
-
-// Scope for listing files
-const scope1 = nock('https://www.googleapis.com/drive/v3/files')
-  .persist()
-  .get('/')
-  .reply(200, JSON.stringify(data.fileList));
-
-// Scope for creating a file
-const scope2 = nock('https://www.googleapis.com/drive/v3/files')
-  .persist()
-  .post('/')
-  .reply(200, JSON.stringify(data.file));
-
-// Scope for fetching a file
-const scope3 = nock('https://www.googleapis.com/drive/v3/files')
-  .persist()
-  .get('/^[a-z0-9]+$/')
-  .reply(200, JSON.stringify(data.file));
-
-// Scope for deleting a file
-const scope4 = nock('https://www.googleapis.com/drive/v3/files')
-  .persist()
-  .delete('/^[a-z0-9]+$/')
-  .reply(200, JSON.stringify(data.file));
-
-// Scope for downloading a file
-const scope5 = nock('https://www.googleapis.com/drive/v3/files')
-  .persist()
-  .get(uri => uri.includes('?alt=media'))
-  .reply(200, JSON.stringify(data.file));
 
 let host = "alfred-filebot.herokuapp.com"
 let group = "alfred"
@@ -81,17 +50,16 @@ async function createFile(msg){
     let channel = msg.broadcast.channel_id;
     let post = JSON.parse(msg.data.post);
 
-    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
 
-    if(typeof fileName === 'undefined' || fileName.split(".")[0].length == 0) { 
-       return client.postMessage("Please Enter a valid file name",channel);
-    }
-    
-    let fileExtension = fileName.split(".")[1]
-    
-    if(typeof fileExtension === 'undefined' || getMIMEType(fileExtension) == null) {
-        return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
-    }
+    // TODO: Common stub. Needs to be extracted.
+    if ( ! helper.checkValidFile(fileName) )
+        return client.postMessage("Please Enter a valid file name",channel);
+
+    let fileExtension = fileName.split(".")[1];
+
+    if ( ! helper.checkValidFileExtension(fileExtension) )
+        return client.postMessage("Please enter a supported file extension. Supported file extenstion: ",channel);
     
     let userhandles = post.message.split(" ").filter(x => x.includes('@'))
     let usernames = userhandles.map(uh => uh.replace('@',''));
@@ -101,7 +69,7 @@ async function createFile(msg){
     }
     let createFileObj = {
         "originalFilename" : fileName,
-        "mimeType" : getMIMEType(fileExtension)
+        "mimeType" : helper.getMIMEType(fileExtension)
     }
 
     let res = await drive.createFile(createFileObj);
@@ -127,17 +95,17 @@ async function downloadFile(msg){
     let channel = msg.broadcast.channel_id;
     let post = JSON.parse(msg.data.post);
 
-    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0]
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
 
-    if(typeof fileName === 'undefined' || fileName.split(".")[0].length == 0) { 
-       return client.postMessage("Please Enter a valid file name",channel);
-    }
+    // TODO: Common stub. Needs to be extracted.
+    if ( ! helper.checkValidFile(fileName) )
+        return client.postMessage("Please Enter a valid file name",channel);
 
-    let fileExtension = fileName.split(".")[1]
+    let fileExtension = fileName.split(".")[1];
 
-    if(typeof fileExtension === 'undefined' || getMIMEType(fileExtension) == null) {
-        return client.postMessage("Unsupported filetype, Please Enter a valid file format!",channel);
-    }
+    if ( ! helper.checkValidFileExtension(fileExtension) )
+        return client.postMessage("Please enter a supported file extension. Supported file extenstion: ",channel);
+        
         
     let res = await drive.getFiles();
     let files = res.files;
@@ -153,34 +121,75 @@ async function downloadFile(msg){
     return client.postMessage("Download link: " + result.webViewLink ,channel);
 }
 
-//function to get the MIME type of a particular file
-function getMIMEType(fileExtension){
-    if(fileExtension == "doc"){
-        return "application/msword"
-    }
-    else if(fileExtension == "docx"){
-        return "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-    }
-    else if(fileExtension == "ppt"){
-        return "application/vnd.ms-powerpoint"
-    }
-    else if(fileExtension == "pptx"){
-        return "application/vnd.openxmlformats-officedocument.presentationml.presentation"
-    }
-    else if(fileExtension == "xls"){
-        return "application/vnd.ms-excel"
-    }
-    else if(fileExtension == "xlsx"){
-        return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    }
-    else if(fileExtension == "pdf"){
-        return "application/pdf"
-    }
-    else{
-        return null
+
+/*
+2. Edit file permissions
+Preconditions:
+
+a) The file should be present on user's drive. 
+b) Other users to be granted/edited permissions should be a part of the same team.
+
+Main Flow:
+
+User will ask Alfred to add other users as collaborators. 
+User can also change the access level (view, edit) of existing collaborators. 
+User will ping Alfred with some phrase that contains word edit and Alfred will ask whether user wants to edit permissions or add collaborators to a file. 
+User provides either of the two inputs along with necessary data (filename and @username(s) for adding collaborators; permission, either 'view' or 'edit' for changing access)
+
+Subflows:
+
+User will ping Alfred with edit as a part of the phrase.
+Alfred will ask user to provide, one of the two inputs from share or change permissions and corresponding data.
+Alfred will share file in a similar way as mentioned in 1B with others if user asked for share option.
+Alfred will edit file permissions if user asked for change option accordingly.
+Alternative Flows:
+
+If the user is not correctly configured, Alfred will prompt user to do so.
+If one or more collaborators do not have their google email id's linked to their mattermost account, Alfred pings the collaboator for the information.
+If the collaborators are not part of the same team, Alfred will inform the same.
+If user provides unexpected input, Alfred will ask user to provide the correct options again. 
+
+*/
+
+/*
+    Sample query: @alfred add @ridhim @shubham as collaborators with Read and Edit access in file.doc
+*/
+async function addNewCollaborators(msg) {
+
+    let channel = msg.broadcast.channel_id,
+        message = JSON.parse(msg.data.post).message,
+        splittedMessageBySpace = message.split( " " );
+    
+    let fileName = splittedMessageBySpace.filter( x => x.includes('.') )[0],
+        collaboatorList = splittedMessageBySpace.filter( x => x.includes('@') && x !== "@alfred");
+        permissionList = splittedMessageBySpace.filter ( x  => x.toLowerCase().includes( ["read", "edit", "comment"] ) )
+
+    if ( collaboatorList.length !== permissionList.length )         
+        return client.postMessage("Invalid request!", channel);
+
+    // TODO: Common stub. Needs to be extracted.
+    if ( ! helper.checkValidFile(fileName) )
+        return client.postMessage("Please Enter a valid file name",channel);
+
+    let fileExtension = fileName.split(".")[1];
+
+    if ( ! helper.checkValidFileExtension(fileExtension) )
+        return client.postMessage("Please enter a supported file extension. Supported file extenstion: ",channel);
+        
+    let res = await drive.getFiles();
+    let files = res.files;
+    let file = files.find(function(element) {
+        return element.name == fileName;
+        });
+
+    if(typeof file === 'undefined'){
+        return client.postMessage("No such file found!",channel);
     }
 
+    let result = await drive.downloadAFile(file.name)
+    return client.postMessage("Download link: " + result.webViewLink ,channel);
 }
+
 
 async function parseMessage(msg) {
     if(hears(msg,"create")){
@@ -191,6 +200,9 @@ async function parseMessage(msg) {
     }
     else if(hears(msg,"download")){
         downloadFile(msg);
+    }
+    else if(hears(msg,"add")){
+        addNewCollaborators(msg);
     }
 }
 
