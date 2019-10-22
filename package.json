@@ -4,7 +4,7 @@
   "description": "mattermost-bot",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "mattermost",
@@ -14,12 +14,15 @@
   "author": "Alfred Devs",
   "license": "ISC",
   "dependencies": {
+    "chai": "^4.2.0",
     "extend": "^3.0.2",
-    "got": "^9.6.0",
     "googleapis": "^39.2.0",
+    "got": "^9.6.0",
     "https-proxy-agent": "^2.1.0",
     "log": "^1.4.0",
+    "mocha": "^6.2.2",
     "nock": "^11.4.0",
+    "puppeteer": "^1.20.0",
     "request": "^2.88.0",
     "text-encoding": "^0.5.5",
     "underscore": "^1.9.1",
