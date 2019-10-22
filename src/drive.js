@@ -38,6 +38,23 @@ async function createFile(file) {
 	return createdFile;
 }
 
+async function updateFile(file) {
+	const url = urlRoot + "/" + file.id;
+	const options = {
+		method: 'PATCH',
+		headers: {
+			"content-type": "application/json",
+			"Authorization": token
+        },
+        body: file,
+		json: true
+	};
+
+	// Send a http request to url
+	let updatedFile = (await got(url, options)).body;
+	return updatedFile;
+}
+
 async function getFileId(filename) {
     let fileList = getFiles(), fileId = "1u2Mzr75jjH5C40nEWrKohCM4YLczUdfoeqy9hR2xCcc";
 
@@ -109,3 +126,4 @@ exports.getAFile = getAFile;
 exports.createFile = createFile;
 exports.downloadAFile = downloadAFile;
 exports.deleteAFile = deleteAFile;
+exports.updateFile = updateFile;
