@@ -5,6 +5,7 @@ const { expect }  = require('chai')
 const loginEmail = process.env.MATTERMOST_EMAIL;
 const loginPassword = process.env.MATTERMOST_PWD;
 const mattermostUrl = 'https://alfred-filebot.herokuapp.com/alfred/channels/town-square' 
+const PROCESSING = 2000
 
 async function login(browser, url) {
   const page = await browser.newPage();
@@ -61,17 +62,18 @@ describe('Test file download usecase', function () {
     });
  
 
-    it ('should add collaborators to an existing file with given permission', async () => {
+    it ('should download an existing file', async () => {
         
         let filename = 'Resource.pdf';
         let msg =  "@alfred download " + filename;
         await postMessage(page,msg);
 
-        //await page.waitForSelector('h2 a');
-        await page.waitForSelector('div.post-message__text');
+        await page.waitFor(PROCESSING)
+        await page.waitForSelector('button[aria-label="alfred"]');
+        //await page.waitForSelector('#postContent > div:nth-child(2) > div.post__header > div.col.col__name > div > div > span');
         const botResponse = await page.evaluate(() => {
             // fetches latest response from the bot
-            return document.querySelector('div.post-message__text').textContent;
+            return Array.from(document.querySelectorAll('div[class=post-message__text]')).pop().children[0].textContent;
         });
 
         expect(botResponse).to.contain("Download link:");
