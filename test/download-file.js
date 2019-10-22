@@ -4,8 +4,8 @@ const { expect }  = require('chai')
 
 const loginEmail = process.env.MATTERMOST_EMAIL;
 const loginPassword = process.env.MATTERMOST_PWD;
-const mattermostUrl = 'https://alfred-filebot.herokuapp.com/alfred/channels/town-square' 
-const PROCESSING = 2000
+const mattermostUrl = 'https://alfred-filebot.herokuapp.com/alfred/channels/town-square'; 
+const PROCESSING = 2000;
 
 async function login(browser, url) {
   const page = await browser.newPage();
@@ -33,17 +33,6 @@ async function postMessage(page, msg)
   await page.keyboard.press('Enter');
 }
 
-// (async () => {
-
-//   const browser = await puppeteer.launch({headless: false, args: ["--no-sandbox", "--disable-web-security"]});
-//   let page = await login( browser, `${mattermostUrl}/login` );
-//   await postMessage(page, "@alfred download Resource.pdf" );
-
-//   // const html = await page.content(); // serialized HTML of page DOM.
-//   // browser.close();
-// })()
-
-
 describe('Test file download usecase', function () {
 
     var browser;
@@ -68,7 +57,7 @@ describe('Test file download usecase', function () {
         let msg =  "@alfred download " + filename;
         await postMessage(page,msg);
 
-        await page.waitFor(PROCESSING)
+        await page.waitFor(PROCESSING);
         await page.waitForSelector('button[aria-label="alfred"]');
         //await page.waitForSelector('#postContent > div:nth-child(2) > div.post__header > div.col.col__name > div > div > span');
         const botResponse = await page.evaluate(() => {

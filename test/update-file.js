@@ -1,18 +1,49 @@
-const puppeteer = require('puppeteer');
-const { expect }  = require('chai');
+const puppeteer = require('puppeteer')
+const { expect }  = require('chai')
+
+
+const loginEmail = process.env.MATTERMOST_EMAIL;
+const loginPassword = process.env.MATTERMOST_PWD;
+const mattermostUrl = 'https://alfred-filebot.herokuapp.com/alfred/channels/town-square';
+const PROCESSING = 2000;  
+
+async function login(browser, url) {
+  const page = await browser.newPage();
+
+  await page.goto(url, {waitUntil: 'networkidle0'});
+
+  // Login
+  await page.type('input[id=loginId]', loginEmail);
+  await page.type('input[id=loginPassword]', loginPassword);
+  await page.click('button[id=loginButton]');
+
+  // Wait for redirect
+  await page.waitForNavigation();
+  return page;
+}
+
+async function postMessage(page, msg)
+{
+  // Waiting for page to load
+  await page.waitForSelector('#post_textbox');
+
+  // Focus on post textbox and press enter.
+  await page.focus('#post_textbox')
+  await page.keyboard.type( msg );
+  await page.keyboard.press('Enter');
+}
 
 describe('Test file update usecase', function () {
 
-    let browser;
-    let page;
+    var browser;
+    var page;
 
     this.timeout(5000000);
 
     beforeEach(async () => {
-        browser = await puppeteer.launch({headless:true});
-        page = await browser.newPage();
-
-        await page.goto('https://alfred-filebot.herokuapp.com/alfred/channels/town-square', {waitUntil: 'networkidle0'});
+        browser = await puppeteer.launch({headless: false, args: ["--no-sandbox", "--disable-web-security"]});
+        page = await login( browser, `${mattermostUrl}/login` );
+        
     });
 
     afterEach(async () => {
@@ -20,26 +51,19 @@ describe('Test file update usecase', function () {
     });
  
 
-    it ('should add collaborators to an existing file with given permission', async () => {
-
-        let filename = 'file.doc';
-        await page.waitForSelector('textarea#post_textbox');
-        await page.type(
-            'textarea[id=post_textbox]', 
-            '@alfred add @ridhim @shubham as collaborators with read and edit access in ' + filename
-        );
-        await page.keyboard.press('Enter');
-
-        await page.waitForSelector('h2 a');
+    it ('should add collaborators to an existing file with given permission update a file on drive', async () => {
+        
+        let filename = 'Resource.pdf';
+        let msg =  "@alfred add @ridhim @shubham as collaborators with read and edit access in " + filename;
+        await postMessage(page,msg);
+        await page.waitFor(PROCESSING);
+        await page.waitForSelector('button[aria-label="alfred"]');
         const botResponse = await page.evaluate(() => {
             // fetches latest response from the bot
-            return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0];
+            return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0].textContent;
         });
 
-        expect(botResponse).to.be.contain('Updated collaborators to file ' + filename + ' successfully\n' +
-                                            'Here is the link for the same:');
-
-        await browser.close();
+        expect(botResponse).to.contain("Updated collaborators");
     });
 
-});
+}); 
