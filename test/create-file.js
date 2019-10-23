@@ -4,7 +4,7 @@ const { expect } = require('chai')
 
 const loginEmail = process.env.MATTERMOST_EMAIL;
 const loginPassword = process.env.MATTERMOST_PWD;
-const mattermostUrl = 'https://alfred-filebot.herokuapp.com/alfred/channels/town-square';
+const mattermostUrl = 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square';
 const PROCESSING = 2000;
 
 async function login(browser, url) {
@@ -63,6 +63,38 @@ describe('Test file Create usecase', function () {
     });
 
     expect(botResponse).to.contain("Created file");
+  });
+
+  it('should validate file extension', async () => {
+    let filename = '.';
+    let msg = "@alfred create " + filename;
+    await postMessage(page, msg);
+
+    await page.waitFor(PROCESSING);
+    await page.waitForSelector('button[aria-label="alfred"]');
+
+    const botResponse = await page.evaluate(() => {
+      // fetches latest response from the bot
+      return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0].textContent;
+    });
+
+    expect(botResponse).to.contain("Please Enter a valid file name");
+  });
+
+  it('should validate file name', async () => {
+    let filename = 'Resource.exe';
+    let msg = "@alfred create " + filename;
+    await postMessage(page, msg);
+
+    await page.waitFor(PROCESSING);
+    await page.waitForSelector('button[aria-label="alfred"]');
+
+    const botResponse = await page.evaluate(() => {
+      // fetches latest response from the bot
+      return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0].textContent;
+    });
+
+    expect(botResponse).to.contain("Please enter a supported file extension.");
   });
 
 });
