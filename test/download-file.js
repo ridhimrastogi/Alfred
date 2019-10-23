@@ -65,4 +65,20 @@ describe('Test file download usecase', function () {
         expect(botResponse).to.contain("Download link:");
     });
 
+    it ('should return error if file does not exist', async () => {
+        let filename = 'abc.pptx';
+        let msg =  "@alfred download " + filename;
+        await postMessage(page, msg);
+
+        await page.waitFor(PROCESSING);
+        await page.waitForSelector('button[aria-label="alfred"]');
+        
+        const botResponse = await page.evaluate(() => {
+            // fetches latest response from the bot
+            return Array.from(document.querySelectorAll('div[class=post-message__text]')).pop().children[0].textContent;
+        });
+
+        expect(botResponse).to.contain("No such file found!");
+    });
+
 });
