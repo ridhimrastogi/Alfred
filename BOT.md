@@ -20,7 +20,17 @@ We made the required changes to the DESIGN.md file
  
  - Alfred doesn't support deleting a file on users drive.
 
-### Mocking Google Drive API calls
+## Mocking infrastructure
+
+### Mocking API Calls
+
+ - To intercept the calls to Google Drive API, we are using **Nock**, a commonly used Node.js mocking framework. 
+ 
+ - For writing automation specs, we use **Chai** and **Mocha**.
+ 
+ - We created a mock JSON response, found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/pilot/src/mock.json), from which we return required data using Nock scopes.
+ 
+ - A complete list of all Nock scopes that we used for our application can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/pilot/src/helper.js).
 
 ## Automation Testing
 
