@@ -4,7 +4,7 @@
 
  - We created our own deployment on **Heroku** for **Mattermost Server** so that we can have Admin rights to add the bot to our server. 
 
- - For server storage we are currently using the free Heroku Dynos but are planning to add a COS bucket (probably S3) for the upcoming milestones if required.
+ - For server storage we are currently using the free Heroku Dynos but are planning to add an Object Store (probably Amazon S3) for the upcoming milestones if required.
 
 ### Alfred - FileBot
 
