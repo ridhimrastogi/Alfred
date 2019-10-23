@@ -94,4 +94,5 @@ We are using **Puppeteer** for automation testing and for each use case we defin
 
 ## Screencast links
 
-[Puppeteer testing](https://drive.google.com/open?id=1zuamL_gxyNluNBXJvMi9HJ2t_UPq6uoX)
+### [Bot Inetractions](https://drive.google.com/file/d/1OiaS1aZmELyEnh0enWVIPW-89vyM27jI/view?usp=sharing)
+### [Puppeteer Tests](https://drive.google.com/open?id=1zuamL_gxyNluNBXJvMi9HJ2t_UPq6uoX)
