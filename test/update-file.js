@@ -43,10 +43,10 @@ describe('Test file update usecase', function () {
     beforeEach(async () => {
         browser = await puppeteer.launch({headless: false, args: ["--no-sandbox", "--disable-web-security"]});
         page = await login( browser, `${mattermostUrl}/login` );
-        
     });
 
     afterEach(async () => {
+        await page.waitFor(PROCESSING);
         await browser.close();
     });
  
