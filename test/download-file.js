@@ -39,7 +39,11 @@ describe('Test file download usecase', function () {
     this.timeout(5000000);
 
     beforeEach(async () => {
-        browser = await puppeteer.launch({ headless: false, args: ["--no-sandbox", "--disable-web-security"] });
+        browser = await puppeteer.launch({
+            headless: false,
+            slowMo: 50,
+            args: ["--no-sandbox", "--disable-web-security"] 
+        });
         page = await login(browser, `${mattermostUrl}/login`);
     });
 
