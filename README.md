@@ -9,4 +9,6 @@
 * Akash Pramodkumar Pateria (apateri)
 * Jaymin Desai (jddesai2)
 
-## Design details can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
+## Design details can be found in [DESIGN.md](../DESIGN.md)
+
+## Bot integration and testing details can be found in [BOT.md](../BOT.md)
