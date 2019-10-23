@@ -2,7 +2,7 @@
 
 ### [Mattermost Server](https://mattermost-csc510-9.herokuapp.com/) & Storage
 
- - We created our own deployment on Heroku for Mattermost server so that we can have Admin rights to add the bot to our server. 
+ - We created our own deployment on **Heroku** for **Mattermost Server** so that we can have Admin rights to add the bot to our server. 
 
  - For server storage we are currently using the free Heroku Dynos but are planning to add a COS bucket (probably S3) for the upcoming milestones if required.
 
@@ -31,6 +31,8 @@ We made the required changes to the DESIGN.md file
  - We created a mock JSON response, found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/pilot/src/mock.json), from which we return required data using Nock scopes.
  
  - A complete list of all Nock scopes that we used for our application can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/pilot/src/helper.js).
+ 
+ - Puppeteer tests can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/tree/master/test).
 
 ## Automation Testing
 
