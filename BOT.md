@@ -91,3 +91,7 @@ We are using **Puppeteer** for automation testing and for each use case we defin
 1. We access the server URL and log in using puppeteer.
 2. We send message to update collaborators for a file where file extension is invalid
 3. The bot returns with a failure message, "Please enter a supported file extension".
+
+## Screencast links
+
+[Puppeteer testing](https://drive.google.com/open?id=1zuamL_gxyNluNBXJvMi9HJ2t_UPq6uoX)
