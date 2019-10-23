@@ -9,6 +9,6 @@
 * Akash Pramodkumar Pateria (apateri)
 * Jaymin Desai (jddesai2)
 
-## Design details can be found in [DESIGN.md](../DESIGN.md)
+## Design details can be found in [DESIGN.md](../master/DESIGN.md)
 
-## Bot integration and testing details can be found in [BOT.md](../BOT.md)
+## Bot integration and testing details can be found in [BOT.md](../master/BOT.md)
