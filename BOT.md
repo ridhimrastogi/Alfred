@@ -19,10 +19,12 @@ We made the required changes to the DESIGN.md file
  - While creating a file, if Alfred doesn't have necessary information, it asks for required Goodle Drive persmission details.
  
  - Alfred doesn't support deleting a file on users drive.
- 
-## Puppeteer Testing
 
-We are using puppeteer to verify the bot is returning correct response based on a input message. For each use case we define what tests have been covered below.
+### Mocking Google Drive API calls
+
+## Automation Testing
+
+We are using **Puppeteer** for automation testing and for each use case we define what tests have been covered below.
 
 ### Create a File
 
