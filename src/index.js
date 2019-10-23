@@ -2,7 +2,7 @@ const Client = require('./mattermost-client/client');
 const drive = require("./drive.js");
 const helper = require("./helper.js");
 
-let host = "alfred-filebot.herokuapp.com",
+let host = "mattermost-csc510-9.herokuapp.com", 
     group = "alfred",
     bot_name = "@alfred",
     client = new Client(host, group, {});
