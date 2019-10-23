@@ -65,5 +65,36 @@ describe('Test file update usecase', function () {
 
         expect(botResponse).to.contain("Updated collaborators");
     });
-
+    
+    it('should validate file extension', async () => {
+        let filename = '.';
+        let msg = "@alfred add @ridhim @shubham as collaborators with read and edit access in " + filename;
+        await postMessage(page, msg);
+    
+        await page.waitFor(PROCESSING);
+        await page.waitForSelector('button[aria-label="alfred"]');
+    
+        const botResponse = await page.evaluate(() => {
+          // fetches latest response from the bot
+          return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0].textContent;
+        });
+    
+        expect(botResponse).to.contain("Please Enter a valid file name");
+      });
+    
+    it('should validate file name', async () => {
+        let filename = 'Resource.exe';
+        let msg = "@alfred add @ridhim @shubham as collaborators with read and edit access in " + filename;
+        await postMessage(page, msg);
+    
+        await page.waitFor(PROCESSING);
+        await page.waitForSelector('button[aria-label="alfred"]');
+    
+        const botResponse = await page.evaluate(() => {
+          // fetches latest response from the bot
+          return Array.from(document.querySelectorAll('div.post-message__text')).pop().children[0].textContent;
+        });
+    
+        expect(botResponse).to.contain("Please enter a supported file extension.");
+      });
 }); 
