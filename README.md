@@ -35,3 +35,7 @@ Linux/Unix:
 ```
 export BOTTOKEN="<access-token>"
 ```
+
+## Design details can be found in [DESIGN.md](../master/DESIGN.md)
+
+## Bot integration and testing details can be found in [BOT.md](../master/BOT.md)

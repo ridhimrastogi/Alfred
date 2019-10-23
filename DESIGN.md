@@ -13,7 +13,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
 
 ### Use Cases
 
- #### 1A. Create a file on google drive without any collaborators
+ #### 1A. Create different types of files on google drive without any collaborators
  
   - **Preconditions**:
   
@@ -21,11 +21,12 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
     
   - **Main Flow**:
   
-    User asks Alfred to create a file. Alfred creates the file on google drive corresponding to user. It, then, shares the doc link in chat.
+    User asks Alfred to create a file (a file can be of any format for example: a spreadsheet, doc file or a presentation file). Alfred creates the file on google drive corresponding to that user. It shares the file link in chat once the file is successfully created or informs the user in case of failure.
      
   - **Subflows**:
   
     - User pings Alfred using its handle _@alfred_ with some expected natural language phrase to create a file that contains words **create** and **file**.
+    - Alfred will figure out the type of file based on the extension.
     - Alfred will create the file on user's google drive with default options.
     - Alfred will then DM back the user with its link.
     
@@ -54,6 +55,8 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   - **Alternative Flows**:
     
      - If the user is not correctly configured, Alfred will prompt user to do so.
+     - If one or more collaborators do not have their google email id's linked to their mattermost account, Alfred pings the collaboator
+for the information.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If creator does not specify access rights for the collaborators, then Alfred would create and share the file with default read access to the collaborators.
 
@@ -81,38 +84,12 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
   - **Alternative Flows**:
     
      - If the user is not correctly configured, Alfred will prompt user to do so.
+     - If one or more collaborators do not have their google email id's linked to their mattermost account, Alfred pings the collaboator
+for the information.
      - If the collaborators are not part of the same team, Alfred will inform the same.
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
-     
-     
-#### 3.  Delete an existing file
 
-  - **Preconditions**: 
-  
-    File must exist on Google Docs and user must have owner rights.
-    
-  - **Main Flow**: 
-  
-    User provides Alfred, filename of the file to be deleted. If the file exists and the user has owner rights, the file gets deleted while notifying all the associated collaborators.
-
-  - **Subflows**:
-  
-     - User asks Alfred to delete a file with query something like “Delete abc.docx”. To double check, Alfred confirms the operation with the user.
-     - If params valid, Alfred, behind the scene, deletes the given file and moves it to trash.
-     - Alfred fetches all the associated collaborators and sends them a DM that the file owner has deleted the file shared.
-     
-  - **Alternative Flows**:
-  
-     - If the user is not correctly configured, Alfred will prompt user to do so.
-     - User provides incomplete commands  like “Delete file”, then Alfred will ask the user to provide the filename or any other relevant info, in order to complete the task.
-     - If the user does not have owner rights or the file does not exist, Alfred responds back with an appropriate message.
-
-  - **Future Scope**:
-
-    Prompts collaborators with a confirmation if they want to keep the copy of the deleted file.
-    
-
-#### 4. Download an existing file
+#### 3. Download an existing file
 
   - **Preconditions**:
   
@@ -135,7 +112,7 @@ Alfred is a conversational agent which activates when the user tags it via _@alf
      - If the file to be downloaded is not present, then Alfred will prompt the user with the same.     
      - If user provides unexpected input, Alfred will ask user to provide the correct options again.
  
- #### 5. Fetching comments on a shared file
+ #### 4. Fetching comments on a shared file
  
   - **Preconditions**:
   
@@ -246,6 +223,8 @@ The storage and platform that we are primarily considering for this project are 
 
 We are going to use a mix of some commonly used design patterns to achieve this:
  
+ - **Command Pattern**: In a setting where Mattermost Client acting as a Invoker while Google Drive as Receiver, Command pattern can be used to encapsulate a request as an object by binding together a set of actions on a Google Drive. This would allow us to parameterize other objects with different requests, make multiple requests by maintaining them in queue, and support their corresponding reverse operations.
+ 
  - **Facade Pattern**: In our case, a facade can be an interface that provides an abstraction for hiding implementation details. Facade classes will have different implementations based on the platforms.
  
  - **Gateway Pattern**: Different platforms will have their own API, each with its own API gateway implementation.
@@ -255,6 +234,3 @@ Two main facade candidates can be as follows:
 - WebHookFacade: This can have different implementation based on whether it is Slack or Mattermost or some other platform for Bot. 
 
 - FileOpsFacade: This can have different file operations defined and the implementation will take care of which API Gateway to use based on user data.
- 
- 
-
