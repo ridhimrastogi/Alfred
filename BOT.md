@@ -32,7 +32,7 @@ We made the required changes to the DESIGN.md file
  
  - A complete list of all Nock scopes that we used for our application can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/pilot/src/helper.js).
  
- - Puppeteer tests can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/tree/master/test).
+ - Puppeteer tests for three primary use cases can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/tree/master/test).
 
 ## Automation Testing
 
