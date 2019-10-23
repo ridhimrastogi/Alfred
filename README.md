@@ -13,29 +13,4 @@ A Mattermost bot that provides file sharing capabilities on Google Drive!
 
 ## Design details can be found in [DESIGN.md](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/DESIGN.md)
 
-## Setup
-
-#### Code
-
-```bash
-https://github.ncsu.edu/csc510-fall2019/CSC510-9.git
-cd CSC510-9
-
-npm install
-```
-
-#### Tokens
-   
-Windows:
-```
-setx BOTTOKEN "<access-token>"
-```
-
-Linux/Unix:
-```
-export BOTTOKEN="<access-token>"
-```
-
-## Design details can be found in [DESIGN.md](../master/DESIGN.md)
-
 ## Bot integration and testing details can be found in [BOT.md](../master/BOT.md)
