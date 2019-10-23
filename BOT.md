@@ -92,7 +92,7 @@ We are using **Puppeteer** for automation testing and for each use case we defin
 2. We send message to update collaborators for a file where file extension is invalid
 3. The bot returns with a failure message, "Please enter a supported file extension".
 
-## Screencast links
+## Screencast Links
 
-### [Bot Inetractions](https://drive.google.com/file/d/1OiaS1aZmELyEnh0enWVIPW-89vyM27jI/view?usp=sharing)
+### [Bot Interactions](https://drive.google.com/file/d/1OiaS1aZmELyEnh0enWVIPW-89vyM27jI/view?usp=sharing)
 ### [Puppeteer Tests](https://drive.google.com/open?id=1zuamL_gxyNluNBXJvMi9HJ2t_UPq6uoX)
