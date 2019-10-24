@@ -16,7 +16,7 @@ We made the required changes to the DESIGN.md file
 
  - Alfred now supports multiple file types, in fact **any file type that is supported by Google Drive API** but for now we only have validations for _.pdf_, _.docx_, _.pptx_, _.xlsx_
  
- - While creating a file, if Alfred doesn't have necessary information, it asks for required Goodle Drive persmission details.
+ - While creating a file, if Alfred doesn't have necessary information, it asks for required Goodle Drive permission details.
  
  - Alfred doesn't support deleting a file on users drive.
 
