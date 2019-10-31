@@ -426,7 +426,7 @@ class Client extends EventEmitter {
         }
     }
 
-    getUserDirectMessageChannel(userID,fileName,fileLink,callback) {
+    getUserDirectMessageChannel(userID,callback) {
         // check if channel already exists
         let channel = this.self.id + "__" + userID;
         channel = this.findChannelByName(channel);
@@ -437,10 +437,10 @@ class Client extends EventEmitter {
         }
         if (channel) {
             // channel obviously doesn't exist, let's create it
-            if (callback != null) { callback(fileName,fileLink,channel); }
-            return;
+            //if (callback != null) { callback(channel); }
+            return channel;
         }
-        return this.createDirectChannel(userID, callback);
+        return this.createDirectChannel(userID, null);
     }
 
     getAllChannels() {
