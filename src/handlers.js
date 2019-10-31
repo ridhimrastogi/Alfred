@@ -1,19 +1,35 @@
+const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
+const google_auth = require("./google_auth.js");
+
+async function validateuser(msg, client)
+{
+    console.log(msg);
+    let sender = msg.data.sender_name.split('@')[1];
+    let userID = client.getUserIDByUsername(sender);
+    let user_channel  = client.getUserDirectMessageChannel(userID);
+    console.log(`I am ${sender}`);
+    console.log(user_channel);
+    let content = fs.readFileSync('../credentials.json', 'utf8');
+    console.log("content",content);
+    google_auth.authorize(JSON.parse(content), user_channel.id, client);
+}
 
 //stub for listing drive files
 async function listFiles(msg, client) {
-
-    let res = await drive.getFiles(),
-        files = res.files,
-        fileNames = new Array();
-
-    for (n in files) {
-        fileNames.push(files[n].name + "\n");
-    }
-
     let channel = msg.broadcast.channel_id;
-    client.postMessage("Following are the files present in your drive: \n" + fileNames.join(''), channel);
+    validateuser(msg, client);
+    console.log("Authenticated\n");
+    let files = google_auth.listFiles();
+    if(typeof files === "undefined" || files.length == 0)
+        client.postMessage('No files found.');
+    else {
+        client.postMessage('Files:',channel);
+        files.map((file) => {
+            client.postMessage(`${file.name} (${file.id})`,channel);
+        });
+    }
 }
 
 //stub for creating a file 
@@ -40,7 +56,7 @@ async function createFile(msg, client) {
         fileLink = res.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
 
-    sendDirecMessageToUsers(usernames, fileName, fileLink, channel);
+    sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 }
 
@@ -116,7 +132,7 @@ async function updateCollaboratorsInFile(msg, client) {
 
     if (fileLink !== undefined) {
 
-        sendDirecMessageToUsers(usernames, fileName, fileLink, channel);
+        sendDirecMessageToUsers(usernames, fileName, fileLink, client);
         client.postMessage("Updated collaborators to file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 
     } else {
@@ -128,14 +144,10 @@ async function updateCollaboratorsInFile(msg, client) {
 function sendDirecMessageToUsers(usernames, fileName, fileLink, client) {
     userIDS = usernames.map(username => client.getUserIDByUsername(username));
     for (userID in userIDS) {
-        client.getUserDirectMessageChannel(
-            userIDS[userID],
-            fileName,
-            fileLink,
-            (fileName, fileLink, channel) => {
-                client.postMessage("You have been added as a collaborator for " + fileName + "\n" + "Here is the link for the same: " + fileLink, channel.id)
-            }
-        );
+         user_channel = client.getUserDirectMessageChannel(
+            userIDS[userID]);
+    client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
+     "Here is the link for the same: " + fileLink, user_channel.id);
     }
 }
 
