@@ -1,5 +1,7 @@
 const fs = require('fs');
+const readline = require('readline');
 const {google} = require('googleapis');
+const Client = require('./mattermost-client/client');
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive'];
@@ -90,7 +92,7 @@ function getAccessToken(oAuth2Client, user_channel, mattermost_client) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function listFiles() {
-  console.log("Inside deep dive")
+  console.log("INside deep dive")
   let drive = google.drive({version: 'v3', oAuth2Client});
   drive.files.list({
     pageSize: 100,
