@@ -19,7 +19,7 @@ async function validateuser(msg, client)
 //stub for listing drive files
 async function listFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
-    validateuser(msg, client);
+    await validateuser(msg, client);
     console.log("Authenticated\n");
     let files = google_auth.listFiles();
     if(typeof files === "undefined" || files.length == 0)
