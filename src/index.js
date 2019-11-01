@@ -1,6 +1,6 @@
 const Client = require('./mattermost-client/client');
 const handler = require('./handlers.js');
-const scopes = require('../test/utils/scopes.js');
+//const scopes = require('../test/utils/scopes.js');
 
 
 let host = "mattermost-csc510-9.herokuapp.com",

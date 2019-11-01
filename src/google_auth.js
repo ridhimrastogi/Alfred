@@ -1,8 +1,14 @@
 const fs = require('fs');
 const {google} = require('googleapis');
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.listen(port, () => console.log(`Example app listening on port ${port}!`))
 
 // If modifying these scopes, delete token.json.
-const SCOPES = ['https://www.googleapis.com/auth/drive'];
+const SCOPES = ['https://www.googleapis.com/auth/drive',
+              'https://www.googleapis.com/auth/drive.file'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -25,7 +31,7 @@ var token = null;
  * @param {function} callback The callback to call with the authorized client.
  */
 function authorize(credentials, user_channel, mattermost_client) {
-  const {client_secret, client_id, redirect_uris} = credentials.installed;
+  const {client_secret, client_id, redirect_uris} = credentials.web;
   oAuth2Client = new google.auth.OAuth2(
       client_id, client_secret, redirect_uris[0]);
 
@@ -45,17 +51,23 @@ function authorize(credentials, user_channel, mattermost_client) {
   console.log("inside outside",oAuth2Client);
 }
 
-function getAuthorizationCode(msg, user_channel, mattermost_client)
-{
+/**
+ * Get and store new token after prompting for user authorization, and then
+ * execute the given callback with the authorized OAuth2 client.
+ * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
+ * @param {getEventsCallback} callback The callback for the authorized client.
+ */
+function getAccessToken(oAuth2Client, user_channel, mattermost_client) {
+
+  const authUrl = oAuth2Client.generateAuthUrl({
+    access_type: 'offline',
+    scope: SCOPES,
+  });
   let code = null;
-  let sender = msg.data.sender_name.split('@')[1];
-  if (msg.broadcast.channel_id == user_channel && msg.data.sender_name != "@alfred"){
-    console.log(msg);
-    let post = JSON.parse(msg.data.post);
-    code = post.message;
-    console.log("code\n",code);
-    mattermost_client.off('message',getAuthorizationCode);
-    console.log("\n\nClient removed\n\n");
+  mattermost_client.postMessage(`Authorize this app by visiting this url: ${authUrl}`, user_channel);
+  app.get('/tokenurl', (req, res) => {
+    console.log(req.query.code);
+    code = req.query.code;
     oAuth2Client.getToken(code, (err, token) => {
       if (err) return mattermost_client.postMessage(`Error retrieving access token: ${err}`,user_channel);
         oAuth2Client.setCredentials(token);
@@ -65,37 +77,23 @@ function getAuthorizationCode(msg, user_channel, mattermost_client)
         if (err) return console.error(err);
         mattermost_client.postMessage('Token created', user_channel);
       });
+    res.redirect(	'https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
     });
-  }
-}
-
-/**
- * Get and store new token after prompting for user authorization, and then
- * execute the given callback with the authorized OAuth2 client.
- * @param {google.auth.OAuth2} oAuth2Client The OAuth2 client to get token for.
- * @param {getEventsCallback} callback The callback for the authorized client.
- */
-function getAccessToken(oAuth2Client, user_channel, mattermost_client) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
   });
-  mattermost_client.postMessage(`Authorize this app by visiting this url: ${authUrl}`, user_channel);
-  mattermost_client.postMessage("Enter the code from that page here:", user_channel);
-  mattermost_client.on('message',  (msg) => getAuthorizationCode(msg, user_channel, mattermost_client));
 }
 
 /**
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function listFiles() {
-  console.log("Inside deep dive")
-  let drive = google.drive({version: 'v3', oAuth2Client});
-  drive.files.list({
+async function listFiles() {
+  console.log("Inside deep dive",oAuth2Client);
+  let drives = google.drive({version: 'v3', oAuth2Client});
+  await drives.files.list({
     pageSize: 100,
     fields: 'nextPageToken, files(id, name)',
   }, (err, res) => {
+    console.log("RS\n",res);
     if (err) return console.log('The API returned an error: ' + err);
     let files = res.data.files;
     console.log(files);
