@@ -105,6 +105,33 @@ function listFiles() {
   });
 }
 
+/**
+ * Creates a file using meta data.
+ * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
+ */
+function createFile(auth) {
+  const drive = google.drive({version: 'v3', auth});
+  var fileMetadata = {
+    'name': 'Alfred-Architecture.png'
+  };
+  var media = {
+    mimeType: 'image/png',
+    body: fs.createReadStream('../img/Alfred Architecture.png')
+  };
+  drive.files.create({
+    resource: fileMetadata,
+    media: media,
+    fields: 'id'
+  }, function (err, file) {
+    if (err) {
+      // Handle error
+      console.error(err);
+    } else {
+      console.log('File Id: ', file.id);
+    }
+  });
+ }
+
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
