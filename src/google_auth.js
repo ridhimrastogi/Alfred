@@ -1,7 +1,9 @@
 const fs = require('fs');
-const readline = require('readline');
 const { google } = require('googleapis');
-const express = require('express')
+const async = require('async');
+const express = require('express');
+
+
 const app = express()
 const port = 3000
 
@@ -129,6 +131,48 @@ function createFile(auth) {
 	});
 }
 
+
+function addCollaborators(auth) {
+  const drive = google.drive({version: 'v3', auth});
+  // recently created file
+  var fileId = '1vJNJNIoTSYvKJYaHq3CqsCVgb7q0V1AJ54miZJ2AO0Y';
+  var permissions = [
+    {
+      'type': 'user',
+      'role': 'writer',
+      'emailAddress': 'rrastog3@example.edu'
+    }, {
+      'type': 'user',
+      'role': 'writer',
+      'emailAddress': 'sdpampat@ncsu.edu'
+    }
+  ];
+  // Using the NPM module 'async'com
+  async.eachSeries(permissions, function (permission, permissionCallback) {
+    drive.permissions.create({
+      resource: permission,
+      fileId: fileId,
+      fields: 'id',
+    }, function (err, res) {
+      if (err) {
+        console.error(err);
+        permissionCallback(err);
+      } else {
+        console.log('Permission ID: ', res)
+        permissionCallback();
+      }
+    });
+  }, function (err) {
+    if (err) {
+      console.error(err);
+    } else {
+      console.error("Access rights for collaborators updated successfully");
+    }
+  });
+}
+
+
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
+exports.addCollaborators = addCollaborators
