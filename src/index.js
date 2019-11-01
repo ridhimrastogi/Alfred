@@ -1,6 +1,6 @@
 const Client = require('./mattermost-client/client');
-const handler = require('./handlers.js');
-const scopes = require('../test/utils/scopes.js');
+const driveHandler = require('./handlers.js')
+const scopes = require('../test/utils/scopes.js')
 
 
 let host = "mattermost-csc510-9.herokuapp.com",
@@ -39,16 +39,16 @@ function hears(msg, text) {
 async function parseMessage(msg) {
 
     if (hears(msg, "create")) {
-        handler.createFile(msg, client);
+        driveHandler.createFile(msg, client);
     }
     else if (hears(msg, "list")) {
-        handler.listFiles(msg, client);
+        driveHandler.listFiles(msg, client);
     }
     else if (hears(msg, "download")) {
-        handler.downloadFile(msg, client);
+        driveHandler.downloadFile(msg, client);
     }
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
-        handler.updateCollaboratorsInFile(msg, client);
+        driveHandler.updateCollaboratorsInFile(msg, client);
     }
 }
 
