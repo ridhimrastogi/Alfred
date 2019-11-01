@@ -39,16 +39,16 @@ function hears(msg, text) {
 async function parseMessage(msg) {
 
     if (hears(msg, "create")) {
-        driveHandler.createFile(msg, client);
+        handler.createFile(msg, client);
     }
     else if (hears(msg, "list")) {
-        driveHandler.listFiles(msg, client);
+        handler.listFiles(msg, client);
     }
     else if (hears(msg, "download")) {
-        driveHandler.downloadFile(msg, client);
+        handler.downloadFile(msg, client);
     }
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
-        driveHandler.updateCollaboratorsInFile(msg, client);
+        handler.updateCollaboratorsInFile(msg, client);
     }
 }
 
