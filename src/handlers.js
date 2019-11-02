@@ -174,12 +174,14 @@ async function _listFiles(msg, client) {
 
     if (!await _validateUser(user, client)) {
         console.error("Failed to validate user");
+        return client.postMessage("Authorize this app! Please check you DM for more details", channel);
     }
 
     console.log("User Validated");
 
     google_auth._listFiles()
         .then(result => extractFileNames(result.data.files))
+        .then(files => files.filter((file) => file.startsWith("00atf")))
         .then(files => {
             if (files.length) {
                 client.postMessage(files.join('\n'), channel)
