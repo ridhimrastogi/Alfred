@@ -132,8 +132,8 @@ function createFile(auth) {
 }
 
 function getFileByFilename(filename) {
-
-  let drive = google.drive({ version: 'v3', oAuth2Client }), files;
+  let drive = google.drive({ version: 'v3', oAuth2Client }),
+      files;
 
 	drive.files.list({
     q: "name=" + filename,
@@ -144,26 +144,13 @@ function getFileByFilename(filename) {
   });
 }
 
-function addCollaborators(auth) {
-  const drive = google.drive({version: 'v3', auth});
-  // recently created file
-  var fileId = '1vJNJNIoTSYvKJYaHq3CqsCVgb7q0V1AJ54miZJ2AO0Y';
-  var permissions = [
-    {
-      'type': 'user',
-      'role': 'writer',
-      'emailAddress': 'rrastog3@example.edu'
-    }, {
-      'type': 'user',
-      'role': 'writer',
-      'emailAddress': 'sdpampat@ncsu.edu'
-    }
-  ];
-  // Using the NPM module 'async'com
-  async.eachSeries(permissions, function (permission, permissionCallback) {
+function addCollaborators(params) {
+  const drive = google.drive({version: 'v3', oAuth2Client});
+
+  async.eachSeries(params.permissions, function (permission, permissionCallback) {
     drive.permissions.create({
       resource: permission,
-      fileId: fileId,
+      fileId: params.fileId,
       fields: 'id',
     }, function (err, res) {
       if (err) {
@@ -175,11 +162,15 @@ function addCollaborators(auth) {
       }
     });
   }, function (err) {
+    let status = false;
     if (err) {
       console.error(err);
     } else {
+      status = true;
       console.error("Access rights for collaborators updated successfully");
     }
+
+    return status;
   });
 }
 
