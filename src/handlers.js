@@ -3,26 +3,15 @@ const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
 
-async function validateuser(msg, client)
-{
-    console.log(msg);
-    let sender = msg.data.sender_name.split('@')[1];
-    let userID = client.getUserIDByUsername(sender);
-    let user_channel  = client.getUserDirectMessageChannel(userID);
-    console.log(`I am ${sender}`);
-    console.log(user_channel);
-    let content = fs.readFileSync('../credentials.json', 'utf8');
-    console.log("content",content);
-    google_auth.authorize(JSON.parse(content), user_channel.id, client);
-}
-
 //stub for listing drive files
 async function listFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
-    await validateuser(msg, client);
-    console.log("Authenticated\n");
-    let files = google_auth.listFiles();
-    if(typeof files === "undefined" || files.length == 0)
+    let sender = msg.data.sender_name.split('@')[1];
+    let userID = client.getUserIDByUsername(sender);
+    let files = await google_auth.listFiles(userID,client);
+    if(files == null)
+        client.postMessage("Please try again after authentication");
+    else if(typeof files === "undefined" || files.length == 0)
         client.postMessage('No files found.');
     else {
         client.postMessage('Files:',channel);
