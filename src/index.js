@@ -42,7 +42,7 @@ async function parseMessage(msg) {
         handler.createFile(msg, client);
     }
     else if (hears(msg, "list")) {
-        handler.listFiles(msg, client);
+        handler._listFiles(msg, client);
     }
     else if (hears(msg, "download")) {
         handler.downloadFile(msg, client);

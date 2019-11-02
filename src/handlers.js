@@ -3,16 +3,15 @@ const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
 
-async function validateuser(msg, client)
-{
+async function validateuser(msg, client) {
     console.log(msg);
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
-    let user_channel  = client.getUserDirectMessageChannel(userID);
+    let user_channel = client.getUserDirectMessageChannel(userID);
     console.log(`I am ${sender}`);
     console.log(user_channel);
     let content = fs.readFileSync('../credentials.json', 'utf8');
-    console.log("content",content);
+    console.log("content", content);
     google_auth.authorize(JSON.parse(content), user_channel.id, client);
 }
 
@@ -22,12 +21,12 @@ async function listFiles(msg, client) {
     await validateuser(msg, client);
     console.log("Authenticated\n");
     let files = google_auth.listFiles();
-    if(typeof files === "undefined" || files.length == 0)
+    if (typeof files === "undefined" || files.length == 0)
         client.postMessage('No files found.');
     else {
-        client.postMessage('Files:',channel);
+        client.postMessage('Files:', channel);
         files.map((file) => {
-            client.postMessage(`${file.name} (${file.id})`,channel);
+            client.postMessage(`${file.name} (${file.id})`, channel);
         });
     }
 }
@@ -144,14 +143,70 @@ async function updateCollaboratorsInFile(msg, client) {
 function sendDirecMessageToUsers(usernames, fileName, fileLink, client) {
     userIDS = usernames.map(username => client.getUserIDByUsername(username));
     for (userID in userIDS) {
-         user_channel = client.getUserDirectMessageChannel(
+        user_channel = client.getUserDirectMessageChannel(
             userIDS[userID]);
-    client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
-     "Here is the link for the same: " + fileLink, user_channel.id);
+        client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
+            "Here is the link for the same: " + fileLink, user_channel.id);
     }
 }
 
+// -------------------------------------------------------------------
+
+async function _validateUser(user, client) {
+    console.log(`Validating ${user}`);
+    let userID = client.getUserIDByUsername(user);
+    let user_channel = client.getUserDirectMessageChannel(userID).id;
+    console.log(`User Channel: ${user_channel}`);
+
+    if (!google_auth._checkForToken()) {
+        msg = `Authorize this app by visiting this url: ${google_auth._getAuthUrl()} and try again!`;
+        client.postMessage(msg, user_channel);
+        return false;
+    } else {
+        google_auth._authorize();
+        return true;
+    }
+}
+
+async function _listFiles(msg, client) {
+    let channel = msg.broadcast.channel_id;
+    let user = msg.data.sender_name.split('@')[1];
+
+    if (!await _validateUser(user, client)) {
+        console.error("Failed to validate user");
+    }
+
+    console.log("User Validated");
+
+    google_auth._listFiles()
+        .then(result => extractFileNames(result.data.files))
+        .then(files => {
+            if (files.length) {
+                client.postMessage(files.join('\n'), channel)
+            } else {
+                client.postMessage("No files found");
+            }
+        }).catch(error => {
+            msg = "Failed to list files"
+            console.error(msg, error);
+            client.postMessage(msg, channel);
+        });
+}
+
+const extractFileNames = (files) => {
+    let names = [];
+    if (files.length) {
+        files.map((file) => {
+            names.push(`${file.name}`);
+        });
+    } else {
+        console.log('No files found');
+    }
+    return names;
+}
+
 module.exports = {
+    _listFiles,
     listFiles,
     createFile,
     downloadFile,

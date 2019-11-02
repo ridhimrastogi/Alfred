@@ -418,15 +418,15 @@ class Client extends EventEmitter {
         }
     }
 
-    getUserIDByUsername(username){
-        for (let u in this.users){
-            if(this.users[u].username === username){
+    getUserIDByUsername(username) {
+        for (let u in this.users) {
+            if (this.users[u].username === username) {
                 return this.users[u].id;
             }
         }
     }
 
-    getUserDirectMessageChannel(userID,callback) {
+    getUserDirectMessageChannel(userID, callback) {
         // check if channel already exists
         let channel = this.self.id + "__" + userID;
         channel = this.findChannelByName(channel);
@@ -437,7 +437,7 @@ class Client extends EventEmitter {
         }
         if (channel) {
             // channel obviously doesn't exist, let's create it
-            //if (callback != null) { callback(channel); }
+            // if (callback != null) { callback(channel); }
             return channel;
         }
         return this.createDirectChannel(userID, null);
@@ -602,7 +602,7 @@ class Client extends EventEmitter {
     }
 
     // Private functions
-    //
+    
     _send(message) {
         if (!this.connected) {
             return false;

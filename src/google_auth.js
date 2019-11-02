@@ -1,29 +1,26 @@
 const fs = require('fs');
-const readline = require('readline');
 const { google } = require('googleapis');
-const express = require('express')
-const app = express()
+
+const tokenServer = require('express')()
 const port = 3000
 
-app.listen(port, () => console.log(`Example app listening on port ${port}!`))
-
-// If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive',
-	'https://www.googleapis.com/auth/drive.file'];
-// The file token.json stores the user's access and refresh tokens, and is
-// created automatically when the authorization flow completes for the first
-// time.
+	'https://www.googleapis.com/auth/drive.file',
+	'https://spreadsheets.google.com/feeds',
+	'https://docs.google.com/feeds']
+
 const TOKEN_PATH = '../token.json';
 
+let drive = google.drive('v3');
 var oAuth2Client = null;
 var token = null;
 
 // Load client secrets from a local file.
-// fs.readFile('../credentials.json', (err, content) => {
-//   if (err) return console.log('Error loading client secret file:', err);
-//   // Authorize a client with credentials, then call the Google Drive API.
-//   authorize(JSON.parse(content), listFiles);
-// });
+fs.readFile('../credentials.json', (err, content) => {
+	if (err) return console.log('Error loading client secret file:', err);
+	const { client_secret, client_id, redirect_uris } = JSON.parse(content).web;
+	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+});
 
 /**
  * Create an OAuth2 client with the given credentials, and then execute the
@@ -66,7 +63,7 @@ function getAccessToken(oAuth2Client, user_channel, mattermost_client) {
 	});
 	let code = null;
 	mattermost_client.postMessage(`Authorize this app by visiting this url: ${authUrl}`, user_channel);
-	app.get('/tokenurl', (req, res) => {
+	tokenServer.get('/tokenurl', (req, res) => {
 		console.log(req.query.code);
 		code = req.query.code;
 		oAuth2Client.getToken(code, (err, token) => {
@@ -132,3 +129,62 @@ function createFile(auth) {
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
+
+// -------------------------------------------------------------------
+
+const _checkForToken = () => {
+	try {
+		token = fs.readFileSync(TOKEN_PATH);
+	}
+	catch (error) {
+		console.log("File not found: token.json");
+		return false;
+	}
+	return true;
+};
+
+const _authorize = () => {
+	try {
+		oAuth2Client.setCredentials(JSON.parse(token));
+	}
+	catch (error) {
+		console.log(`Failed to authorize user, error: ${error}`);
+		return false;
+	}
+	return true;
+};
+
+const _getAuthUrl = () => oAuth2Client.generateAuthUrl({
+	access_type: 'offline',
+	scope: SCOPES,
+});
+
+const _getTokenFromCode = (req, res) => {
+	console.log(`Code: ${req.query.code}`);
+	code = req.query.code;
+	oAuth2Client.getToken(code, (err, token) => {
+		if (err) console.log(`Error retrieving access token: ${err}`);
+		fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
+			if (err) console.error(err);
+			console.log('Token created');
+		});
+		res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
+	});
+}
+
+async function _listFiles() {
+	options = {
+		auth: oAuth2Client,
+		pageSize: 100,
+		fields: 'nextPageToken, files(id, name)',
+	};
+	return drive.files.list(options);
+}
+
+tokenServer.listen(port, () => console.log(`Token server listening on port ${port}!`))
+tokenServer.get('/tokenurl', _getTokenFromCode);
+
+exports._getAuthUrl = _getAuthUrl;
+exports._checkForToken = _checkForToken;
+exports._authorize = _authorize;
+exports._listFiles = _listFiles;
