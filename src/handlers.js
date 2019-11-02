@@ -2,6 +2,7 @@ const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
+var Readable = require('stream').Readable
 
 async function validateuser(msg, client) {
     console.log(msg);
@@ -168,19 +169,21 @@ async function _validateUser(user, client) {
     }
 }
 
-async function _listFiles(msg, client) {
+async function _listFiles(msg, client, validate = true) {
     let channel = msg.broadcast.channel_id;
     let user = msg.data.sender_name.split('@')[1];
 
-    if (!await _validateUser(user, client)) {
-        console.error("Failed to validate user");
-        return client.postMessage("Authorize this app! Please check you DM for more details", channel);
+    if (validate) {
+        if (!await _validateUser(user, client)) {
+            console.error("Failed to validate user");
+            return client.postMessage("Authorize this app! Please check you DM for more details", channel);
+        }
+        console.log("User Validated");
     }
 
-    console.log("User Validated");
-
     google_auth._listFiles()
-        .then(result => extractFileNames(result.data.files))
+        .then(result => extractFileInfo(result.data.files))
+        .then(files => Array.from(files.keys()))
         .then(files => files.filter((file) => file.startsWith("00atf")))
         .then(files => {
             if (files.length) {
@@ -189,17 +192,87 @@ async function _listFiles(msg, client) {
                 client.postMessage("No files found", channel);
             }
         }).catch(error => {
-            msg = "Failed to list files"
+            msg = "Failed to list files";
             console.error(msg, error);
             client.postMessage(msg, channel);
         });
 }
 
-const extractFileNames = (files) => {
-    let names = [];
+async function _downloadFile(msg, client) {
+    let channel = msg.broadcast.channel_id;
+    let user = msg.data.sender_name.split('@')[1];
+
+    if (!await _validateUser(user, client)) {
+        console.error("Failed to validate user");
+        return client.postMessage("Authorization failed!", channel);
+    }
+    console.log("User Validated");
+
+    let post = JSON.parse(msg.data.post);
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+
+    validateFile(fileName);
+
+    let files = await google_auth._listFiles()
+        .then(result => extractFileInfo(result.data.files))
+        .then(files => {
+            _files = new Map();
+            files.forEach((v, k) => {
+                if (k.startsWith("00atf")) _files.set(k, v);
+            })
+            return _files;
+        })
+        .catch(error => {
+            msg = "Failed to retrive files";
+            console.error(msg, error);
+            client.postMessage(msg, channel);
+        });
+
+    if (!files.has(fileName)) {
+        return client.postMessage("No such file found!", channel);
+    } else {
+        let file = await google_auth._downloadFile(files.get(fileName))
+            .then(result => createReadStream(result.data, fileName))
+            .then(stream => client.uploadFile(channel, stream, (res) => {
+                files = res.file_infos.map(x => x.id);
+                msg = {
+                    message: "Here is the file you requested",
+                    file_ids: files,
+                }
+                client.postMessage(msg, channel);
+            }))
+            .catch(error => {
+                msg = "Failed to download file";
+                console.error(msg, error);
+                client.postMessage(msg, channel);
+            });
+    }
+
+}
+
+function createReadStream(data, fileName) {
+    fs.createWriteStream(fileName).write(data);
+    stream = fs.createReadStream(fileName);
+    fs.unlinkSync(fileName);
+    return stream;
+}
+
+function validateFile(fileName) {
+    if (!helper.checkValidFile(fileName))
+        return client.postMessage("Please Enter a valid file name", channel);
+
+    let fileExtension = fileName.split(".")[1];
+
+    if (!helper.checkValidFileExtension(fileExtension))
+        return client.postMessage("Please enter a supported file extension.\n" +
+            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpeg", channel);
+}
+
+const extractFileInfo = (files) => {
+    let names = new Map();
     if (files.length) {
         files.map((file) => {
-            names.push(`${file.name}`);
+            names.set(`${file.name}`, `${file.id}`);
         });
     } else {
         console.log('No files found');
@@ -208,6 +281,7 @@ const extractFileNames = (files) => {
 }
 
 module.exports = {
+    _downloadFile,
     _listFiles,
     listFiles,
     createFile,

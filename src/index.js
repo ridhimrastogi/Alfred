@@ -45,7 +45,7 @@ async function parseMessage(msg) {
         handler._listFiles(msg, client);
     }
     else if (hears(msg, "download")) {
-        handler.downloadFile(msg, client);
+        handler._downloadFile(msg, client);
     }
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
         handler.updateCollaboratorsInFile(msg, client);

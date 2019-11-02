@@ -173,18 +173,32 @@ const _getTokenFromCode = (req, res) => {
 }
 
 async function _listFiles() {
-	options = {
+	params = {
 		auth: oAuth2Client,
 		pageSize: 100,
 		fields: 'nextPageToken, files(id, name)',
 	};
-	return drive.files.list(options);
+	return drive.files.list(params);
+}
+
+async function _downloadFile(fileId) {
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		alt: 'media'
+	};
+	options = {
+		responseType: 'json'
+	};
+	return drive.files.get(params, options);
 }
 
 tokenServer.listen(port, () => console.log(`Token server listening on port ${port}!`))
 tokenServer.get('/tokenurl', _getTokenFromCode);
 
+
 exports._getAuthUrl = _getAuthUrl;
 exports._checkForToken = _checkForToken;
 exports._authorize = _authorize;
 exports._listFiles = _listFiles;
+exports._downloadFile = _downloadFile;
