@@ -163,7 +163,7 @@ const _getTokenFromCode = (req, res) => {
 	console.log(`Code: ${req.query.code}`);
 	code = req.query.code;
 	oAuth2Client.getToken(code, (err, token) => {
-		if (err) console.log(`Error retrieving access token: ${err}`);
+		if (err) return console.log(`Error retrieving access token: ${err}`);
 		fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
 			if (err) console.error(err);
 			console.log('Token created');
