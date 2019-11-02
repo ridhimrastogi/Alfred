@@ -108,25 +108,27 @@ async function listFiles() {
  * Creates a file using meta data.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function createFile(auth) {
-	const drive = google.drive({ version: 'v3', auth });
+function createFile(fileParams) {
+	const drive = google.drive({ version: 'v3', oAuth2Client });
+
 	var fileMetadata = {
-		'name': 'Alfred-Architecture.png'
+		'name': fileParams.name
 	};
+
 	var media = {
-		mimeType: 'image/png',
-		body: fs.createReadStream('../img/Alfred Architecture.png')
+		mimeType: fileParams.mimeType
 	};
+
 	drive.files.create({
 		resource: fileMetadata,
 		media: media,
 		fields: 'id'
-	}, function (err, file) {
+	}, function (err) {
 		if (err) {
 			// Handle error
 			console.error(err);
 		} else {
-			console.log('File Id: ', file.id);
+			console.log('File has been successfully created !');
 		}
 	});
 }
