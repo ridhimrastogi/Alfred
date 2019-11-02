@@ -184,7 +184,7 @@ async function _listFiles(msg, client) {
             if (files.length) {
                 client.postMessage(files.join('\n'), channel)
             } else {
-                client.postMessage("No files found");
+                client.postMessage("No files found", channel);
             }
         }).catch(error => {
             msg = "Failed to list files"
