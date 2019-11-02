@@ -49,10 +49,12 @@ async function createFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    let res = await drive.createFile({
-        "originalFilename": fileName,
+    let fileParams = {
+        "name": fileName,
         "mimeType": helper.getMIMEType(fileExtension)
-    }),
+    }
+
+    let res = await google_auth.createFile(fileParams),
         fileLink = res.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
 
