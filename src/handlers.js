@@ -86,15 +86,16 @@ async function downloadFile(msg, client) {
 */
 async function updateCollaboratorsInFile(msg, client) {
 
+    await validateuser(msg, client);
     let channel = msg.broadcast.channel_id,
         message = JSON.parse(msg.data.post).message,
         splittedMessageBySpace = message.split(" ");
 
     let fileName = splittedMessageBySpace.filter(x => x.includes('.'))[0],
         collaboatorList = splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred");
-    permissionList = splittedMessageBySpace
-        .filter(x => ["read", "edit", "comment"].includes(x.toLowerCase()))
-        .map(x => x.toLowerCase());
+        permissionList = splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
+                            .includes(x.toLowerCase()))
+                            .map(x => x.toLowerCase());
 
     if (collaboatorList.length !== permissionList.length)
         return client.postMessage("Invalid request!", channel);
@@ -107,26 +108,42 @@ async function updateCollaboratorsInFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    let file = await drive.getAFile(fileName),
-        usernames = collaboatorList.map(uh => uh.replace('@', ''));
+    let files = google_auth.getFileByFilename(fileName),
+        usernames = collaboatorList.map(uh => uh.replace('@', '')),
+        userIds = usernames.map(username => client.getUserIDByUsername(username));
 
-    if (file === undefined)
+    if (files === undefined || ! files.length())
         return client.postMessage("No such file found!", channel);
 
-    file.sharingUser = collaboatorList;
-    file.permissions = permissionList;
+    let response = google_auth.addCollaborators(getParamsForUpdateFile(permissionList, userIds));
 
-    let res = await drive.updateFile(file),
-        fileLink = res.webViewLink;
-
-    if (fileLink !== undefined) {
-
+    if (response) {
         sendDirecMessageToUsers(usernames, fileName, fileLink, client);
         client.postMessage("Updated collaborators to file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 
     } else {
         return client.postMessage("Error occurred while adding collaborators.!! :(", channel);
     }
+}
+
+function getParamsForUpdateFile(permissionList, userIds) {
+    let params = {};
+
+    params.fileId = files[0].id;
+    params.permissions = [];
+    permissionList.forEach(element, index => {
+        let role, permission = {'type': 'user'};
+
+        if (element === 'comment') role = 'commenter';
+        else if (element === 'read') role = 'writer';
+        else role = 'reader';
+        permission.role = role;
+        permission.emailAddess = userIds[index];
+
+        params.permissions.append(permission);
+    });
+
+    return params;
 }
 
 //function to DM users
