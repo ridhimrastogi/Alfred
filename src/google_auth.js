@@ -131,6 +131,18 @@ function createFile(auth) {
 	});
 }
 
+function getFileByFilename(filename) {
+
+  let drive = google.drive({ version: 'v3', oAuth2Client }), files;
+
+	drive.files.list({
+    q: "name=" + filename,
+    spaces: 'drive',
+  }, (err, res) => {
+		// return undefined if (err)
+		return files;
+  });
+}
 
 function addCollaborators(auth) {
   const drive = google.drive({version: 'v3', auth});
@@ -176,3 +188,4 @@ exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
 exports.addCollaborators = addCollaborators
+exports.getFileByFilename = getFileByFilename
