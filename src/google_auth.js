@@ -1,13 +1,15 @@
 const fs = require('fs');
-const readline = require('readline');
-const {google} = require('googleapis');
-const express = require('express')
+const { google } = require('googleapis');
+const async = require('async');
+const express = require('express');
+
+
 const app = express()
 const port = 3000
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive',
-              'https://www.googleapis.com/auth/drive.file'];
+	'https://www.googleapis.com/auth/drive.file'];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -17,7 +19,6 @@ var usertoken = {};
 var oAuth2Client = null;
 
 app.get('/tokenurl',  (req,res) => {
-  console.log("GAC\n",req.query.code);
   let code = req.query.code;
   let userID = req.query.state;
   console.log("CODE\n",code);
@@ -51,14 +52,6 @@ async function authorize(userID, mattermost_client) {
   client_id, client_secret, redirect_uris[0]);
 
   getAccessToken(oAuth2Client, userID, mattermost_client);
-}
-
-function createtoken(code,userID) {
-  token = oAuth2Client.getToken(code);
-  usertoken[userID] = token;
-  console.log("TOKEN\n",token);
-  console.log("USERTOKEN\n",usertoken);
-  return token;
 }
 
 /**
@@ -107,28 +100,74 @@ async function listFiles(userID,mattermost_client) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 function createFile(auth) {
-  const drive = google.drive({version: 'v3', auth});
-  var fileMetadata = {
-    'name': 'Alfred-Architecture.png'
-  };
-  var media = {
-    mimeType: 'image/png',
-    body: fs.createReadStream('../img/Alfred Architecture.png')
-  };
-  drive.files.create({
-    resource: fileMetadata,
-    media: media,
-    fields: 'id'
-  }, function (err, file) {
+	const drive = google.drive({ version: 'v3', auth });
+	var fileMetadata = {
+		'name': 'Alfred-Architecture.png'
+	};
+	var media = {
+		mimeType: 'image/png',
+		body: fs.createReadStream('../img/Alfred Architecture.png')
+	};
+	drive.files.create({
+		resource: fileMetadata,
+		media: media,
+		fields: 'id'
+	}, function (err, file) {
+		if (err) {
+			// Handle error
+			console.error(err);
+		} else {
+			console.log('File Id: ', file.id);
+		}
+	});
+}
+
+function getFileByFilename(filename) {
+  let drive = google.drive({ version: 'v3', oAuth2Client }),
+      files;
+
+	drive.files.list({
+    q: "name=" + filename,
+    spaces: 'drive',
+  }, (err, res) => {
+		// return undefined if (err)
+		return files;
+  });
+}
+
+function addCollaborators(params) {
+  const drive = google.drive({version: 'v3', oAuth2Client});
+
+  async.eachSeries(params.permissions, function (permission, permissionCallback) {
+    drive.permissions.create({
+      resource: permission,
+      fileId: params.fileId,
+      fields: 'id',
+    }, function (err, res) {
+      if (err) {
+        console.error(err);
+        permissionCallback(err);
+      } else {
+        console.log('Permission ID: ', res)
+        permissionCallback();
+      }
+    });
+  }, function (err) {
+    let status = false;
     if (err) {
-      // Handle error
       console.error(err);
     } else {
-      console.log('File Id: ', file.id);
+      status = true;
+      console.error("Access rights for collaborators updated successfully");
     }
+
+    return status;
   });
- }
+}
+
 
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
+exports.addCollaborators = addCollaborators
+exports.getFileByFilename = getFileByFilename

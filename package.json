@@ -14,6 +14,7 @@
   "author": "Alfred Devs",
   "license": "ISC",
   "dependencies": {
+    "async": "^3.1.0",
     "express": "^4.17.1",
     "extend": "^3.0.2",
     "googleapis": "^39.2.0",
