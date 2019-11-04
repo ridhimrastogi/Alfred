@@ -6,8 +6,8 @@ const port = 3000
 
 const SCOPES = ['https://www.googleapis.com/auth/drive',
 	'https://www.googleapis.com/auth/drive.file',
-	'https://spreadsheets.google.com/feeds',
-	'https://docs.google.com/feeds']
+	'https://www.googleapis.com/auth/drive.appfolder',
+	'https://www.googleapis.com/auth/drive.metadata']
 
 const TOKEN_PATH = '../token.json';
 
@@ -185,10 +185,10 @@ async function _downloadFile(fileId) {
 	params = {
 		auth: oAuth2Client,
 		fileId: fileId,
-		alt: 'media'
+		alt: 'media'	
 	};
 	options = {
-		responseType: 'json'
+		responseType: 'stream'
 	};
 	return drive.files.get(params, options);
 }

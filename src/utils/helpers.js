@@ -31,11 +31,14 @@ function getMIMEType(fileExtension) {
             type = "application/pdf";
             break;
         
-        case "jpeg":
+        case "jpeg":    
+            type = "image/jpeg";
+            break;
+        
+        case "jpg":
             type = "image/jpeg";
             break;
     }
-
     return type;
 }
 
