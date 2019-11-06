@@ -9,20 +9,20 @@ async function listFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
-    let files = await google_auth.listFiles(userID,client);
-    if(files == null)
-        client.postMessage("Please try again after authentication");
-    else if(typeof files === "undefined" || files.length == 0)
+    let result = await google_auth.listFiles(userID,client);
+    if(result == null)
+        return;
+    if(typeof result === "undefined" || result.data.files.length == 0)
         client.postMessage('No files found.');
     else {
-        client.postMessage('Files:',channel);
-        files.map((file) => {
-            client.postMessage(`${file.name} (${file.id})`,channel);
-        });
+        console.log(result.data.files);
+        let temp = [];
+        result.data.files.map(file => temp.push((file.name)));
+        client.postMessage(temp.join('\r\n'),channel);
     }
 }
 
-//stub for creating a file 
+//stub for creating a file
 async function createFile(msg, client) {
 
     let channel = msg.broadcast.channel_id,
@@ -180,9 +180,6 @@ async function fetchCommentsInFile(msg, client) {
     console.log(comment.data.comments);
     comment.data.comments.map(x => client.postMessage(x.author.displayName +
     ": " + x.content,channel));
-
-    //sendDirecMessageToUsers(usernames, fileName, fileLink, client);
-    //client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 }
 
 //function to DM users
