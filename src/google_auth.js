@@ -17,6 +17,8 @@ const SCOPES = ['https://www.googleapis.com/auth/drive',
 
 var usertoken = {};
 var oAuth2Client = null;
+var drive = google.drive('v3');
+
 
 app.get('/tokenurl',  (req,res) => {
   let code = req.query.code;
@@ -75,7 +77,7 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
  * Lists the names and IDs of up to 10 files.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-async function listFiles(userID,mattermost_client) {
+async function listFiles(userID, mattermost_client) {
   if(typeof usertoken[userID] === "undefined" || usertoken[userID] == null)
   {
       authorize(userID,mattermost_client);
@@ -83,16 +85,12 @@ async function listFiles(userID,mattermost_client) {
   }
   oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
   console.log("oAuth2Client\n",oAuth2Client);
-  let drives = google.drive({version: 'v3', oAuth2Client});
-  await drives.files.list({
-    pageSize: 100,
-    fields: 'nextPageToken, files(id, name)',
-  }, (err, res) => {
-    if (err) return console.log('The API returned an error: ' + err);
-    let files = res.data.files;
-    console.log(files);
-    return files;
-  });
+  options = {
+		auth: oAuth2Client,
+		pageSize: 100,
+		fields: 'nextPageToken, files(id, name)',
+	};
+	return drive.files.list(options);
 }
 
 /**
@@ -167,9 +165,25 @@ function addCollaborators(params) {
   });
 }
 
+function fetchcomments(fileID, userID, mattermost_client){
+  if(typeof usertoken[userID] === "undefined" || usertoken[userID] == null)
+  {
+      authorize(userID,mattermost_client);
+      return null;
+  }
+  oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+  console.log("oAuth2Client\n",oAuth2Client);
+ 	options = {
+		auth: oAuth2Client,
+		fileId: fileID,
+		fields: '*'
+	};
+	return drive.comments.list(options)
+}
 
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
 exports.addCollaborators = addCollaborators
 exports.getFileByFilename = getFileByFilename
+exports.fetchcomments = fetchcomments

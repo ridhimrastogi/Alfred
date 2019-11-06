@@ -2,6 +2,7 @@ const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
+const {google} = require('googleapis');
 
 //stub for listing drive files
 async function listFiles(msg, client) {
@@ -148,6 +149,42 @@ function getParamsForUpdateFile(permissionList, userIds) {
     return params;
 }
 
+async function fetchCommentsInFile(msg, client) {
+
+    let channel = msg.broadcast.channel_id,
+        post = JSON.parse(msg.data.post),
+        fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+
+    // TODO: Common stub. Needs to be extracted.
+    if (!helper.checkValidFile(fileName))
+        return client.postMessage("Please Enter a valid file name", channel);
+
+    let fileExtension = fileName.split(".")[1];
+
+    if (!helper.checkValidFileExtension(fileExtension))
+        return client.postMessage("Please enter a supported file extension.\n" +
+            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
+
+    if (fileExtension == "doc")
+        fileName = fileName.split(".")[0];
+
+    let sender = msg.data.sender_name.split('@')[1];
+    let userID = client.getUserIDByUsername(sender);
+
+    let result = await google_auth.listFiles(userID,client);
+    let fileobj = result.data.files;
+
+    let file = fileobj.filter(file => file.name == fileName)[0];
+
+    let comment = await google_auth.fetchcomments(file.id, userID, client);
+    console.log(comment.data.comments);
+    comment.data.comments.map(x => client.postMessage(x.author.displayName +
+    ": " + x.content,channel));
+
+    //sendDirecMessageToUsers(usernames, fileName, fileLink, client);
+    //client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
+}
+
 //function to DM users
 function sendDirecMessageToUsers(usernames, fileName, fileLink, client) {
     userIDS = usernames.map(username => client.getUserIDByUsername(username));
@@ -164,5 +201,6 @@ module.exports = {
     createFile,
     downloadFile,
     updateCollaboratorsInFile,
-    sendDirecMessageToUsers
+    sendDirecMessageToUsers,
+    fetchCommentsInFile
 };
