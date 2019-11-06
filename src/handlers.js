@@ -171,15 +171,32 @@ async function fetchCommentsInFile(msg, client) {
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
 
-    let result = await google_auth.listFiles(userID,client);
-    let fileobj = result.data.files;
+    let result1 = await google_auth.listFiles(userID,client);
+    let fileobj = result1.data.files;
 
     let file = fileobj.filter(file => file.name == fileName)[0];
 
-    let comment = await google_auth.fetchcomments(file.id, userID, client);
-    console.log(comment.data.comments);
-    comment.data.comments.map(x => client.postMessage(x.author.displayName +
-    ": " + x.content,channel));
+    let result2 = await google_auth.fetchcomments(file.id, userID, client);
+
+    if(result2.data.comments.length == 0){
+        client.postMessage("No comments on the file yet.",channel);
+    }
+    else {
+        let temp = [];
+        let comments= [];
+        console.log(result2.data.comments);
+        if(result2.data.comments.length > 5){
+            comments = result2.data.comments.slice(0,5);
+            client.postMessage(`${result2.data.comments.length} comments on the file ${file.name}`,channel);
+        }
+        else{
+            comments = result2.data.comments;
+        }
+        comments.map(x => temp.push(x.author.displayName +
+            ": " + x.content));
+        client.postMessage(temp.join('\r\n'),channel);
+    }
+
 }
 
 //function to DM users
