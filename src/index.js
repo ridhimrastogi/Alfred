@@ -50,6 +50,9 @@ async function parseMessage(msg) {
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
         handler.updateCollaboratorsInFile(msg, client);
     }
+    else if (hears(msg, "comment") || hears(msg, "comments")) {
+        handler.fetchCommentsInFile(msg, client);
+    }
 }
 
 (async () => {
