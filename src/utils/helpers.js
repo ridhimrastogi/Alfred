@@ -49,7 +49,7 @@ function getFileName(msg){
         fileName = msg.message.match(/"(.*?)"/)[1];
    }
    catch {
-       return fileName;
+       return null;
     }
 
    if (!checkValidFile(fileName))
