@@ -15,6 +15,8 @@ let drive = google.drive('v3');
 var oAuth2Client = null;
 var token = null;
 
+var tokenStore = new Map();
+
 // Load client secrets from a local file.
 fs.readFile('../credentials.json', (err, content) => {
 	if (err) return console.log('Error loading client secret file:', err);
@@ -132,22 +134,22 @@ exports.listFiles = listFiles;
 
 // -------------------------------------------------------------------
 
-const _checkForToken = () => {
+const _checkForToken = (userId) => {
 	try {
-		token = fs.readFileSync(TOKEN_PATH);
-
+		if (tokenStore.has(userId)) {
+			return true;
+		}
 	}
 	catch (error) {
 		console.log("File not found: token.json");
 		return false;
 	}
-	return true;
+	return false;
 };
 
-const _authorize = () => {
+const _authorize = (userId) => {
 	try {
-		oAuth2Client.setCredentials(JSON.parse(token));
-		console.log(oAuth2Client);
+		oAuth2Client.setCredentials(tokenStore.get(userId));
 	}
 	catch (error) {
 		console.log(`Failed to authorize user, error: ${error}`);
@@ -156,21 +158,20 @@ const _authorize = () => {
 	return true;
 };
 
-const _getAuthUrl = () => oAuth2Client.generateAuthUrl({
+const _getAuthUrl = (userId) => oAuth2Client.generateAuthUrl({
 	access_type: 'offline',
 	scope: SCOPES,
-	prompt: 'consent'
+	prompt: 'consent',
+	state: userId
 });
 
 const _getTokenFromCode = (req, res) => {
 	console.log(`Code: ${req.query.code}`);
 	code = req.query.code;
+	userId = req.query.state;
 	oAuth2Client.getToken(code, (err, token) => {
 		if (err) return console.log(`Error retrieving access token: ${err}`);
-		fs.writeFile(TOKEN_PATH, JSON.stringify(token), (err) => {
-			if (err) console.error(err);
-			console.log('Token created');
-		});
+		console.log('Token created');
 		res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
 	});
 }

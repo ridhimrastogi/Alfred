@@ -163,13 +163,13 @@ function _validateUser(user, client, msg_channel) {
     let user_channel = client.getUserDirectMessageChannel(userID).id;
     console.log(`User Channel: ${user_channel}`);
 
-    if (!google_auth._checkForToken()) {
-        direct_msg = `Authorize this app by visiting this url: ${google_auth._getAuthUrl()} and try again!`;
+    if (!google_auth._checkForToken(userID)) {
+        direct_msg = `Authorize this app by visiting this url: ${google_auth._getAuthUrl(userID)} and try again!`;
         channel_notification = "Authorize this app! Please check you DM for more details"
         client.postMessage(direct_msg, user_channel);
         client.postMessage(channel_notification, msg_channel);
         return false;
-    } else if (google_auth._authorize()) {
+    } else if (google_auth._authorize(userID)) {
         console.log("User Validated");
         return true;
     } else {
@@ -187,7 +187,6 @@ async function _listFiles(msg, client) {
     google_auth._listFiles()
         .then(result => extractFileInfo(result.data.files))
         .then(files => Array.from(files.keys()))
-        .then(files => files.filter((file) => file.startsWith("00atf")))
         .then(files => {
             if (files.length) {
                 client.postMessage(files.join('\n'), channel)
