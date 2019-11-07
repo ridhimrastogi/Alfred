@@ -1,7 +1,8 @@
-const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
+
+let client;
 
 //stub for listing drive files
 async function listFiles(msg, client) {
@@ -48,7 +49,7 @@ async function createFile(msg, client) {
     let response = await google_auth.createFile(userID, fileParams, client),
         fileLink = response.data.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
-    
+
     let collaboratorEmails = usernames.map(x => client.getUserEmailByUsername(x))
     console.log(collaboratorEmails)
 
@@ -97,7 +98,7 @@ async function downloadFile(msg, client) {
     Sample query: @alfred add @ridhim @shubham as collaborators with read and edit access in file.doc
     Sample query: @alfred change/update @ridhim access to read access in file.doc
 */
-async function updateCollaboratorsInFile(msg, client) {
+async function addCollaboratorsInFile(msg, client) {
 
     let channel = msg.broadcast.channel_id,
         sender = msg.data.sender_name.split('@')[1],
@@ -122,18 +123,21 @@ async function updateCollaboratorsInFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    let usernames = collaboatorList.map(uh => uh.replace('@', '')),
-        userIds = usernames.map(username => client.getUserIDByUsername(username));
-
+    fileName = fileName.split(".")[0];
+    let usernames = collaboatorList.map(uh => uh.replace('@', ''));
+        // userIds = usernames.map(username => client.getUserIDByUsername(username));
     // let files = google_auth.getFileByFilename(fileName);
     let res = await google_auth.listFiles(senderUserID,client);
         files = res.data.files;
 
-    if (files === undefined)
+    if (files === undefined || !files.length)
         return client.postMessage("No such file found!", channel);
 
     let file = files.filter(file => file.name == fileName)[0],
-        response = google_auth.addCollaborators(senderUserID, getParamsForUpdateFile(file, permissionList, usernames));
+        fileLink = file.webViewLink;
+
+    let response = await google_auth.addCollaborators(senderUserID,
+            getParamsForUpdateFile(file, permissionList, usernames, client), client);
 
     if (response) {
         sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -144,24 +148,24 @@ async function updateCollaboratorsInFile(msg, client) {
     }
 }
 
-function getParamsForUpdateFile(file, permissionList, usernames) {
+function getParamsForUpdateFile(file, permissionList, usernames, client) {
     let params = {};
 
     params.fileId = file.id;
-    params.permissions = [];
-    permissionList.forEach(element, index => {
+    permissions = [];
+    permissionList.forEach(function(element, index) {
         let role, permission = { 'type': 'user' };
 
         if (element === 'comment') role = 'commenter';
         else if (element === 'edit') role = 'writer';
         else role = 'reader';
         permission.role = role;
-        permission.emailAddess = client.getUserEmailByUsername(usernames[index]);
+        permission.emailAddress = client.getUserEmailByUsername(usernames[index]);
 
-        params.permissions.append(permission);
+        permissions.push(permission);
     });
 
-    console.log("PARAMS::" + params);
+    params.permissions = permissions;
 
     return params;
 }
@@ -231,7 +235,7 @@ module.exports = {
     listFiles,
     createFile,
     downloadFile,
-    updateCollaboratorsInFile,
+    addCollaboratorsInFile,
     sendDirecMessageToUsers,
     fetchCommentsInFile
 };

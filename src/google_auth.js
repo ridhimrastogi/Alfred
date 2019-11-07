@@ -87,7 +87,7 @@ async function listFiles(userID, mattermost_client) {
 	options = {
 		auth: oAuth2Client,
 		pageSize: 100,
-		fields: 'nextPageToken, files(id, name)',
+		fields: '*',
 	};
 	return drive.files.list(options);
 }
@@ -133,39 +133,32 @@ function getFileByFilename(userID, filename) {
   });
 }
 
-function addCollaborators(userID, params) {
-  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
-		authorize(userID, client);
-		return null;
-  }
+async function addCollaborators(userID, params, client) {
+	let arr = [];
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+			authorize(userID, client);
+			return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
-  oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-
-	async.eachSeries(params.permissions, function (permission, permissionCallback) {
-		drive.permissions.create({
+	params.permissions.forEach(permission => {
+		arr.push(drive.permissions.create({
+			auth: oAuth2Client,
 			resource: permission,
 			fileId: params.fileId,
-			fields: '*',
+			fields: 'id',
 		}, function (err, res) {
 			if (err) {
-				console.error(err);
-				permissionCallback(err);
+				console.log(err);
+				// permissionCallback(err);
 			} else {
 				console.log('Permission ID: ', res)
-				permissionCallback();
+				// permissionCallback();
 			}
-		});
-	}, function (err) {
-		let status = false;
-		if (err) {
-			console.error(err);
-		} else {
-			status = true;
-			console.error("Access rights for collaborators updated successfully");
-		}
-
-		return status;
+		}))
 	});
+
+	return arr;
 }
 
 function fetchcomments(fileID, userID, mattermost_client) {
