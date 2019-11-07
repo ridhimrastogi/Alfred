@@ -28,13 +28,12 @@ async function createFile(msg, client) {
 
     let channel = msg.broadcast.channel_id,
         post = JSON.parse(msg.data.post),
-        fileName = post.message.split(" ").filter(x => x.includes('.'))[0],
         sender = msg.data.sender_name.split('@')[1],
-        userID = client.getUserIDByUsername(sender)
+        userID = client.getUserIDByUsername(sender),
+        fileName = helper.getFileName(post);
 
-    // TODO: Common stub. Needs to be extracted.
-    if (!helper.checkValidFile(fileName))
-        return client.postMessage("Please Enter a valid file name", channel);
+    if(fileName == null)
+        return client.postMessage("Please enter a valid file name.",channel);
 
     let fileExtension = fileName.split(".")[1];
 
@@ -63,9 +62,9 @@ async function createFile(msg, client) {
     let response = await google_auth.createFile(userID, fileParams, client),
         fileLink = response.data.webViewLink;
 
-    // if(usernames.length > 1){
-    //     addCollaboratorsInFile(msg, client);
-    // }
+    if(usernames.length > 1){
+        addCollaboratorsInFile(msg, client);
+    }
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 }
@@ -110,9 +109,10 @@ async function addCollaboratorsInFile(msg, client) {
     let channel = msg.broadcast.channel_id,
         sender = msg.data.sender_name.split('@')[1],
         senderUserID = client.getUserIDByUsername(sender),
-        splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" ");
+        splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" "),
+        post = JSON.parse(msg.data.post)
 
-    let fileName = splittedMessageBySpace.filter(x => x.includes('.'))[0],
+    let fileName = helper.getFileName(post),
         collaboatorList = splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred");
         permissionList = splittedMessageBySpace
                         .filter(x => ["read", "edit", "comment"]
@@ -123,14 +123,14 @@ async function addCollaboratorsInFile(msg, client) {
         return client.postMessage("Invalid request!", channel);
 
     // TODO: Common stub. Needs to be extracted.
-    if (!helper.checkValidFile(fileName))
-        return client.postMessage("Please Enter a valid file name", channel);
+    // if (!helper.checkValidFile(fileName))
+    //     return client.postMessage("Please Enter a valid file name", channel);
 
     if (!helper.checkValidFileExtension(fileName.split(".")[1]))
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    fileName = fileName.split(".")[0];
+    //fileName = fileName.split(".")[0];
     let usernames = collaboatorList.map(uh => uh.replace('@', ''));
         // userIds = usernames.map(username => client.getUserIDByUsername(username));
     // let files = google_auth.getFileByFilename(fileName);
