@@ -20,19 +20,19 @@ var oAuth2Client = null;
 var drive = google.drive('v3');
 
 
-app.get('/tokenurl',  (req,res) => {
-  let code = req.query.code;
-  let userID = req.query.state;
-  console.log("CODE\n",code);
-  console.log("STATE\n",userID);
-  res.redirect(	'https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
-  (async() => {
-    let token = await oAuth2Client.getToken(code);
-    usertoken[userID] = JSON.stringify(token.res.data);
-    console.log("TOKEN\n",token);
-    console.log("USERTOKEN\n",usertoken);
-    return ;
-  }) ()
+app.get('/tokenurl', (req, res) => {
+	let code = req.query.code;
+	let userID = req.query.state;
+	console.log("CODE\n", code);
+	console.log("STATE\n", userID);
+	res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
+	(async () => {
+		let token = await oAuth2Client.getToken(code);
+		usertoken[userID] = JSON.stringify(token.res.data);
+		console.log("TOKEN\n", token);
+		console.log("USERTOKEN\n", usertoken);
+		return;
+	})()
 });
 
 app.listen(port, () => console.log(`Example app listening on port ${port}!`))
@@ -45,15 +45,15 @@ app.listen(port, () => console.log(`Example app listening on port ${port}!`))
  */
 
 async function authorize(userID, mattermost_client) {
-  //Read Client Secret, Client Id, Redirect Urls from credentials.json stored locally
-  let content = fs.readFileSync('../credentials.json', 'utf8');
-  let credentials = JSON.parse(content);
-  const {client_secret, client_id, redirect_uris} = credentials.web;
+	//Read Client Secret, Client Id, Redirect Urls from credentials.json stored locally
+	let content = fs.readFileSync('../credentials.json', 'utf8');
+	let credentials = JSON.parse(content);
+	const { client_secret, client_id, redirect_uris } = credentials.web;
 
-  oAuth2Client = new google.auth.OAuth2(
-  client_id, client_secret, redirect_uris[0]);
+	oAuth2Client = new google.auth.OAuth2(
+		client_id, client_secret, redirect_uris[0]);
 
-  getAccessToken(oAuth2Client, userID, mattermost_client);
+	getAccessToken(oAuth2Client, userID, mattermost_client);
 }
 
 /**
@@ -64,13 +64,13 @@ async function authorize(userID, mattermost_client) {
  */
 
 async function getAccessToken(oAuth2Client, userID, mattermost_client) {
-  const authUrl = oAuth2Client.generateAuthUrl({
-    access_type: 'offline',
-    scope: SCOPES,
-    state: userID
-  });
-  let user_channel  = mattermost_client.getUserDirectMessageChannel(userID).id;
-  mattermost_client.postMessage(`Please Authorize this app first by visiting this url: ${authUrl}`, user_channel);
+	const authUrl = oAuth2Client.generateAuthUrl({
+		access_type: 'offline',
+		scope: SCOPES,
+		state: userID
+	});
+	let user_channel = mattermost_client.getUserDirectMessageChannel(userID).id;
+	mattermost_client.postMessage(`Please Authorize this app first by visiting this url: ${authUrl}`, user_channel);
 }
 
 /**
@@ -78,14 +78,13 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
 async function listFiles(userID, mattermost_client) {
-  if(typeof usertoken[userID] === "undefined" || usertoken[userID] == null)
-  {
-      authorize(userID,mattermost_client);
-      return null;
-  }
-  oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-  console.log("oAuth2Client\n",oAuth2Client);
-  options = {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+	console.log("oAuth2Client\n", oAuth2Client);
+	options = {
 		auth: oAuth2Client,
 		pageSize: 100,
 		fields: 'nextPageToken, files(id, name)',
@@ -97,8 +96,14 @@ async function listFiles(userID, mattermost_client) {
  * Creates a file using meta data.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
-function createFile(fileParams) {
-	const drive = google.drive({ version: 'v3', oAuth2Client });
+async function createFile(userID, fileParams, mattermost_client) {
+
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+	
 
 	var fileMetadata = {
 		'name': fileParams.name
@@ -108,72 +113,65 @@ function createFile(fileParams) {
 		mimeType: fileParams.mimeType
 	};
 
-	drive.files.create({
-		resource: fileMetadata,
-		media: media,
-		fields: 'id'
-	}, function (err) {
-		if (err) {
-			// Handle error
-			console.error(err);
-		} else {
-			console.log('File has been successfully created !');
-		}
-	});
+	return drive.files.create({
+			auth: oAuth2Client,
+			resource: fileMetadata,
+			media: media,
+			fields: '*'
+		})
 }
 
 function getFileByFilename(filename) {
-  let drive = google.drive({ version: 'v3', oAuth2Client }),
-      files;
+	let drive = google.drive({ version: 'v3', oAuth2Client }),
+		files;
 
 	drive.files.list({
-    q: "name=" + filename,
-    spaces: 'drive',
-  }, (err, res) => {
+		q: "name=" + filename,
+		spaces: 'drive',
+	}, (err, res) => {
 		// return undefined if (err)
 		return files;
-  });
+	});
 }
 
 function addCollaborators(params) {
-  const drive = google.drive({version: 'v3', oAuth2Client});
+	const drive = google.drive({ version: 'v3', oAuth2Client });
 
-  async.eachSeries(params.permissions, function (permission, permissionCallback) {
-    drive.permissions.create({
-      resource: permission,
-      fileId: params.fileId,
-      fields: 'id',
-    }, function (err, res) {
-      if (err) {
-        console.error(err);
-        permissionCallback(err);
-      } else {
-        console.log('Permission ID: ', res)
-        permissionCallback();
-      }
-    });
-  }, function (err) {
-    let status = false;
-    if (err) {
-      console.error(err);
-    } else {
-      status = true;
-      console.error("Access rights for collaborators updated successfully");
-    }
+	async.eachSeries(params.permissions, function (permission, permissionCallback) {
+		drive.permissions.create({
+			resource: permission,
+			fileId: params.fileId,
+			fields: 'id',
+		}, function (err, res) {
+			if (err) {
+				console.error(err);
+				permissionCallback(err);
+			} else {
+				console.log('Permission ID: ', res)
+				permissionCallback();
+			}
+		});
+	}, function (err) {
+		let status = false;
+		if (err) {
+			console.error(err);
+		} else {
+			status = true;
+			console.error("Access rights for collaborators updated successfully");
+		}
 
-    return status;
-  });
+		return status;
+	});
 }
 
-function fetchcomments(fileID, userID, mattermost_client){
-  if(typeof usertoken[userID] === "undefined" || usertoken[userID] == null)
-  {
-      authorize(userID,mattermost_client);
-      return null;
-  }
-  oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-  console.log("oAuth2Client\n",oAuth2Client);
- 	options = {
+function fetchcomments(fileID, userID, mattermost_client) {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+	console.log("oAuth2Client\n", oAuth2Client);
+	options = {
 		auth: oAuth2Client,
 		fileId: fileID,
 		fields: '*'
@@ -184,6 +182,7 @@ function fetchcomments(fileID, userID, mattermost_client){
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
+exports.createFile = createFile;
 exports.addCollaborators = addCollaborators
 exports.getFileByFilename = getFileByFilename
 exports.fetchcomments = fetchcomments
