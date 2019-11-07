@@ -2,11 +2,11 @@ const Client = require('./mattermost-client/client');
 const handler = require('./handlers.js');
 //const scopes = require('../test/utils/scopes.js');
 
-
 let host = "mattermost-csc510-9.herokuapp.com",
     group = "alfred",
     bot_name = "@alfred",
     client = new Client(host, group, {});
+    //handler.client = client;
 
 async function main() {
 
@@ -48,7 +48,7 @@ async function parseMessage(msg) {
         handler.downloadFile(msg, client);
     }
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
-        handler.updateCollaboratorsInFile(msg, client);
+        handler.addCollaboratorsInFile(msg, client);
     }
     else if (hears(msg, "comment") || hears(msg, "comments")) {
         handler.fetchCommentsInFile(msg, client);

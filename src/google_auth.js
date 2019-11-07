@@ -87,7 +87,7 @@ async function listFiles(userID, mattermost_client) {
 	options = {
 		auth: oAuth2Client,
 		pageSize: 100,
-		fields: 'nextPageToken, files(id, name)',
+		fields: '*',
 	};
 	return drive.files.list(options);
 }
@@ -103,7 +103,7 @@ async function createFile(userID, fileParams, mattermost_client) {
 		return null;
 	}
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-	
+
 
 	var fileMetadata = {
 		'name': fileParams.name,
@@ -117,47 +117,48 @@ async function createFile(userID, fileParams, mattermost_client) {
 		})
 }
 
-function getFileByFilename(filename) {
-	let drive = google.drive({ version: 'v3', oAuth2Client }),
-		files;
+function getFileByFilename(userID, filename) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, client);
+		return null;
+  }
 
-	drive.files.list({
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	res = drive.files.list({
+    auth: oAuth2Client,
 		q: "name=" + filename,
-		spaces: 'drive',
-	}, (err, res) => {
-		// return undefined if (err)
-		return files;
-	});
+    spaces: 'drive',
+    fields: '*',
+  });
 }
 
-function addCollaborators(params) {
-	const drive = google.drive({ version: 'v3', oAuth2Client });
+async function addCollaborators(userID, params, client) {
+	let arr = [];
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+			authorize(userID, client);
+			return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
-	async.eachSeries(params.permissions, function (permission, permissionCallback) {
-		drive.permissions.create({
+	params.permissions.forEach(permission => {
+		arr.push(drive.permissions.create({
+			auth: oAuth2Client,
 			resource: permission,
 			fileId: params.fileId,
 			fields: 'id',
 		}, function (err, res) {
 			if (err) {
-				console.error(err);
-				permissionCallback(err);
+				console.log(err);
+				// permissionCallback(err);
 			} else {
 				console.log('Permission ID: ', res)
-				permissionCallback();
+				// permissionCallback();
 			}
-		});
-	}, function (err) {
-		let status = false;
-		if (err) {
-			console.error(err);
-		} else {
-			status = true;
-			console.error("Access rights for collaborators updated successfully");
-		}
-
-		return status;
+		}))
 	});
+
+	return arr;
 }
 
 function fetchcomments(fileID, userID, mattermost_client) {

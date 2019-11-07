@@ -1,8 +1,8 @@
-const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
-const { google } = require('googleapis');
+
+let client;
 
 //stub for listing drive files
 async function listFiles(msg, client) {
@@ -102,18 +102,19 @@ async function downloadFile(msg, client) {
     Sample query: @alfred add @ridhim @shubham as collaborators with read and edit access in file.doc
     Sample query: @alfred change/update @ridhim access to read access in file.doc
 */
-async function updateCollaboratorsInFile(msg, client) {
+async function addCollaboratorsInFile(msg, client) {
 
-    await validateuser(msg, client);
     let channel = msg.broadcast.channel_id,
-        message = JSON.parse(msg.data.post).message,
-        splittedMessageBySpace = message.split(" ");
+        sender = msg.data.sender_name.split('@')[1],
+        senderUserID = client.getUserIDByUsername(sender),
+        splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" ");
 
     let fileName = splittedMessageBySpace.filter(x => x.includes('.'))[0],
         collaboatorList = splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred");
-    permissionList = splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
-        .includes(x.toLowerCase()))
-        .map(x => x.toLowerCase());
+        permissionList = splittedMessageBySpace
+                        .filter(x => ["read", "edit", "comment"]
+                        .includes(x.toLowerCase()))
+                        .map(x => x.toLowerCase());
 
     if (collaboatorList.length !== permissionList.length)
         return client.postMessage("Invalid request!", channel);
@@ -126,14 +127,21 @@ async function updateCollaboratorsInFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    let files = google_auth.getFileByFilename(fileName),
-        usernames = collaboatorList.map(uh => uh.replace('@', '')),
-        userIds = usernames.map(username => client.getUserIDByUsername(username));
+    fileName = fileName.split(".")[0];
+    let usernames = collaboatorList.map(uh => uh.replace('@', ''));
+        // userIds = usernames.map(username => client.getUserIDByUsername(username));
+    // let files = google_auth.getFileByFilename(fileName);
+    let res = await google_auth.listFiles(senderUserID,client);
+        files = res.data.files;
 
-    if (files === undefined || !files.length())
+    if (files === undefined || !files.length)
         return client.postMessage("No such file found!", channel);
 
-    let response = google_auth.addCollaborators(getParamsForUpdateFile(permissionList, userIds));
+    let file = files.filter(file => file.name == fileName)[0],
+        fileLink = file.webViewLink;
+
+    let response = await google_auth.addCollaborators(senderUserID,
+            getParamsForUpdateFile(file, permissionList, usernames, client), client);
 
     if (response) {
         sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -144,22 +152,24 @@ async function updateCollaboratorsInFile(msg, client) {
     }
 }
 
-function getParamsForUpdateFile(permissionList, userIds) {
+function getParamsForUpdateFile(file, permissionList, usernames, client) {
     let params = {};
 
-    params.fileId = files[0].id;
-    params.permissions = [];
-    permissionList.forEach(element, index => {
+    params.fileId = file.id;
+    permissions = [];
+    permissionList.forEach(function(element, index) {
         let role, permission = { 'type': 'user' };
 
         if (element === 'comment') role = 'commenter';
-        else if (element === 'read') role = 'writer';
+        else if (element === 'edit') role = 'writer';
         else role = 'reader';
         permission.role = role;
-        permission.emailAddess = userIds[index];
+        permission.emailAddress = client.getUserEmailByUsername(usernames[index]);
 
-        params.permissions.append(permission);
+        permissions.push(permission);
     });
+
+    params.permissions = permissions;
 
     return params;
 }
@@ -241,7 +251,7 @@ module.exports = {
     listFiles,
     createFile,
     downloadFile,
-    updateCollaboratorsInFile,
+    addCollaboratorsInFile,
     sendDirecMessageToUsers,
     fetchCommentsInFile
 };
