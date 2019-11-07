@@ -188,7 +188,7 @@ async function _listFiles(userID,mattermost_client) {
 
 	params = {
 		auth: oAuth2Client,
-		pageSize: 100,
+		pageSize: 1000,
 		fields: 'nextPageToken, files(id, name)',
 	};
 	return drive.files.list(params);
@@ -198,7 +198,7 @@ async function _downloadFile(fileId, userID, mattermost_client) {
   if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, mattermost_client);
 		return null;
-	}
+  }
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
 	params = {

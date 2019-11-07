@@ -1,9 +1,9 @@
+const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
 const util = require('util');
-const stream = require('stream')
-
+const stream = require('stream');
 
 //stub for listing drive files
 async function listFiles(msg, client) {
@@ -185,7 +185,7 @@ async function fetchCommentsInFile(msg, client) {
     let fileName = helper.getFileName(post);
 
     if(fileName == null)
-        client.postMessage("Please enter a valid file name.",channel);
+       return client.postMessage("Please enter a valid file name.",channel);
 
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
@@ -248,14 +248,9 @@ async function _listFiles(msg, client) {
     let user = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(user);
 
-    console.log("1",userID);
-   // if (!_validateUser(user, client, channel)) return;
+    // if (!_validateUser(user, client, channel)) return;
 
     google_auth._listFiles(userID, client)
-        .then(result => {
-            console.log("2",result);
-            return result;
-        })
         .then(result => extractFileInfo(result.data.files))
         .then(files => Array.from(files.keys()))
         //.then(files => files.filter((file) => file.startsWith("00atf")))
