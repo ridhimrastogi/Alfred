@@ -4,27 +4,27 @@ function getMIMEType(fileExtension) {
 
     switch (fileExtension) {
         case "doc":
-            type = "application/msword";
+            type = "application/vnd.google-apps.document";
             break;
 
         case "docx":
-            type = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            type = "application/vnd.google-apps.document";
             break;
 
         case "ppt":
-            type = "application/vnd.ms-powerpoint";
+            type = "application/vnd.google-apps.presentation";
             break;
 
         case "pptx":
-            type = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            type = "application/vnd.google-apps.presentation";
             break;
 
         case "xls":
-            type = "application/vnd.ms-excel";
+            type = "application/vnd.google-apps.spreadsheet";
             break;
 
         case "xlsx":
-            type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            type = "application/vnd.google-apps.spreadsheet";
             break;
 
         case "pdf":

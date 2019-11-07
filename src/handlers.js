@@ -2,23 +2,22 @@ const fs = require('fs');
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
-const {google} = require('googleapis');
 
 //stub for listing drive files
 async function listFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
-    let result = await google_auth.listFiles(userID,client);
-    if(result == null)
+    let result = await google_auth.listFiles(userID, client);
+    if (result == null)
         return;
-    if(typeof result === "undefined" || result.data.files.length == 0)
+    if (typeof result === "undefined" || result.data.files.length == 0)
         client.postMessage('No files found.');
     else {
         console.log(result.data.files);
         let temp = [];
         result.data.files.map(file => temp.push((file.name)));
-        client.postMessage(temp.join('\r\n'),channel);
+        client.postMessage(temp.join('\r\n'), channel);
     }
 }
 
@@ -27,7 +26,9 @@ async function createFile(msg, client) {
 
     let channel = msg.broadcast.channel_id,
         post = JSON.parse(msg.data.post),
-        fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+        fileName = post.message.split(" ").filter(x => x.includes('.'))[0],
+        sender = msg.data.sender_name.split('@')[1],
+        userID = client.getUserIDByUsername(sender)
 
     // TODO: Common stub. Needs to be extracted.
     if (!helper.checkValidFile(fileName))
@@ -43,9 +44,9 @@ async function createFile(msg, client) {
         "name": fileName,
         "mimeType": helper.getMIMEType(fileExtension)
     }
-
-    let res = await google_auth.createFile(fileParams),
-        fileLink = res.webViewLink,
+    console.log("File params are: " + JSON.stringify(fileParams))
+    let result = await google_auth.createFile(userID, fileParams, client),
+        fileLink = result.data.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
 
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -89,16 +90,17 @@ async function downloadFile(msg, client) {
 */
 async function updateCollaboratorsInFile(msg, client) {
 
-    await validateuser(msg, client);
     let channel = msg.broadcast.channel_id,
-        message = JSON.parse(msg.data.post).message,
-        splittedMessageBySpace = message.split(" ");
+        sender = msg.data.sender_name.split('@')[1],
+        senderUserID = client.getUserIDByUsername(sender),
+        splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" ");
 
     let fileName = splittedMessageBySpace.filter(x => x.includes('.'))[0],
         collaboatorList = splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred");
-        permissionList = splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
-                            .includes(x.toLowerCase()))
-                            .map(x => x.toLowerCase());
+        permissionList = splittedMessageBySpace
+                        .filter(x => ["read", "edit", "comment"]
+                        .includes(x.toLowerCase()))
+                        .map(x => x.toLowerCase());
 
     if (collaboatorList.length !== permissionList.length)
         return client.postMessage("Invalid request!", channel);
@@ -111,14 +113,18 @@ async function updateCollaboratorsInFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    let files = google_auth.getFileByFilename(fileName),
-        usernames = collaboatorList.map(uh => uh.replace('@', '')),
+    let usernames = collaboatorList.map(uh => uh.replace('@', '')),
         userIds = usernames.map(username => client.getUserIDByUsername(username));
 
-    if (files === undefined || ! files.length())
+    // let files = google_auth.getFileByFilename(fileName);
+    let res = await google_auth.listFiles(userID,client);
+        files = res.data.files;
+
+    if (files === undefined || !files.length())
         return client.postMessage("No such file found!", channel);
 
-    let response = google_auth.addCollaborators(getParamsForUpdateFile(permissionList, userIds));
+    let file = files.filter(file => file.name == fileName)[0],
+        response = google_auth.addCollaborators(senderUserID, getParamsForUpdateFile(file, permissionList, userIds));
 
     if (response) {
         sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -129,16 +135,16 @@ async function updateCollaboratorsInFile(msg, client) {
     }
 }
 
-function getParamsForUpdateFile(permissionList, userIds) {
+function getParamsForUpdateFile(file, permissionList, userIds) {
     let params = {};
 
-    params.fileId = files[0].id;
+    params.fileId = file.id;
     params.permissions = [];
     permissionList.forEach(element, index => {
-        let role, permission = {'type': 'user'};
+        let role, permission = { 'type': 'user' };
 
         if (element === 'comment') role = 'commenter';
-        else if (element === 'read') role = 'writer';
+        else if (element === 'edit') role = 'writer';
         else role = 'reader';
         permission.role = role;
         permission.emailAddess = userIds[index];
@@ -203,10 +209,10 @@ async function fetchCommentsInFile(msg, client) {
 function sendDirecMessageToUsers(usernames, fileName, fileLink, client) {
     userIDS = usernames.map(username => client.getUserIDByUsername(username));
     for (userID in userIDS) {
-         user_channel = client.getUserDirectMessageChannel(
+        user_channel = client.getUserDirectMessageChannel(
             userIDS[userID]);
-    client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
-     "Here is the link for the same: " + fileLink, user_channel.id);
+        client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
+            "Here is the link for the same: " + fileLink, user_channel.id);
     }
 }
 
