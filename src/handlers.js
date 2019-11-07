@@ -182,21 +182,12 @@ function getParamsForUpdateFile(file, permissionList, usernames, client) {
 async function fetchCommentsInFile(msg, client) {
 
     let channel = msg.broadcast.channel_id,
-        post = JSON.parse(msg.data.post),
-        fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+        post = JSON.parse(msg.data.post);
 
-    // TODO: Common stub. Needs to be extracted.
-    if (!helper.checkValidFile(fileName))
-        return client.postMessage("Please Enter a valid file name", channel);
+    let fileName = helper.getFileName(post);
 
-    let fileExtension = fileName.split(".")[1];
-
-    if (!helper.checkValidFileExtension(fileExtension))
-        return client.postMessage("Please enter a supported file extension.\n" +
-            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
-
-    if (fileExtension == "doc" )
-        fileName = fileName.split(".")[0];
+    if(fileName == null)
+        client.postMessage("Please enter a valid file name.",channel);
 
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
@@ -205,6 +196,8 @@ async function fetchCommentsInFile(msg, client) {
     let fileobj = result1.data.files;
 
     let file = fileobj.filter(file => file.name == fileName)[0];
+    if (file === undefined)
+        client.postMessage("No such file found.", channel);
 
     let result2 = await google_auth.fetchcomments(file.id, userID, client);
 
