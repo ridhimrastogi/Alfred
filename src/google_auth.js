@@ -106,17 +106,13 @@ async function createFile(userID, fileParams, mattermost_client) {
 	
 
 	var fileMetadata = {
-		'name': fileParams.name
-	};
-
-	var media = {
-		mimeType: fileParams.mimeType
+		'name': fileParams.name,
+		'mimeType': fileParams.mimeType
 	};
 
 	return drive.files.create({
 			auth: oAuth2Client,
 			resource: fileMetadata,
-			media: media,
 			fields: '*'
 		})
 }

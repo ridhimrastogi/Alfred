@@ -45,7 +45,7 @@ async function createFile(msg, client) {
         "name": fileName,
         "mimeType": helper.getMIMEType(fileExtension)
     }
-
+    console.log("File params are: " + JSON.stringify(fileParams))
     let result = await google_auth.createFile(userID, fileParams, client),
         fileLink = result.data.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
