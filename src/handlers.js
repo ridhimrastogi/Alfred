@@ -8,34 +8,6 @@ const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
 const stream = require('stream')
 
-async function validateuser(msg, client) {
-    console.log(msg);
-    let sender = msg.data.sender_name.split('@')[1];
-    let userID = client.getUserIDByUsername(sender);
-    let user_channel = client.getUserDirectMessageChannel(userID);
-    console.log(`I am ${sender}`);
-    console.log(user_channel);
-    let content = fs.readFileSync('../credentials.json', 'utf8');
-    console.log("content", content);
-    google_auth.authorize(JSON.parse(content), user_channel.id, client);
-}
-
-//stub for listing drive files
-async function listFiles(msg, client) {
-    let channel = msg.broadcast.channel_id;
-    await validateuser(msg, client);
-    console.log("Authenticated\n");
-    let files = google_auth.listFiles();
-    if (typeof files === "undefined" || files.length == 0)
-        client.postMessage('No files found.');
-    else {
-        client.postMessage('Files:', channel);
-        files.map((file) => {
-            client.postMessage(`${file.name} (${file.id})`, channel);
-        });
-    }
-}
-
 //stub for creating a file 
 async function createFile(msg, client) {
 
@@ -62,37 +34,6 @@ async function createFile(msg, client) {
 
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
-}
-
-//function to download file
-async function downloadFile(msg, client) {
-    let channel = msg.broadcast.channel_id;
-    let post = JSON.parse(msg.data.post);
-
-    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
-
-    // TODO: Common stub. Needs to be extracted.
-    if (!helper.checkValidFile(fileName))
-        return client.postMessage("Please Enter a valid file name", channel);
-
-    let fileExtension = fileName.split(".")[1];
-
-    if (!helper.checkValidFileExtension(fileExtension))
-        return client.postMessage("Please enter a supported file extension.\n" +
-            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
-
-    let res = await drive.getFiles();
-    let files = res.files;
-    let file = files.find(function (element) {
-        return element.name == fileName;
-    });
-
-    if (typeof file === 'undefined') {
-        return client.postMessage("No such file found!", channel);
-    }
-
-    let result = await drive.downloadAFile(file.name)
-    return client.postMessage("Download link: " + result.webViewLink, channel);
 }
 
 /*
@@ -178,7 +119,19 @@ function _validateUser(user, client, msg_channel) {
     }
 }
 
-async function _listFiles(msg, client) {
+async function _listFiles() {
+    files = await google_auth._listFiles()
+        .then(result => extractFileInfo(result.data.files))
+        .catch(error => {
+            msg = "Failed to retrive file IDs";
+            console.error(msg, error);
+            client.postMessage(msg, channel)
+            return new Map();
+        });
+    return files;
+}
+
+async function _justListFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
     let user = msg.data.sender_name.split('@')[1];
 
@@ -192,7 +145,7 @@ async function _listFiles(msg, client) {
                 client.postMessage(files.join('\n'), channel)
             } else {
                 client.postMessage("No files found", channel);
-            }
+            }   
         }).catch(error => {
             msg = "Failed to list files";
             console.error(msg, error);
@@ -211,13 +164,7 @@ async function _downloadFile(msg, client) {
 
     validateFile(fileName);
 
-    let files = await google_auth._listFiles()
-        .then(result => extractFileInfo(result.data.files))
-        .catch(error => {
-            msg = "Failed to retrive file IDs";
-            console.error(msg, error);
-            client.postMessage(msg, channel);
-        });
+    let files = await _listFiles();
 
     if (!files.has(fileName)) {
         return client.postMessage("No such file found!", channel);
@@ -253,6 +200,44 @@ async function _downloadFile(msg, client) {
     }
 }
 
+async function _fetchCommentsInFile(msg, client) {
+
+    let channel = msg.broadcast.channel_id;
+    let user = msg.data.sender_name.split('@')[1];
+
+    if (!_validateUser(user, client, channel)) return;
+
+    let post = JSON.parse(msg.data.post);
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+    let fileExtension = fileName.split(".")[1];
+
+    validateFile(fileName);
+
+    if (fileExtension == "doc")
+        fileName = fileName.split(".")[0];
+
+    let files =  await _listFiles();
+
+    if (!files.has(fileName)) {
+        return client.postMessage("No such file found!", channel);
+    } else {
+        google_auth._fetchComments(files.get(fileName))
+            .then(result => prepareComments(result.data.comments))
+            .then(comments => {
+                if (comments.length > 5) {
+                    client.postMessage(`${comments.length} comments on the file ${fileName}`, channel)
+                    comments = comments.slice(0, 5);
+                }
+                client.postMessage(comments.join('\r\n'), channel);
+            })
+            .catch(error => {
+                msg = "No comments found";
+                console.error(msg, error);
+                client.postMessage(msg, channel);
+            })
+    }
+}
+
 function validateFile(fileName, client) {
     if (!helper.checkValidFile(fileName))
         return client.postMessage("Please Enter a valid file name", channel);
@@ -275,12 +260,21 @@ const extractFileInfo = (files) => {
     return names;
 }
 
+const prepareComments = (comments) => {
+    let _comments = [];
+    if (!comments.length) {
+        throw new Error('No comments found');
+    } else {
+        comments.map(x => _comments.push(`${x.author.displayName}: ${x.content}`));
+    }
+    return _comments;
+}
+
 module.exports = {
     _downloadFile,
-    _listFiles,
-    listFiles,
+    _justListFiles,
+    _fetchCommentsInFile,
     createFile,
-    downloadFile,
     updateCollaboratorsInFile,
     sendDirecMessageToUsers
 };

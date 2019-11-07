@@ -171,6 +171,7 @@ const _getTokenFromCode = (req, res) => {
 	userId = req.query.state;
 	oAuth2Client.getToken(code, (err, token) => {
 		if (err) return console.log(`Error retrieving access token: ${err}`);
+		tokenStore.set(userId, token);
 		console.log('Token created');
 		res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square/');
 	});
@@ -197,6 +198,15 @@ async function _downloadFile(fileId) {
 	return drive.files.get(params, options);
 }
 
+async function _fetchComments(fileID) {
+	params = {
+		auth: oAuth2Client,
+		fileId: fileID,
+		fields: '*'
+	};
+	return drive.comments.list(params)
+}
+
 tokenServer.listen(port, () => console.log(`Token server listening on port ${port}!`))
 tokenServer.get('/tokenurl', _getTokenFromCode);
 
@@ -206,3 +216,4 @@ exports._checkForToken = _checkForToken;
 exports._authorize = _authorize;
 exports._listFiles = _listFiles;
 exports._downloadFile = _downloadFile;
+exports._fetchComments = _fetchComments;

@@ -42,13 +42,16 @@ async function parseMessage(msg) {
         handler.createFile(msg, client);
     }
     else if (hears(msg, "list")) {
-        handler._listFiles(msg, client);
+        handler._justListFiles(msg, client);
     }
     else if (hears(msg, "download")) {
         handler._downloadFile(msg, client);
     }
     else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
         handler.updateCollaboratorsInFile(msg, client);
+    }
+    else if (hears(msg, "comment") || hears(msg, "comments")) {
+        handler._fetchCommentsInFile(msg, client);
     }
 }
 
