@@ -135,6 +135,7 @@ exports.listFiles = listFiles;
 const _checkForToken = () => {
 	try {
 		token = fs.readFileSync(TOKEN_PATH);
+
 	}
 	catch (error) {
 		console.log("File not found: token.json");
@@ -146,6 +147,7 @@ const _checkForToken = () => {
 const _authorize = () => {
 	try {
 		oAuth2Client.setCredentials(JSON.parse(token));
+		console.log(oAuth2Client);
 	}
 	catch (error) {
 		console.log(`Failed to authorize user, error: ${error}`);
@@ -157,6 +159,7 @@ const _authorize = () => {
 const _getAuthUrl = () => oAuth2Client.generateAuthUrl({
 	access_type: 'offline',
 	scope: SCOPES,
+	prompt: 'consent'
 });
 
 const _getTokenFromCode = (req, res) => {
