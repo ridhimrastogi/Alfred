@@ -176,10 +176,47 @@ function fetchcomments(fileID, userID, mattermost_client) {
 	return drive.comments.list(options)
 }
 
+// -------------------------------------------------------------------
+
+async function _listFiles(userID,mattermost_client) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params = {
+		auth: oAuth2Client,
+		pageSize: 100,
+		fields: 'nextPageToken, files(id, name)',
+	};
+	return drive.files.list(params);
+}
+
+async function _downloadFile(fileId) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		alt: 'media'	
+	};
+	options = {
+		responseType: 'stream'
+	};
+	return drive.files.get(params, options);
+}
+
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
 exports.createFile = createFile;
-exports.addCollaborators = addCollaborators
-exports.getFileByFilename = getFileByFilename
-exports.fetchcomments = fetchcomments
+exports.addCollaborators = addCollaborators;
+exports.getFileByFilename = getFileByFilename;
+exports.fetchcomments = fetchcomments;
+exports._listFiles = _listFiles;
+exports._downloadFile = _downloadFile;

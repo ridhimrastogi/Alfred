@@ -1,8 +1,13 @@
 const drive = require("./drive.js");
 const helper = require("./utils/helpers.js");
 const google_auth = require("./google_auth.js");
+const util = require('util');
+const stream = require('stream')
 
-let client;
+
+const {
+    google
+} = require('googleapis');
 
 //stub for listing drive files
 async function listFiles(msg, client) {
@@ -190,7 +195,7 @@ async function fetchCommentsInFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-    if (fileExtension == "doc")
+    if (fileExtension == "doc" )
         fileName = fileName.split(".")[0];
 
     let sender = msg.data.sender_name.split('@')[1];
@@ -247,7 +252,111 @@ function checkInvalidUsernames(usernames, client) {
     return invalidUsernames
 }
 
+async function _listFiles(msg, client) {
+    let channel = msg.broadcast.channel_id;
+    let user = msg.data.sender_name.split('@')[1];
+    let userID = client.getUserIDByUsername(user);
+
+   // if (!_validateUser(user, client, channel)) return;
+
+    google_auth._listFiles(userID, client)
+        .then(result => extractFileInfo(result.data.files))
+        .then(files => Array.from(files.keys()))
+        //.then(files => files.filter((file) => file.startsWith("00atf")))
+        .then(files => {
+            if (files.length) {
+                client.postMessage(files.join('\n'), channel)
+            } else {
+                client.postMessage("No files found", channel);
+            }
+        }).catch(error => {
+            msg = "Failed to list files";
+            console.error(msg, error);
+            client.postMessage(msg, channel);
+        });
+}
+
+async function _downloadFile(msg, client) {
+    let channel = msg.broadcast.channel_id;
+    let user = msg.data.sender_name.split('@')[1];
+    let userID = client.getUserIDByUsername(user);
+
+    //if (!_validateUser(user, client, channel)) return;
+
+    let post = JSON.parse(msg.data.post);
+    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+
+    validateFile(fileName);
+
+    let files = await google_auth._listFiles(userID, client)
+        .then(result => extractFileInfo(result.data.files))
+        .catch(error => {
+            msg = "Failed to retrive file IDs";
+            console.error(msg, error);
+            client.postMessage(msg, channel);
+        });
+
+    console.log(files);
+
+    if (!files.has(fileName)) {
+        return client.postMessage("No such file found!", channel);
+    } else {
+        google_auth._downloadFile(files.get(fileName),userID,client)
+            .then(async (result) => {
+                const filePath = `./ephemeral-files/${fileName}`;
+                const pipeline = util.promisify(stream.pipeline)
+                const write = fs.createWriteStream(filePath);
+                await pipeline(result.data, write);
+                return filePath;
+            })
+            .then(filePath => client.uploadFile(channel, fs.createReadStream(filePath), (response) => {
+                if ('file_infos' in response) {
+                    files = response.file_infos.map(f => f.id);
+                    msg = {
+                        message: "Here is the file you requested!",
+                        file_ids: files,
+                    }
+                    client.postMessage(msg, channel);
+                    return fs.unlink(filePath, (err) => {
+                        if (err) throw err;
+                    });
+                } else {
+                    throw new Error('Failed to upload the downloaded file to Mattermost!')
+                }
+            }))
+            .catch(error => {
+                msg = "Failed to download file";
+                console.error(msg, error);
+                client.postMessage(msg, channel);
+            });
+    }
+}
+
+function validateFile(fileName, client) {
+    if (!helper.checkValidFile(fileName))
+        return client.postMessage("Please Enter a valid file name", channel);
+
+    let fileExtension = fileName.split(".")[1];
+
+    if (!helper.checkValidFileExtension(fileExtension))
+        return client.postMessage("Please enter a supported file extension.\n" +
+            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpeg", channel);
+}
+
+const extractFileInfo = (files) => {
+    let names = new Map();
+    if (files.length) {
+        files//.filter((file) => file.name.startsWith("00atf"))
+            .map((file) => names.set(`${file.name}`, `${file.id}`));
+    } else {
+        console.log('No files found');
+    }
+    return names;
+}
+
 module.exports = {
+    _downloadFile,
+    _listFiles,
     listFiles,
     createFile,
     downloadFile,
