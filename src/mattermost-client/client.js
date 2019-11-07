@@ -418,23 +418,24 @@ class Client extends EventEmitter {
         }
     }
 
-    getUserIDByUsername(username){
-        for (let u in this.users){
-            if(this.users[u].username === username){
+    getUserIDByUsername(username) {
+        for (let u in this.users) {
+            if (this.users[u].username === username) {
                 return this.users[u].id;
             }
         }
+        return '';
     }
 
-    getUserEmailByUsername(username){
-        for (let u in this.users){
-            if(this.users[u].username === username){
+    getUserEmailByUsername(username) {
+        for (let u in this.users) {
+            if (this.users[u].username === username) {
                 return this.users[u].email;
             }
         }
     }
 
-    getUserDirectMessageChannel(userID,callback) {
+    getUserDirectMessageChannel(userID, callback) {
         // check if channel already exists
         let channel = this.self.id + "__" + userID;
         channel = this.findChannelByName(channel);

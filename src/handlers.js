@@ -41,23 +41,27 @@ async function createFile(msg, client) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
+    let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
+    let invalidUsernames = checkInvalidUsernames(usernames, client)
+
+    if (invalidUsernames.length) {
+        if(invalidUsernames.length == 1){
+            invalidUsernames = invalidUsernames.join(', ')
+            return client.postMessage(`${invalidUsernames} is an invalid username, Please try again with valid a username`, channel)
+        }
+        else{
+            return client.postMessage(`${invalidUsernames} are invalid usernames, Please try again with valid usernames`, channel)
+        }
+    }
+    
     let fileParams = {
         "name": fileName,
         "mimeType": helper.getMIMEType(fileExtension)
     }
     console.log("File params are: " + JSON.stringify(fileParams))
     let response = await google_auth.createFile(userID, fileParams, client),
-        fileLink = response.data.webViewLink,
-        usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
-    
-    let collaboratorEmails = usernames.map(x => client.getUserEmailByUsername(x))
-    console.log(collaboratorEmails)
+        fileLink = response.data.webViewLink;
 
-    let permissionList = post.message.split(" ").filter(x => ["reader", "writer", "commenter"]
-    .includes(x.toLowerCase()))
-    .map(x => x.toLowerCase());
-
-    console.log(permissionList)
 
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
@@ -182,30 +186,30 @@ async function fetchCommentsInFile(msg, client) {
     let sender = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(sender);
 
-    let result1 = await google_auth.listFiles(userID,client);
+    let result1 = await google_auth.listFiles(userID, client);
     let fileobj = result1.data.files;
 
     let file = fileobj.filter(file => file.name == fileName)[0];
 
     let result2 = await google_auth.fetchcomments(file.id, userID, client);
 
-    if(result2.data.comments.length == 0){
-        client.postMessage("No comments on the file yet.",channel);
+    if (result2.data.comments.length == 0) {
+        client.postMessage("No comments on the file yet.", channel);
     }
     else {
         let temp = [];
-        let comments= [];
+        let comments = [];
         console.log(result2.data.comments);
-        if(result2.data.comments.length > 5){
-            comments = result2.data.comments.slice(0,5);
-            client.postMessage(`${result2.data.comments.length} comments on the file ${file.name}`,channel);
+        if (result2.data.comments.length > 5) {
+            comments = result2.data.comments.slice(0, 5);
+            client.postMessage(`${result2.data.comments.length} comments on the file ${file.name}`, channel);
         }
-        else{
+        else {
             comments = result2.data.comments;
         }
         comments.map(x => temp.push(x.author.displayName +
             ": " + x.content));
-        client.postMessage(temp.join('\r\n'),channel);
+        client.postMessage(temp.join('\r\n'), channel);
     }
 
 }
@@ -219,6 +223,18 @@ function sendDirecMessageToUsers(usernames, fileName, fileLink, client) {
         client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
             "Here is the link for the same: " + fileLink, user_channel.id);
     }
+}
+
+//function to check invalid users
+function checkInvalidUsernames(usernames, client) {
+    let invalidUsernames = []
+    usernames.map((uname) => {
+        id = client.getUserIDByUsername(uname);
+        if (!id.length) {
+            invalidUsernames.push(uname);            
+        }
+    });
+    return invalidUsernames
 }
 
 module.exports = {
