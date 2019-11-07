@@ -5,10 +5,6 @@ const util = require('util');
 const stream = require('stream')
 
 
-const {
-    google
-} = require('googleapis');
-
 //stub for listing drive files
 async function listFiles(msg, client) {
     let channel = msg.broadcast.channel_id;
@@ -58,7 +54,7 @@ async function createFile(msg, client) {
             return client.postMessage(`${invalidUsernames} are invalid usernames, Please try again with valid usernames`, channel)
         }
     }
-    
+
     let fileParams = {
         "name": fileName,
         "mimeType": helper.getMIMEType(fileExtension)
@@ -67,7 +63,9 @@ async function createFile(msg, client) {
     let response = await google_auth.createFile(userID, fileParams, client),
         fileLink = response.data.webViewLink;
 
-
+    // if(usernames.length > 1){
+    //     addCollaboratorsInFile(msg, client);
+    // }
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
 }
