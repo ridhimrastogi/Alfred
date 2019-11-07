@@ -250,9 +250,14 @@ async function _listFiles(msg, client) {
     let user = msg.data.sender_name.split('@')[1];
     let userID = client.getUserIDByUsername(user);
 
+    console.log("1",userID);
    // if (!_validateUser(user, client, channel)) return;
 
     google_auth._listFiles(userID, client)
+        .then(result => {
+            console.log("2",result);
+            return result;
+        })
         .then(result => extractFileInfo(result.data.files))
         .then(files => Array.from(files.keys()))
         //.then(files => files.filter((file) => file.startsWith("00atf")))

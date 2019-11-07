@@ -67,7 +67,8 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
 	const authUrl = oAuth2Client.generateAuthUrl({
 		access_type: 'offline',
 		scope: SCOPES,
-		state: userID
+    state: userID,
+    prompt: 'consent'
 	});
 	let user_channel = mattermost_client.getUserDirectMessageChannel(userID).id;
 	mattermost_client.postMessage(`Please Authorize this app first by visiting this url: ${authUrl}`, user_channel);
@@ -193,7 +194,7 @@ async function _listFiles(userID,mattermost_client) {
 	return drive.files.list(params);
 }
 
-async function _downloadFile(fileId) {
+async function _downloadFile(fileId, userID, mattermost_client) {
   if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, mattermost_client);
 		return null;
