@@ -45,9 +45,18 @@ async function createFile(msg, client) {
         "mimeType": helper.getMIMEType(fileExtension)
     }
     console.log("File params are: " + JSON.stringify(fileParams))
-    let result = await google_auth.createFile(userID, fileParams, client),
-        fileLink = result.data.webViewLink,
+    let response = await google_auth.createFile(userID, fileParams, client),
+        fileLink = response.data.webViewLink,
         usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''));
+    
+    let collaboratorEmails = usernames.map(x => client.getUserEmailByUsername(x))
+    console.log(collaboratorEmails)
+
+    let permissionList = post.message.split(" ").filter(x => ["reader", "writer", "commenter"]
+    .includes(x.toLowerCase()))
+    .map(x => x.toLowerCase());
+
+    console.log(permissionList)
 
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);

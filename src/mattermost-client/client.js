@@ -426,6 +426,14 @@ class Client extends EventEmitter {
         }
     }
 
+    getUserEmailByUsername(username){
+        for (let u in this.users){
+            if(this.users[u].username === username){
+                return this.users[u].email;
+            }
+        }
+    }
+
     getUserDirectMessageChannel(userID,callback) {
         // check if channel already exists
         let channel = this.self.id + "__" + userID;
