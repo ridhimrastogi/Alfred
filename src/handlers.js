@@ -126,14 +126,14 @@ async function updateCollaboratorsInFile(msg, client) {
         userIds = usernames.map(username => client.getUserIDByUsername(username));
 
     // let files = google_auth.getFileByFilename(fileName);
-    let res = await google_auth.listFiles(userID,client);
+    let res = await google_auth.listFiles(senderUserID,client);
         files = res.data.files;
 
-    if (files === undefined || !files.length())
+    if (files === undefined)
         return client.postMessage("No such file found!", channel);
 
     let file = files.filter(file => file.name == fileName)[0],
-        response = google_auth.addCollaborators(senderUserID, getParamsForUpdateFile(file, permissionList, userIds));
+        response = google_auth.addCollaborators(senderUserID, getParamsForUpdateFile(file, permissionList, usernames));
 
     if (response) {
         sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -144,7 +144,7 @@ async function updateCollaboratorsInFile(msg, client) {
     }
 }
 
-function getParamsForUpdateFile(file, permissionList, userIds) {
+function getParamsForUpdateFile(file, permissionList, usernames) {
     let params = {};
 
     params.fileId = file.id;
@@ -156,10 +156,12 @@ function getParamsForUpdateFile(file, permissionList, userIds) {
         else if (element === 'edit') role = 'writer';
         else role = 'reader';
         permission.role = role;
-        permission.emailAddess = userIds[index];
+        permission.emailAddess = client.getUserEmailByUsername(usernames[index]);
 
         params.permissions.append(permission);
     });
+
+    console.log("PARAMS::" + params);
 
     return params;
 }
