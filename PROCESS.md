@@ -41,7 +41,7 @@ We could not conduct a daily scrum meetings but had a bi-weekly meeting. We disc
  
 #### Retrospective
 
-At the end of first sprint we conducted a retrospective meeting. The agenda of this meeting was to understand _What went wrong?_, _How can we avoid similar problem in upcoming sprint?_. Some isses we faced are:
+At the end of first sprint we conducted a retrospective meeting. The agenda of this meeting was to understand _What went wrong?_, _How can we avoid similar problems in upcoming sprint?_. Some isses we faced are:
 
  - Even after coming to a consensus on the effort required for a task, we misjudged effor for some tasks by a very big margin. For instance the Google Authoriaztion part.
  
