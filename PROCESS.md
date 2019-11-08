@@ -69,3 +69,20 @@ We are not done with the final sprint yet but as of today (November 7, 2019), ou
 
 ## Practices
 
+The following **core practices** were integrated in our software development process:
+
+- **Pair programming** : We were able to integrate this core practice successfully into our software development process.
+
+  - Whenever a new stub(code) was to be added for a user story, the team members worked together in pairs. One member acted as the driver and the other acted as a navigator. This practice turned out quite fruitful for us. We were able to deliver good quality code in a way more effiecient manner than before. 
+  - Another added advantage was that, pair programming facilitated better communications among the team members, kept team memebers informed about each other's work.
+  
+- **Weekly planning** : This was another core practice that was integreated in our software development process. The weekly planning meetings enabled us to:
+ 
+  - discuss if any new information/concerns popped up during the software developement process.
+  - review the user stories that were completed.
+  - determine the work that needs to be taken next and also estimite the project timeline.
+  
+
+
+
+
