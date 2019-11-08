@@ -10,7 +10,7 @@
  
  - **Labels**: For story points, we created `Size` labels `{1, 3, 5, 8, 21}`. We only used 21 for the Epics that were not broken down. We also created two milestones `Process - Week 1` and `Process - Week 2` to identify sprints.
  
- - **Project Board**: We used the GitHub project board as an issue tracker. The board was populated with all the tasks as notes in the beginning.
+ - [**Project Board**](https://github.ncsu.edu/csc510-fall2019/CSC510-9/projects/1): We used the GitHub project board as an issue tracker. The board was populated with all the tasks as notes in the beginning.
 
 ### Development Flow
 
@@ -43,7 +43,7 @@ We could not conduct a daily scrum meetings but had a bi-weekly meeting. We disc
 
 At the end of first sprint we conducted a retrospective meeting. The agenda of this meeting was to understand _What went wrong?_, _How can we avoid similar problems in upcoming sprint?_. Some isses we faced are:
 
- - Even after coming to a consensus on the effort required for a task, we misjudged effor for some tasks by a very big margin. For instance the Google Authoriaztion part.
+ - Even after coming to a consensus on the effort required for a task, we misjudged effort for some tasks by a very big margin. For instance the Google Authoriaztion part.
  
  - We started working on the tasks independently and had scrum meetings every 3 or 4 days. We felt that it would have been better if we had daily scrums. So for second sprint, we had 5 scrum meetings.
 
@@ -59,7 +59,7 @@ At the end of first iteration, our board looked something like this
 
 ### Sprint 2
 
-We are not dont with the final spring yet but as of today (November 7, 2019), our board looks something like this
+We are not done with the final sprint yet but as of today (November 7, 2019), our board looks something like this
 
 ![Board-2](img/board_2.png)
 
