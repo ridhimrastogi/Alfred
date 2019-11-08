@@ -82,7 +82,12 @@ The following **core practices** were integrated in our software development pro
   - review the user stories that were completed.
   - determine the work that needs to be taken next and also estimite the project timeline.
   
+The following **corollary practices** were integrated in our software development process:
 
+- **Shared code** : This **corollary practice** came in quite handy during our software development process. 
+
+  - We as a team were able improvise any part of the code base if required, this facilitated proper end-to-end review and implementation of all our use cases.
+  - This corallary practice helped instill a sense of collective responsibility and accountability in the team.
 
 
 
