@@ -62,7 +62,7 @@ async function createFile(msg, client) {
     let response = await google_auth.createFile(userID, fileParams, client),
         fileLink = response.data.webViewLink;
 
-    if(usernames.length > 1){
+    if(usernames.length > 0){
         updateCollaboratorsInFile(msg, client, "add");
     }
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
@@ -107,26 +107,22 @@ async function updateCollaboratorsInFile(msg, client, command) {
     let miscParams = getParamsforUpdateFile(msg, client);
 
     if (miscParams.collaboatorList.length !== miscParams.permissionList.length)
-        return client.postMessage("Invalid request!", channel);
-
-    // TODO: Common stub. Needs to be extracted.
-    // if (!helper.checkValidFile(fileName))
-    //     return client.postMessage("Please Enter a valid file name", channel);
-
-    if (!helper.checkValidFileExtension(miscParams.fileName.split(".")[1]))
-        return client.postMessage("Please enter a supported file extension.\n" +
-            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
-
+        return client.postMessage("Invalid request!", miscParams.channel);
 
     let fileName = helper.getFileName(JSON.parse(msg.data.post)),
         usernames = miscParams.collaboatorList.map(uh => uh.replace('@', ''));
+
+    if (!helper.checkValidFileExtension(fileName.split(".")[1]))
+        return client.postMessage("Please enter a supported file extension.\n" +
+            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
+
     // let userIds = usernames.map(username => client.getUserIDByUsername(username));
     // let files = google_auth.getFileByFilename(fileName);
     let res = await google_auth.listFiles(miscParams.senderUserID,client);
         files = res.data.files;
 
     if (files === undefined || !files.length)
-        return client.postMessage("No such file found!", channel);
+        return client.postMessage("No such file found!", miscParams.channel);
 
     let file = files.filter(file => file.name == fileName)[0],
         fileLink = file.webViewLink, response;
@@ -138,7 +134,10 @@ async function updateCollaboratorsInFile(msg, client, command) {
             response = await google_auth.updateCollaborators(miscParams.senderUserID,
                 getPermissionParamsForUpdateCollab(file, usernames, permission_res.data.permissions,
                      miscParams.permissionList, client), client);
-            if (!response)
+            if (response)
+                client.postMessage("Updated collaborators to file " + fileName + " successfully\n" +
+                    "Here is the link for the same: " + fileLink, miscParams.channel);
+            else
                 return client.postMessage("Error occurred while adding collaborators.!! :(", miscParams.channel);
         }
         else {
@@ -176,7 +175,6 @@ function getParamsforUpdateFile(msg, client) {
     params.sender = msg.data.sender_name.split('@')[1],
     params.senderUserID =  client.getUserIDByUsername(params.sender),
     params.splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" "),
-    params.fileName = params.splittedMessageBySpace.filter(x => x.includes('.'))[0],
     params.collaboatorList = params.splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred"),
     params.permissionList =  params.splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
                                             .includes(x.toLowerCase()))
