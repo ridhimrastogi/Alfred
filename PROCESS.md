@@ -16,7 +16,7 @@
 
  - Pick a task
  - Convert the task to an issue
- - Assign appropriate `Size` label
+ - Assign appropriate `Size` label as discussed in the sprint planning
  - Add the `Milestone` label
  - Move the card from `To Do` swimlane to `In Progress`
  - Once the task is finished, move the task from `In Progress` to `Under Review`
@@ -37,11 +37,15 @@ We conducted a Sprint Planning meeting at the beginning of both the sprints. To 
  
 #### Scrum 
 
-We could not conduct a daily scrum meetings but had a bi-weekly meeting. We discussed on what issues we faced and how we can collaborate and pick tasks in a way that there are fewer conflicts.
+We could not conduct a daily scrum meetings so we conducted bi-weekly meetings. We discussed on what issues we faced and how we can collaborate and pick tasks in a way that there are fewer conflicts. Also, we did not have a dedicated Scrum Master and all four team members worked as individual contributors because there was enough work to do in less time.
+
+Some notes that I took during the scrum meeting, including clarifying questions and things to discuss later, are as follows. Notes moved to right are the ones resolved or discussed.
+
+![Notes](img/Notes.png)
  
 #### Retrospective
 
-At the end of first sprint we conducted a retrospective meeting. The agenda of this meeting was to understand _What went wrong?_, _How can we avoid similar problems in upcoming sprint?_. Some isses we faced are:
+At the end of first sprint we conducted a retrospective meeting. The agenda of this meeting was to understand _What went wrong?_, _How can we avoid similar problems in upcoming sprint?_ Some isses we faced are:
 
  - Even after coming to a consensus on the effort required for a task, we misjudged effort for some tasks by a very big margin. For instance the Google Authoriaztion story was hugely under estimated.
  
@@ -49,7 +53,7 @@ At the end of first sprint we conducted a retrospective meeting. The agenda of t
 
  - We did not segregate inter-dependent tasks properly. For example if a developer is working on download files use case, listing files for reference is a sub task. We started in a way that one developer is working on list files while other is working on download file. Unless the list file task is completed, download cannot work because of the way Google Drive API works.
  
- - We used dummy data as a workaround for the problem above but then had a hard time merging the changes, which leads to the last and the most important issue we discussed in the retrospective meeting - _We did not decide on the common coding practices, naming conventions, file and directory segragations which led to recursive refactoring of code. We had a hard time integrating stuff even with SOTA version control systems._
+ - We used dummy data as a workaround for the problem above but then had a hard time merging the changes, which leads to the last and the most important issue we discussed in the retrospective meeting - We did not decide on the common coding practices, naming conventions, file and directory segregations which led to recursive refactoring of code. We had a hard time integrating stuff even with SOTA version control systems.
  
 ### Sprint 1
 
@@ -63,8 +67,5 @@ We are not done with the final sprint yet but as of today (November 7, 2019), ou
 
 ![Board-2](img/board_2.png)
 
-
 ## Practices
-
-## Consistency
 
