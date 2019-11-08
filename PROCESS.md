@@ -10,7 +10,7 @@
  
  - **Labels**: For story points, we created `Size` labels `{1, 3, 5, 8, 21}`. We only used 21 for the Epics that were not broken down. We also created two milestones `Process - Week 1` and `Process - Week 2` to identify sprints.
  
- - **Project Board**: We used the GitHub project board as an issue tracker. The board was populated with all the tasts as notes in the beginning.
+ - **Project Board**: We used the GitHub project board as an issue tracker. The board was populated with all the tasks as notes in the beginning.
 
 ### Development Flow
 
