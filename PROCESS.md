@@ -33,7 +33,7 @@
 
 #### Sprint Planning
 
-We conducted a Sprint Planning meeting at the beginning of both the sprints. To estimate the effort, we used calculator in our mobile phones instead of Planning Poker; on the count of three, we raised our phones with the story points typed in the calculators. We had major conflicts for a couple tasks, one of them was Context Management. We discussed on the conflict and contradicting opinions but could not come to a consensus. As a solution to this issue, we decided to establish a **Baseline** which is a task worth 1 story point. We used this baseline as a relative effor and assigned the story points. Baseline for our project is: **Smallest alternate flow for any use-case. For instance if a user provides an invalid filename, Alfred should post a reply on the incoming channel with appropriate message.**
+We conducted a Sprint Planning meeting at the beginning of both the sprints. To estimate the effort, we used calculator in our mobile phones instead of Planning Poker; on the count of three, we raised our phones with the story points typed in the calculators. We had major conflicts for a couple tasks, one of them was Context Management. We discussed on the conflict and contradicting opinions but could not come to a consensus. As a solution to this issue, we decided to establish a **Baseline** which is a task worth 1 story point. We used this baseline as a relative effort and assigned the story points. Baseline for our project is: **Smallest alternate flow for any use-case. For instance if a user provides an invalid filename, Alfred should post a reply on the incoming channel with appropriate message.**
  
 #### Scrum 
 
