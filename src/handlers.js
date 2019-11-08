@@ -63,7 +63,7 @@ async function createFile(msg, client) {
         fileLink = response.data.webViewLink;
 
     if(usernames.length > 1){
-        addCollaboratorsInFile(msg, client);
+        updateCollaboratorsInFile(msg, client, "add");
     }
     sendDirecMessageToUsers(usernames, fileName, fileLink, client);
     client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
