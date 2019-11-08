@@ -204,12 +204,30 @@ async function _downloadFile(fileId, userID, mattermost_client) {
 	params = {
 		auth: oAuth2Client,
 		fileId: fileId,
-		alt: 'media'	
+		alt: 'media'
 	};
 	options = {
 		responseType: 'stream'
 	};
 	return drive.files.get(params, options);
+}
+
+async function _downloadGDoc(fileId, userID, mattermost_client) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+  }
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		mimeType: 'application/pdf'
+	};
+	options = {
+		responseType: 'stream'
+	};
+	return drive.files.export(params, options);
 }
 
 exports.authorize = authorize;
@@ -221,3 +239,4 @@ exports.getFileByFilename = getFileByFilename;
 exports.fetchcomments = fetchcomments;
 exports._listFiles = _listFiles;
 exports._downloadFile = _downloadFile;
+exports._downloadGDoc = _downloadGDoc;

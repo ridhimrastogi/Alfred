@@ -275,9 +275,10 @@ async function _downloadFile(msg, client) {
     //if (!_validateUser(user, client, channel)) return;
 
     let post = JSON.parse(msg.data.post);
-    let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+    let fileName = helper.getFileName(post);
 
-    validateFile(fileName);
+    if(fileName == null)
+       return client.postMessage("Please enter a valid file name.",channel);
 
     let files = await google_auth._listFiles(userID, client)
         .then(result => extractFileInfo(result.data.files))
@@ -291,7 +292,38 @@ async function _downloadFile(msg, client) {
 
     if (!files.has(fileName)) {
         return client.postMessage("No such file found!", channel);
-    } else {
+    }
+    else if (fileName.split(".")[1] === undefined){
+        google_auth._downloadGDoc(files.get(fileName),userID,client)
+            .then(async (result) => {
+                const filePath = `./ephemeral-files/${fileName}.pdf`;
+                const pipeline = util.promisify(stream.pipeline)
+                const write = fs.createWriteStream(filePath);
+                await pipeline(result.data, write);
+                return filePath;
+            })
+            .then(filePath => client.uploadFile(channel, fs.createReadStream(filePath), (response) => {
+                if ('file_infos' in response) {
+                    files = response.file_infos.map(f => f.id);
+                    msg = {
+                        message: "Here is the file you requested!",
+                        file_ids: files,
+                    }
+                    client.postMessage(msg, channel);
+                    return fs.unlink(filePath, (err) => {
+                        if (err) throw err;
+                    });
+                } else {
+                    throw new Error('Failed to upload the downloaded file to Mattermost!')
+                }
+            }))
+            .catch(error => {
+                msg = "Failed to download file";
+                console.error(msg, error);
+                client.postMessage(msg, channel);
+            });
+    }
+    else {
         google_auth._downloadFile(files.get(fileName),userID,client)
             .then(async (result) => {
                 const filePath = `./ephemeral-files/${fileName}`;
