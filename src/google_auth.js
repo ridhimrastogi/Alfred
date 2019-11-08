@@ -146,14 +146,53 @@ async function addCollaborators(userID, params, client) {
 			auth: oAuth2Client,
 			resource: permission,
 			fileId: params.fileId,
+			fields: '*',
+		}, function (err, res) {
+			if (err) {
+				console.log(err);
+			} else {
+				console.log('Permission ID: ', res)
+			}
+		}))
+	});
+
+	return arr;
+}
+
+async function listPermission(userID, fileId) {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+	return drive.permissions.list({
+		auth: oAuth2Client,
+		fileId: fileId,
+		fields: '*',
+	});
+}
+
+async function updateCollaborators(userID, params, client) {
+	let arr = [];
+	console.log("\n\n\n\n" + JSON.stringify(params) + "\n\n\n");
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+			authorize(userID, client);
+			return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params.permissions.forEach(permission => {
+		arr.push(drive.permissions.update({
+			auth: oAuth2Client,
+			fileId: params.fileId,
+			permissionId: permission.permissionId,
+			resource: {role: permission.role},
 			fields: 'id',
 		}, function (err, res) {
 			if (err) {
 				console.log(err);
-				// permissionCallback(err);
 			} else {
 				console.log('Permission ID: ', res)
-				// permissionCallback();
 			}
 		}))
 	});
@@ -183,3 +222,5 @@ exports.createFile = createFile;
 exports.addCollaborators = addCollaborators
 exports.getFileByFilename = getFileByFilename
 exports.fetchcomments = fetchcomments
+exports.updateCollaborators = updateCollaborators
+exports.listPermission = listPermission
