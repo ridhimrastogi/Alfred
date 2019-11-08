@@ -36,14 +36,29 @@ function getMIMEType(fileExtension) {
 }
 
 function checkValidFile(fileName) {
-    return !(fileName === undefined || fileName.split(".")[0].length == 0);
+    return !(fileName === undefined || fileName.length == 0);
 }
 
 function checkValidFileExtension(fileExtension) {
     return !(fileExtension === undefined || getMIMEType(fileExtension) == null)
 }
 
+function getFileName(msg){
+    let fileName = null;
+    try{
+        fileName = msg.message.match(/"(.*?)"/)[1];
+   }
+   catch {
+       return null;
+    }
+
+   if (!checkValidFile(fileName))
+       return fileName;
+
+    return fileName;
+}
 
 exports.getMIMEType = getMIMEType;
 exports.checkValidFile = checkValidFile;
 exports.checkValidFileExtension = checkValidFileExtension;
+exports.getFileName = getFileName;

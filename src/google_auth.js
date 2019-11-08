@@ -67,7 +67,8 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
 	const authUrl = oAuth2Client.generateAuthUrl({
 		access_type: 'offline',
 		scope: SCOPES,
-		state: userID
+    state: userID,
+    prompt: 'consent'
 	});
 	let user_channel = mattermost_client.getUserDirectMessageChannel(userID).id;
 	mattermost_client.postMessage(`Please Authorize this app first by visiting this url: ${authUrl}`, user_channel);
@@ -215,6 +216,41 @@ function fetchcomments(fileID, userID, mattermost_client) {
 	return drive.comments.list(options)
 }
 
+// -------------------------------------------------------------------
+
+async function _listFiles(userID,mattermost_client) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+	}
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params = {
+		auth: oAuth2Client,
+		pageSize: 1000,
+		fields: 'nextPageToken, files(id, name)',
+	};
+	return drive.files.list(params);
+}
+
+async function _downloadFile(fileId, userID, mattermost_client) {
+  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+		authorize(userID, mattermost_client);
+		return null;
+  }
+	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
+
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		alt: 'media'	
+	};
+	options = {
+		responseType: 'stream'
+	};
+	return drive.files.get(params, options);
+}
+
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
@@ -224,3 +260,5 @@ exports.getFileByFilename = getFileByFilename
 exports.fetchcomments = fetchcomments
 exports.updateCollaborators = updateCollaborators
 exports.listPermission = listPermission
+exports._listFiles = _listFiles;
+exports._downloadFile = _downloadFile;
