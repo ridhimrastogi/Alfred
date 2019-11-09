@@ -78,9 +78,9 @@ The following **core practices** were integrated in our software development pro
   
 - **Weekly planning** : This was another core practice that was integreated in our software development process. The weekly planning meetings enabled us to:
  
-  - discuss if any new information/concerns popped up during the software developement process.
-  - review the user stories that were completed.
-  - determine the work that needs to be taken next and also estimite the project timeline.
+  - Discuss if any new information/concerns popped up during the software developement process.
+  - Review the user stories that were completed.
+  - Determine the work that needs to be taken next and also estimite the project timeline.
   
 The following **corollary practices** were integrated in our software development process:
 
@@ -88,11 +88,6 @@ The following **corollary practices** were integrated in our software developmen
 
   - We as a team were able update/change any part of the code base if required, this facilitated proper end-to-end review and implementation of all our use cases.
   - This corallary practice helped instill a sense of collective responsibility and accountability in the team.
-  
-- **Real customer involvement** : This **corollary practice** enabled to discuss the scope of our use cases.
-
-  - We were able to clarify the use case requirements with the customer(professor as well as TAs), enabling us to have clearer picture for implementation.
-  - Involving the customer views also helped us to make better estimates regarding the project.
 
 
 
