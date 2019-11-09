@@ -88,6 +88,11 @@ The following **corollary practices** were integrated in our software developmen
 
   - We as a team were able update/change any part of the code base if required, this facilitated proper end-to-end review and implementation of all our use cases.
   - This corallary practice helped instill a sense of collective responsibility and accountability in the team.
+  
+- **Real customer involvement** : This **corollary practice** enabled to discuss the scope of our use cases.
+
+  - We were able to clarify the use case requirements with the customer(professor as well as TAs), enabling us to have cleare picture for implementation.
+  - Involving the customer views also helped us to make better estimates regarding the project.
 
 
 
