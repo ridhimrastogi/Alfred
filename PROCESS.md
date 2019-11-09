@@ -98,6 +98,6 @@ The following **corollary practices** were integrated in our software developmen
 
 ## Consistency
 
-The tasks were distributed evenly between sprints and team members. Sprint wise distribution of tasks can be seen in the image below
+The tasks were distributed evenly between sprints. Sprint wise distribution of tasks can be seen in the image below
 
-![Sprint_tracking](img/sprint_tracking.png)
+![Sprint_tracking](img/Sprint_tracking.png)
