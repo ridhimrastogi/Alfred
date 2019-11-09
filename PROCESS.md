@@ -91,7 +91,7 @@ The following **corollary practices** were integrated in our software developmen
   
 - **Real customer involvement** : This **corollary practice** enabled to discuss the scope of our use cases.
 
-  - We were able to clarify the use case requirements with the customer(professor as well as TAs), enabling us to have cleare picture for implementation.
+  - We were able to clarify the use case requirements with the customer(professor as well as TAs), enabling us to have clearer picture for implementation.
   - Involving the customer views also helped us to make better estimates regarding the project.
 
 
