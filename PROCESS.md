@@ -100,4 +100,8 @@ The following **corollary practices** were integrated in our software developmen
 
 The tasks were distributed evenly between sprints. Sprint wise distribution of tasks can be seen in the image below
 
-![Sprint_tracking](img/Sprint_tracking.png)
+| Process  | Tasks assigned | Tasks completed | Story Points Finished |
+| ------------- | ------------- |
+| Sprint 1  | 8  | 7 | 26 |
+| Sprint 2  | 9  | 7 | 19 |
+
