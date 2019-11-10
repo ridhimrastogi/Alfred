@@ -1,129 +1,121 @@
-const got  = require('got');
-const _ = require("underscore");
+const fs = require('fs');
+const base64 = require('base64url');
+const { google } = require('googleapis');
 
-const token = "Bearer " + "OAUTH2_TOKEN";
-const urlRoot = "https://www.googleapis.com/drive/v3/files";
+const SCOPES = ['https://www.googleapis.com/auth/drive',
+	'https://www.googleapis.com/auth/drive.file',
+	'https://www.googleapis.com/auth/drive.appfolder',
+	'https://www.googleapis.com/auth/drive.metadata']
 
-async function getFiles() {
-	const url = urlRoot + "/";
-	const options = {
-		method: 'GET',
-		headers: {
-            "content-type": "application/json",
-            "Accept": "application/json",
-			"Authorization": token
-		},
-		json: true
+let drive = google.drive('v3');
+var oAuth2Client = null;
+
+var tokenStore = new Map();
+
+// Load client secrets from a local file.
+fs.readFile('../credentials.json', (err, content) => {
+	if (err) return console.log('Error loading client secret file:', err);
+	const { client_secret, client_id, redirect_uris } = JSON.parse(content).web;
+	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+});
+
+// Token Server
+const tokenServer = require('express')()
+const port = 3000
+
+const _getTokenFromCode = (req, res) => {
+	console.log(`Received code: ${req.query.code}`);
+	code = req.query.code;
+	state = extractState(req.query.state);
+	oAuth2Client.getToken(code, (err, token) => {
+		if (err) return console.log(`Error retrieving access token: ${err}`);
+		tokenStore.set(state.userId, token);
+		console.log('Token created');
+		res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/' + state.msgChannel);
+	});
+}
+
+tokenServer.listen(port, () => console.log(`Token server listening on port ${port}!`))
+tokenServer.get('/tokenurl', _getTokenFromCode);
+
+// Drive Handlers
+const checkForToken = (userId) => {
+	try {
+		if (tokenStore.has(userId)) {
+			return true;
+		}
+	}
+	catch (error) {
+		console.log(`No token found for User Id: ${userId}`);
+		return false;
+	}
+	return false;
+};
+
+const authorize = (userId) => {
+	try {
+		oAuth2Client.setCredentials(tokenStore.get(userId));
+	}
+	catch (error) {
+		console.log(`Failed to authorize user, error: ${error}`);
+		return false;
+	}
+	return true;
+};
+
+const getAuthUrl = (userId, msgChannel) => oAuth2Client.generateAuthUrl({
+	access_type: 'offline',
+	scope: SCOPES,
+	prompt: 'consent',
+	state: generateStateString(userId, msgChannel)
+});
+
+function generateStateString(userId, msgChannel) {
+	state = {
+		userId: userId,
+		msgChannel: msgChannel
 	};
-
-	// Send a http request to url
-	let files = (await got(url, options)).body;
-	return files;
+	return base64.encode(JSON.stringify(state));
 }
 
-async function createFile(file) {
-	const url = urlRoot + "/";
-	const options = {
-		method: 'POST',
-		headers: {
-			"content-type": "application/json",
-			"Authorization": token
-        },
-        body: file,
-		json: true
+function extractState(stateString) {
+	state = base64.decode(stateString);
+	return JSON.parse(state);
+}
+
+async function listFiles() {
+	params = {
+		auth: oAuth2Client,
+		pageSize: 100,
+		fields: 'nextPageToken, files(id, name)',
 	};
-
-	// Send a http request to url
-	let createdFile = (await got(url, options)).body;
-	return createdFile;
+	return drive.files.list(params);
 }
 
-async function updateFile(file) {
-	const url = urlRoot + "/" + file.id;
-	const options = {
-		method: 'PATCH',
-		headers: {
-			"content-type": "application/json",
-			"Authorization": token
-        },
-        body: file,
-		json: true
+async function downloadFile(fileId) {
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		alt: 'media'
 	};
-
-	// Send a http request to url
-	let updatedFile = (await got(url, options)).body;
-	return updatedFile;
-}
-
-async function getFileId(filename) {
-    let fileList = getFiles(), fileId = "1u2Mzr75jjH5C40nEWrKohCM4YLczUdfoeqy9hR2xCcc";
-
-    let file = _.findWhere(fileList.files,{name: filename});
-    if (file !== undefined && file !== null) {
-        fileId = file.id;
-    }
-
-    return fileId;
-}
-
-async function getAFile(filename) {
-    let fileId = await getFileId(filename);
-
-	const url = urlRoot + "/" + fileId;
-	const options = {
-		method: 'GET',
-		headers: {
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: true
+	options = {
+		responseType: 'stream'
 	};
-
-	// Send a http request to url
-	let file = (await got(url, options)).body;
-	return file;
+	return drive.files.get(params, options);
 }
 
-async function downloadAFile(filename) {    
-    let fileId = await getFileId(filename);
-	const url = urlRoot + "/" + fileId + "?alt=media";
-	const options = {
-		method: 'GET',
-		headers: {
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: true
+async function fetchComments(fileID) {
+	params = {
+		auth: oAuth2Client,
+		fileId: fileID,
+		fields: '*'
 	};
-
-	// Send a http request to url
-	let downloadedFile = (await got(url, options)).body;
-	return downloadedFile;
+	return drive.comments.list(params)
 }
 
-async function deleteAFile(filename) {   
-    let fileId = await getFileId(filename);
- 
-	const url = urlRoot + "/" + fileId;
-	const options = {
-		method: 'DELETE',
-		headers: {
-			"content-type": "application/json",
-			"Authorization": token
-		},
-		json: true
-	};
-
-	// Send a http request to url
-	let file = (await got(url, options)).body;
-	return file;
-}
-
-// TODO: Edit permission use case.
-
-exports.getFiles = getFiles;
-exports.getAFile = getAFile;
-exports.createFile = createFile;
-exports.downloadAFile = downloadAFile;
-exports.deleteAFile = deleteAFile;
-exports.updateFile = updateFile;
+exports.getAuthUrl = getAuthUrl;
+exports.checkForToken = checkForToken;
+exports.authorize = authorize;
+exports.listFiles = listFiles;
+exports.downloadFile = downloadFile;
+exports.fetchComments = fetchComments;

@@ -9,9 +9,8 @@ let host = "mattermost-csc510-9.herokuapp.com",
     client = new Client(host, group, {});
 
 async function main() {
-
     // bot login
-    let request = await client.tokenLogin(process.env.BOTTOKEN);
+    client.tokenLogin(process.env.BOTTOKEN);
 
     client.on('message', function (msg) {
         // hears
@@ -23,7 +22,6 @@ async function main() {
 }
 
 function hears(msg, text) {
-
     if (msg.data.sender_name == bot_name) return false;
 
     if (msg.data.post) {
@@ -32,26 +30,20 @@ function hears(msg, text) {
             return true;
         }
     }
-    
     return false;
 }
 
 async function parseMessage(msg) {
-
     if (hears(msg, "create")) {
         handler.createFile(msg, client);
-    }
-    else if (hears(msg, "list")) {
-        handler._justListFiles(msg, client);
-    }
-    else if (hears(msg, "download")) {
-        handler._downloadFile(msg, client);
-    }
-    else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
+    } else if (hears(msg, "list")) {
+        handler.listFiles(msg, client);
+    } else if (hears(msg, "download")) {
+        handler.downloadFile(msg, client);
+    } else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
         handler.updateCollaboratorsInFile(msg, client);
-    }
-    else if (hears(msg, "comment") || hears(msg, "comments")) {
-        handler._fetchCommentsInFile(msg, client);
+    } else if (hears(msg, "comment") || hears(msg, "comments")) {
+        handler.fetchCommentsInFile(msg, client);
     }
 }
 
