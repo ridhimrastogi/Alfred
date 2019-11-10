@@ -1,17 +1,13 @@
 const fs = require('fs');
 const base64 = require('base64url');
 const { google } = require('googleapis');
+const constants = require('./utils/app_constants')
 
-const SCOPES = ['https://www.googleapis.com/auth/drive',
-	'https://www.googleapis.com/auth/drive.file',
-	'https://www.googleapis.com/auth/drive.appfolder',
-	'https://www.googleapis.com/auth/drive.metadata']
-
-let drive = google.drive('v3');
+let drive = google.drive(constants.DRIVE_VERSION);
 var oAuth2Client = null;
 
-// Alfred Google Drive Credentials (Client Secret)
-fs.readFile('../credentials.json', (err, content) => {
+// Alfred's Google Drive Credentials (Client Secret)
+fs.readFile(constants.CLIENT_SECRETS, (err, content) => {
 	if (err) return console.log('Error loading client secret file:', err);
 	const { client_secret, client_id, redirect_uris } = JSON.parse(content).web;
 	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
@@ -20,8 +16,8 @@ fs.readFile('../credentials.json', (err, content) => {
 // Token Server
 var tokenStore = new Map();
 
-const tokenServer = require('express')()
-const port = 3000
+const tokenServer = require('express')();
+const port = constants.TS_PORT;
 
 const _getTokenFromCode = (req, res) => {
 	console.log(`Received code: ${req.query.code}`);
@@ -31,17 +27,17 @@ const _getTokenFromCode = (req, res) => {
 		if (err) return console.log(`Error retrieving access token: ${err}`);
 		tokenStore.set(state.userId, token);
 		console.log('Token created');
-		res.redirect('https://mattermost-csc510-9.herokuapp.com/alfred/channels/' + state.msgChannel);
+		res.redirect(constants.TS_REDIRECT_URI + state.msgChannel);
 	});
 }
 
-tokenServer.listen(port, () => console.log(`Token server listening on port ${port}!`))
+tokenServer.listen(port, () => console.log(`Token server listening on port ${port}`))
 tokenServer.get('/tokenurl', _getTokenFromCode);
 
 // OAuth2 Handlers
 const authUrl = (userId, msgChannel) => oAuth2Client.generateAuthUrl({
 	access_type: 'offline',
-	scope: SCOPES,
+	scope: constants.SCOPES,
 	prompt: 'consent',
 	state: _encodeState(userId, msgChannel)
 });

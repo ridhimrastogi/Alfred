@@ -1,29 +1,32 @@
+//const scopes = require('../test/utils/scopes.js');
+const fs = require('fs');
+const constants = require('./utils/app_constants');
+
 const Client = require('./mattermost-client/client');
 const Handler = require('./handler');
-//const scopes = require('../test/utils/scopes.js');
 
-let host = "mattermost-csc510-9.herokuapp.com",
-    group = "alfred",
-    bot_name = "@alfred";
+if (!fs.existsSync(constants.EPHEMERAL_FILES)) fs.mkdirSync(constants.EPHEMERAL_FILES);
 
-let client = new Client(host, group, {});
+let bot = constants.BOT_HANDLE;
+
+let client = new Client(constants.MM_HOST, constants.MM_GROUP, {});
 let handler = new Handler(client);
 
 async function main() {
-    // bot login
+    // Bot Login
     client.tokenLogin(process.env.BOTTOKEN);
 
     client.on('message', function (msg) {
-        // hears
-        if (hears(msg, bot_name)) {
-            // process-send
+        // Hears
+        if (hears(msg, bot)) {
+            // Process - Send
             parseMessage(msg);
         }
     });
 }
 
 function hears(msg, text) {
-    if (msg.data.sender_name == bot_name) return false;
+    if (msg.data.sender_name == bot) return false;
 
     if (msg.data.post) {
         let post = JSON.parse(msg.data.post);

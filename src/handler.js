@@ -1,11 +1,12 @@
 const fs = require('fs');
 const util = require('util');
-const helper = require("./utils/helpers.js");
-const drive = require("./drive.js");
-const stream = require('stream')
+const helper = require("./utils/helpers");
+const drive = require("./drive");
+const stream = require('stream');
+const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
-const fileFilter = "00atf"
+const fileFilter = "00atf";
 
 class Handler {
     constructor(client) {
@@ -44,7 +45,7 @@ class Handler {
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
         } else {
-            let ephemeralPath = `./ephemeral-files/${fileName}`;
+            let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}`;
             drive.downloadFile(files.get(fileName))
                 .then(result => createEphemeralFile(result.data, ephemeralPath))
                 .then(() => this.uploadFileToMattermost(ephemeralPath, channel))
@@ -76,7 +77,9 @@ class Handler {
             drive.fetchComments(files.get(fileName))
                 .then(result => _prepareComments(result.data.comments))
                 .then(comments => {
-                    let msg = `${comments.length} comment(s) found on file ${fileName}` + "\n" + `${comments.slice(0, 5).join('\r\n')}`;
+                    let msg = `${comments.length} comment(s) found on file ${fileName}`
+                        + "\n"
+                        + `${comments.slice(0, 5).reverse().join('\r\n')}`;
                     this.client.postMessage(msg, channel);
                 })
                 .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments"))
@@ -91,7 +94,7 @@ class Handler {
 
     async _listFiles() {
         return drive.listFiles()
-            .then(result => _extractFileInfo(result.data.files, "00atf"))
+            .then(result => _extractFileInfo(result.data.files))
             .catch(error => {
                 this.sendGenericErrorMsg(error, "Failed to retrive file IDs");
                 return new Map();
