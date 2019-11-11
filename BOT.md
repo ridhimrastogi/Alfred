@@ -26,9 +26,9 @@ We made the required changes to the DESIGN.md file
 
  - To intercept the calls to Google Drive API, we are using **Nock**, a commonly used Node.js mocking framework. 
  
- - We created a mock JSON response, found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/src/mock.json), from which we return required data using Nock scopes.
+ - We created a mock JSON response, found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/test/utils/mock.json), from which we return required data using Nock scopes.
  
- - A complete list of all Nock scopes that we used for our application can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/src/helper.js).
+ - A complete list of all Nock scopes that we used for our application can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/test/utils/scopes.js).
 
 ## Automation Testing
 
