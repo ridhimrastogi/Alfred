@@ -1,5 +1,7 @@
 const fs = require('fs');
-const { google } = require('googleapis');
+const {
+	google
+} = require('googleapis');
 const async = require('async');
 const express = require('express');
 
@@ -9,7 +11,8 @@ const port = 3000
 
 // If modifying these scopes, delete token.json.
 const SCOPES = ['https://www.googleapis.com/auth/drive',
-	'https://www.googleapis.com/auth/drive.file'];
+	'https://www.googleapis.com/auth/drive.file'
+];
 // The file token.json stores the user's access and refresh tokens, and is
 // created automatically when the authorization flow completes for the first
 // time.
@@ -48,7 +51,11 @@ async function authorize(userID, mattermost_client) {
 	//Read Client Secret, Client Id, Redirect Urls from credentials.json stored locally
 	let content = fs.readFileSync('../credentials.json', 'utf8');
 	let credentials = JSON.parse(content);
-	const { client_secret, client_id, redirect_uris } = credentials.web;
+	const {
+		client_secret,
+		client_id,
+		redirect_uris
+	} = credentials.web;
 
 	oAuth2Client = new google.auth.OAuth2(
 		client_id, client_secret, redirect_uris[0]);
@@ -67,8 +74,8 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
 	const authUrl = oAuth2Client.generateAuthUrl({
 		access_type: 'offline',
 		scope: SCOPES,
-    state: userID,
-    prompt: 'consent'
+		state: userID,
+		prompt: 'consent'
 	});
 	let user_channel = mattermost_client.getUserDirectMessageChannel(userID).id;
 	mattermost_client.postMessage(`Please Authorize this app first by visiting this url: ${authUrl}`, user_channel);
@@ -112,33 +119,32 @@ async function createFile(userID, fileParams, mattermost_client) {
 	};
 
 	return drive.files.create({
-			auth: oAuth2Client,
-			resource: fileMetadata,
-			fields: '*'
-		})
+		auth: oAuth2Client,
+		resource: fileMetadata,
+		fields: '*'
+	})
 }
 
-function getFileByFilename(userID, filename) {
-  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+async function getFileByFilter(userID, client, filter = "") {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, client);
 		return null;
-  }
+	}
 
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-
-	res = drive.files.list({
-    auth: oAuth2Client,
-		q: "name=" + filename,
-    spaces: 'drive',
-    fields: '*',
-  });
+	return drive.files.list({
+		auth: oAuth2Client,
+		q: filter,
+		spaces: 'drive',
+		fields: '*',
+	});
 }
 
 async function addCollaborators(userID, params, client) {
 	let arr = [];
 	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
-			authorize(userID, client);
-			return null;
+		authorize(userID, client);
+		return null;
 	}
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
@@ -177,8 +183,8 @@ async function updateCollaborators(userID, params, client) {
 	let arr = [];
 	console.log("\n\n\n\n" + JSON.stringify(params) + "\n\n\n");
 	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
-			authorize(userID, client);
-			return null;
+		authorize(userID, client);
+		return null;
 	}
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
@@ -187,7 +193,9 @@ async function updateCollaborators(userID, params, client) {
 			auth: oAuth2Client,
 			fileId: params.fileId,
 			permissionId: permission.permissionId,
-			resource: {role: permission.role},
+			resource: {
+				role: permission.role
+			},
 			fields: 'id',
 		}, function (err, res) {
 			if (err) {
@@ -218,8 +226,8 @@ function fetchcomments(fileID, userID, mattermost_client) {
 
 // -------------------------------------------------------------------
 
-async function _listFiles(userID,mattermost_client) {
-  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+async function _listFiles(userID, mattermost_client) {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, mattermost_client);
 		return null;
 	}
@@ -234,10 +242,10 @@ async function _listFiles(userID,mattermost_client) {
 }
 
 async function _downloadFile(fileId, userID, mattermost_client) {
-  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, mattermost_client);
 		return null;
-  }
+	}
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
 	params = {
@@ -252,10 +260,10 @@ async function _downloadFile(fileId, userID, mattermost_client) {
 }
 
 async function _downloadGDoc(fileId, userID, mattermost_client) {
-  if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
+	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
 		authorize(userID, mattermost_client);
 		return null;
-  }
+	}
 	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
 
 	params = {
@@ -274,7 +282,7 @@ exports.getAccessToken = getAccessToken;
 exports.listFiles = listFiles;
 exports.createFile = createFile;
 exports.addCollaborators = addCollaborators
-exports.getFileByFilename = getFileByFilename
+exports.getFileByFilter = getFileByFilter
 exports.fetchcomments = fetchcomments
 exports.updateCollaborators = updateCollaborators
 exports.listPermission = listPermission
