@@ -82,25 +82,6 @@ async function getAccessToken(oAuth2Client, userID, mattermost_client) {
 }
 
 /**
- * Lists the names and IDs of up to 10 files.
- * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
- */
-async function listFiles(userID, mattermost_client) {
-	if (typeof usertoken[userID] === "undefined" || usertoken[userID] == null) {
-		authorize(userID, mattermost_client);
-		return null;
-	}
-	oAuth2Client.setCredentials(JSON.parse(usertoken[userID]));
-	console.log("oAuth2Client\n", oAuth2Client);
-	options = {
-		auth: oAuth2Client,
-		pageSize: 100,
-		fields: '*',
-	};
-	return drive.files.list(options);
-}
-
-/**
  * Creates a file using meta data.
  * @param {google.auth.OAuth2} auth An authorized OAuth2 client.
  */
@@ -279,7 +260,6 @@ async function _downloadGDoc(fileId, userID, mattermost_client) {
 
 exports.authorize = authorize;
 exports.getAccessToken = getAccessToken;
-exports.listFiles = listFiles;
 exports.createFile = createFile;
 exports.addCollaborators = addCollaborators
 exports.getFileByFilter = getFileByFilter
