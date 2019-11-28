@@ -98,15 +98,13 @@ async function updateCollaboratorsInFile(msg, client, command) {
         return client.postMessage("Please enter a supported file extension.\n" +
             "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
 
-    // let userIds = usernames.map(username => client.getUserIDByUsername(username));
-    // let files = google_auth.getFileByFilename(fileName);
-    let res = await google_auth._listFiles(miscParams.senderUserID, client);
-    files = res.data.files;
+    let res = await google_auth.getFileByFilter(miscParams.senderUserID, client, "name="+ "'" + fileName + "'"),
+        files = res.data.files;
 
     if (files === undefined || !files.length)
         return client.postMessage("No such file found!", miscParams.channel);
 
-    let file = files.filter(file => file.name == fileName)[0],
+    let file = files[0],
         fileLink = file.webViewLink,
         response;
 
