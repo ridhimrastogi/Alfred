@@ -446,7 +446,7 @@ class Client extends EventEmitter {
         }
         if (channel) {
             // channel obviously doesn't exist, let's create it
-            //if (callback != null) { callback(channel); }
+            // if (callback != null) { callback(channel); }
             return channel;
         }
         return this.createDirectChannel(userID, null);
@@ -611,7 +611,7 @@ class Client extends EventEmitter {
     }
 
     // Private functions
-    //
+    
     _send(message) {
         if (!this.connected) {
             return false;
