@@ -31,7 +31,7 @@ class Handler {
 
     async createFile(msg) {
         let channel = msg.broadcast.channel_id;
-        let  post = JSON.parse(msg.data.post);
+        let post = JSON.parse(msg.data.post);
         let user = msg.data.sender_name.split('@')[1];
         let fileName = helper.getFileName(post);
 
@@ -46,8 +46,8 @@ class Handler {
             return this.client.postMessage("Please enter a supported file extension.\n" +
                 "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
-         let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
-         let invalidUsernames = this._checkInvalidUsernames(usernames, this.client)
+        let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
+        let invalidUsernames = this._checkInvalidUsernames(usernames, this.client)
 
         if (invalidUsernames.length) {
             if (invalidUsernames.length == 1) {
@@ -92,7 +92,7 @@ class Handler {
             return this.client.postMessage("Please enter a supported file extension.\n" +
                 "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
 
-        let res = await drive.getFileByFilter("name="+ "'" + fileName + "'"),
+        let res = await drive.getFileByFilter("name=" + "'" + fileName + "'"),
             files = res.data.files;
 
         if (files === undefined || !files.length)
@@ -105,8 +105,8 @@ class Handler {
         if (command === "update") {
             let permission_res = await drive.listPermission(file.id);
             if (permission_res !== undefined || !permission_res.data.permissions.length) {
-            response = await drive.updateCollaborators(
-                this._getPermissionParamsForUpdateCollab(file, usernames, permission_res.data.permissions,
+                response = await drive.updateCollaborators(
+                    this._getPermissionParamsForUpdateCollab(file, usernames, permission_res.data.permissions,
                         miscParams.permissionList));
                 if (response)
                     this.client.postMessage("Updated collaborators to file " + fileName + " successfully\n" +
@@ -142,13 +142,13 @@ class Handler {
     _getParamsforUpdateFile(msg) {
         let params = {}
         params.channel = msg.broadcast.channel_id,
-        params.sender = msg.data.sender_name.split('@')[1],
-        params.senderUserID = this.client.getUserIDByUsername(params.sender),
-        params.splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" "),
-        params.collaboatorList = params.splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred"),
-        params.permissionList = params.splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
-            .includes(x.toLowerCase()))
-        .map(x => x.toLowerCase())
+            params.sender = msg.data.sender_name.split('@')[1],
+            params.senderUserID = this.client.getUserIDByUsername(params.sender),
+            params.splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" "),
+            params.collaboatorList = params.splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred"),
+            params.permissionList = params.splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
+                .includes(x.toLowerCase()))
+                .map(x => x.toLowerCase())
         return params;
     }
 
@@ -161,7 +161,7 @@ class Handler {
             let role = 'reader';
             let element = permissionList[index];
             let permission = permission_res.filter(p =>
-                    p.emailAddress == mclient.getUserEmailByUsername(username))[0];
+                p.emailAddress == mclient.getUserEmailByUsername(username))[0];
             if (element === 'comment') role = 'commenter';
             else if (element === 'edit') role = 'writer';
             perm.push({
@@ -182,7 +182,7 @@ class Handler {
 
         let mclient = this.client;
 
-        permissionList.forEach(function(element, index) {
+        permissionList.forEach(function (element, index) {
             let role, permission = {
                 'type': 'user'
             };
@@ -248,7 +248,7 @@ class Handler {
         this._validateFile(fileName, channel);
 
         // if(fileExtension != undefined)
-       //  console.log("fileExtension: ",fileExtension)
+        //  console.log("fileExtension: ",fileExtension)
 
         let files = await this._listFiles(channel);
 
@@ -267,12 +267,6 @@ class Handler {
                 .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments", channel))
         }
     }
-
-
-
-    // ADD NEW USECASE HANDLERS HERE...
-
-
 
     async _listFiles(channel) {
         return drive.listFiles()
@@ -322,7 +316,7 @@ class Handler {
     }
 
     _validateFile(fileName, channel) {
-        if (!helper.checkValidFile(fileName)){
+        if (!helper.checkValidFile(fileName)) {
             return this.client.postMessage("Please Enter a valid file name", channel);
         }
 

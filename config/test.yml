@@ -1,3 +1,5 @@
+# Deployment Configuration - Test Environment
+
 # Mattermost Server
 MM_HOST: 'mattermost-csc510-9-test.herokuapp.com'
 MM_GROUP: 'alfredtest'

@@ -142,7 +142,6 @@ async function addCollaborators(params) {
 			}
 		}))
 	});
-
 	return arr;
 }
 
@@ -156,8 +155,6 @@ async function listPermission(fileId) {
 
 async function updateCollaborators(params) {
 	let arr = [];
-	console.log("\n\n\n\n" + JSON.stringify(params) + "\n\n\n");
-
 	params.permissions.forEach(permission => {
 		arr.push(drive.permissions.update({
 			auth: oAuth2Client,
@@ -175,7 +172,6 @@ async function updateCollaborators(params) {
 			}
 		}))
 	});
-
 	return arr;
 }
 

@@ -1,3 +1,5 @@
+# Deployment Configuration - Prod Environment
+
 # Mattermost Server
 MM_HOST: 'mattermost-csc510-9.herokuapp.com'
 MM_GROUP: 'alfred'
