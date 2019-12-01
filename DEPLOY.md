@@ -12,9 +12,11 @@ There are mainly two Jenkins Jobs:
   * Install node modules for CSC510-9
 
 * **Deploy Job:** Similarly, as above this Jenkins job will be executing an ansible playbook which refer the tasks specified in the *deploy.yml*. The tasks are as follows:
-  * Get the code changes for CSC510-9
+  * Pull the latest code changes for CSC510-9
+  * Prepare test environement
   * Run the Integration test cases
-  * Deploy the filebot on Heroku
+  * Prepare the production environment
+  * Deploy the filebot to production environment
 
 
 
