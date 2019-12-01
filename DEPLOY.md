@@ -21,3 +21,14 @@ There are mainly two Jenkins Jobs:
 
 
 ### Acceptance tests
+
+## Login Credentials:
+
+## Acceptance test instructions:
+
+* **List files:**
+* **Create file:**
+* **Download file:**
+* **Fetch comments:**
+* **Update file:**
+
