@@ -1,7 +1,12 @@
-# folders
+# Folders
 node_modules/
+ephemeral-files/
 
 # OS generated files #
 **/.DS_Store
 
+# IDE
 .vscode/
+
+# Secrets
+credentials.json
