@@ -47,7 +47,13 @@ function checkValidFile(fileName) {
 }
 
 function checkValidFileExtension(fileExtension) {
-    return !(fileExtension === undefined || getMIMEType(fileExtension) == null)
+    if(fileExtension === undefined)
+        return true;
+    else {
+        if(getMIMEType(fileExtension) == null)
+            return false;
+    }
+    return true;
 }
 
 function getFileName(msg){

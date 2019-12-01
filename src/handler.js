@@ -38,14 +38,9 @@ class Handler {
 
         if (!this.validateUser(user, channel)) return;
 
-        if (fileName == null)
-            return this.client.postMessage("Please enter a valid file name.", channel);
+        this._validateFile(fileName, channel);
 
         let fileExtension = fileName.split(".")[1];
-
-        if (!helper.checkValidFileExtension(fileExtension))
-            return this.client.postMessage("Please enter a supported file extension.\n" +
-                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
         let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
         let invalidUsernames = this._checkInvalidUsernames(usernames, this.client)
@@ -89,9 +84,7 @@ class Handler {
 
         if (!this.validateUser(miscParams.sender, miscParams.channel)) return;
 
-        if (!helper.checkValidFileExtension(fileName.split(".")[1]))
-            return this.client.postMessage("Please enter a supported file extension.\n" +
-                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
+        this._validateFile(fileName, channel);
 
         let res = await drive.getFileByFilter("name=" + "'" + fileName + "'"),
             files = res.data.files;
@@ -210,12 +203,10 @@ class Handler {
 
         let post = JSON.parse(msg.data.post);
         let fileName = post.message.split("\"")[1];
-        //let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
 
         this._validateFile(fileName, channel);
 
         let files = await this._listFiles();
-        //console.log("Filelist: ",files);
 
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
@@ -244,12 +235,8 @@ class Handler {
 
         let post = JSON.parse(msg.data.post);
         let fileName = post.message.split("\"")[1];
-        //let fileExtension = fileName.split(".")[1];
 
         this._validateFile(fileName, channel);
-
-        // if(fileExtension != undefined)
-        //  console.log("fileExtension: ",fileExtension)
 
         let files = await this._listFiles(channel);
 
@@ -321,10 +308,10 @@ class Handler {
             return this.client.postMessage("Please Enter a valid file name", channel);
         }
 
-        //let fileExtension = fileName.split(".")[1];
-        // if (!helper.checkValidFileExtension(fileExtension))
-        //     return this.client.postMessage("Please enter a supported file extension.\n" +
-        //         "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpeg", channel);
+        let fileExtension = fileName.split(".")[1];
+        if (!helper.checkValidFileExtension(fileExtension))
+             return this.client.postMessage("Please enter a supported file extension.\n" +
+                 "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpg, jpeg", channel);
     }
 
     //function to check invalid users
