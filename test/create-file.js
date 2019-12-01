@@ -1,10 +1,9 @@
 const puppeteer = require('puppeteer')
 const { expect } = require('chai')
 
-
 const loginEmail = process.env.MATTERMOST_EMAIL;
 const loginPassword = process.env.MATTERMOST_PWD;
-const mattermostUrl = 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/town-square';
+const mattermostUrl = 'https://mattermost-csc510-9-test.herokuapp.com/alfred/channels/town-square';
 const PROCESSING = 2000;
 
 async function login(browser, url) {
