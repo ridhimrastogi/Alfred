@@ -59,4 +59,12 @@ There are mainly two Jenkins Jobs:
      
 * **Fetch comments:**
 * **Update file:**
-
+   * **As** a user in mattermost workspace, **I want** to add collaborators to an existing file on google drive, **so that** I can share the document within the team<br><br>
+     **Scenario 1:** User add one collaborator to a file on google drive<br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Add @john as collaborator with read access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the user and pings the collaborator with the file web link having appropriate access rights.*<br><br>
+     **Scenario 2:** User add multiple collaborators to an existing file<br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Add @john @mathew as collaborators with read and edit access in "<filename>.<file extension>"```, **then** on successful updation, alfred responds with the web link to access the file to the invoker user and pings the added collaborators with the file web link having appropriate access rights.*<br>
+     
+    * **As** a user in mattermost workspace, **I want** to update permissions of certain collaborators, **so that** I can change the access rights of the associated collaborators in the document<br><br>
+     **Scenario 1:** User update the permission of the collaborators in a file on google drive<br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Change/Update @john access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br><br
