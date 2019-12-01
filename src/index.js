@@ -44,8 +44,10 @@ function parseMessage(msg) {
         handler.listFiles(msg);
     } else if (hears(msg, "download")) {
         handler.downloadFile(msg);
-    } else if (hears(msg, "add") || hears(msg, "change") || hears(msg, "update")) {
-        handler.updateCollaboratorsInFile(msg);
+    } else if (hears(msg, "add")) {
+            handler.updateCollaboratorsInFile(msg, client, "add");
+    } else if (hears(msg, "change") || hears(msg, "update")) {  
+            handler.updateCollaboratorsInFile(msg, client, "update");
     } else if (hears(msg, "comment") || hears(msg, "comments")) {
         handler.fetchCommentsInFile(msg);
     }

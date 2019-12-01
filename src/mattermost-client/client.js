@@ -433,6 +433,7 @@ class Client extends EventEmitter {
                 return this.users[u].email;
             }
         }
+        return '';
     }
 
     getUserDirectMessageChannel(userID, callback) {
@@ -571,9 +572,9 @@ class Client extends EventEmitter {
         };
 
         if (typeof msg === 'string') {
-            postData.message = msg;
+            postData.message ="RR" + msg;
         } else {
-            postData.message = msg.message;
+            postData.message = "RR" + msg.message;
             if (msg.props) {
                 postData.props = msg.props;
             } if (msg.file_ids) {

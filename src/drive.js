@@ -83,6 +83,18 @@ async function downloadFile(fileId) {
 	return drive.files.get(params, options);
 }
 
+async function downloadGFile(fileId) {
+	params = {
+		auth: oAuth2Client,
+		fileId: fileId,
+		mimeType: 'application/pdf'
+	};
+	options = {
+		responseType: 'stream'
+	};
+	return drive.files.export(params, options);
+}
+
 async function fetchComments(fileID) {
 	params = {
 		auth: oAuth2Client,
@@ -91,6 +103,82 @@ async function fetchComments(fileID) {
 	};
 	return drive.comments.list(params)
 }
+
+async function createFile(fileParams) {
+	var fileMetadata = {
+		'name': fileParams.name,
+		'mimeType': fileParams.mimeType
+	};
+
+	return drive.files.create({
+		auth: oAuth2Client,
+		resource: fileMetadata,
+		fields: '*'
+	})
+}
+
+async function getFileByFilter(filter = "") {
+	return drive.files.list({
+		auth: oAuth2Client,
+		q: filter,
+		spaces: 'drive',
+		fields: '*',
+	});
+}
+
+async function addCollaborators(params) {
+	let arr = [];
+	params.permissions.forEach(permission => {
+		arr.push(drive.permissions.create({
+			auth: oAuth2Client,
+			resource: permission,
+			fileId: params.fileId,
+			fields: '*',
+		}, function (err, res) {
+			if (err) {
+				console.log(err);
+			} else {
+				console.log('Permission ID: ', res)
+			}
+		}))
+	});
+
+	return arr;
+}
+
+async function listPermission(fileId) {
+	return drive.permissions.list({
+		auth: oAuth2Client,
+		fileId: fileId,
+		fields: '*',
+	});
+}
+
+async function updateCollaborators(params) {
+	let arr = [];
+	console.log("\n\n\n\n" + JSON.stringify(params) + "\n\n\n");
+
+	params.permissions.forEach(permission => {
+		arr.push(drive.permissions.update({
+			auth: oAuth2Client,
+			fileId: params.fileId,
+			permissionId: permission.permissionId,
+			resource: {
+				role: permission.role
+			},
+			fields: 'id',
+		}, function (err, res) {
+			if (err) {
+				console.log(err);
+			} else {
+				console.log('Permission ID: ', res)
+			}
+		}))
+	});
+
+	return arr;
+}
+
 
 // Drive Helpers
 function _encodeState(userId, msgChannel) {
@@ -112,5 +200,11 @@ module.exports = {
 	authorize,
 	listFiles,
 	downloadFile,
-	fetchComments
+	downloadGFile,
+	fetchComments,
+	createFile,
+	getFileByFilter,
+	addCollaborators,
+	listPermission,
+	updateCollaborators
 };

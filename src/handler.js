@@ -6,7 +6,7 @@ const stream = require('stream');
 const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
-const fileFilter = "00atf";
+const fileFilter = "";
 
 class Handler {
     constructor(client) {
@@ -26,7 +26,180 @@ class Handler {
                 let msg = files.length ? files.join('\n') : "No files found";
                 this.client.postMessage(msg, channel);
             })
-            .catch(error => this.sendGenericErrorMsg(error, "Failed to list files"));
+            .catch(error => this.sendGenericErrorMsg(error, "Failed to list files", channel));
+    }
+
+    async createFile(msg) {
+        let channel = msg.broadcast.channel_id;
+        let  post = JSON.parse(msg.data.post);
+        let user = msg.data.sender_name.split('@')[1];
+        let fileName = helper.getFileName(post);
+
+        if (!this.validateUser(user, channel)) return;
+
+        if (fileName == null)
+            return this.client.postMessage("Please enter a valid file name.", channel);
+
+        let fileExtension = fileName.split(".")[1];
+
+        if (!helper.checkValidFileExtension(fileExtension))
+            return this.client.postMessage("Please enter a supported file extension.\n" +
+                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
+
+         let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
+         let invalidUsernames = this._checkInvalidUsernames(usernames, this.client)
+
+        if (invalidUsernames.length) {
+            if (invalidUsernames.length == 1) {
+                invalidUsernames = invalidUsernames.join(', ')
+                return this.client.postMessage(`${invalidUsernames} is an invalid username, Please try again with valid a username`, channel)
+            } else {
+                return this.client.postMessage(`${invalidUsernames} are invalid usernames, Please try again with valid usernames`, channel)
+            }
+        }
+
+        let fileParams = {
+            "name": fileName,
+            "mimeType": helper.getMIMEType(fileExtension)
+        }
+
+        console.log("File params are: " + JSON.stringify(fileParams))
+        let response = await drive.createFile(fileParams),
+            fileLink = response.data.webViewLink;
+
+        if (usernames.length > 0) {
+            this.updateCollaboratorsInFile(msg, "add");
+        }
+        this._sendDirecMessageToUsers(usernames, fileName, fileLink);
+        this.client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
+    }
+
+    // Sample query: @alfred add @ridhim @shubham as collaborators with read and edit access in file.doc
+    // Sample query: @alfred change/update @ridhim access to edit access in file.doc
+    async updateCollaboratorsInFile(msg, command) {
+        let miscParams = this._getParamsforUpdateFile(msg);
+
+        if (miscParams.collaboatorList.length !== miscParams.permissionList.length)
+            return this.client.postMessage("Invalid request!", miscParams.channel);
+
+        let post = JSON.parse(msg.data.post);
+        let fileName = helper.getFileName(post);
+        let usernames = miscParams.collaboatorList.map(uh => uh.replace('@', ''));
+
+        if (!this.validateUser(miscParams.sender, miscParams.channel)) return;
+
+        if (!helper.checkValidFileExtension(fileName.split(".")[1]))
+            return this.client.postMessage("Please enter a supported file extension.\n" +
+                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
+
+        let res = await drive.getFileByFilter("name="+ "'" + fileName + "'"),
+            files = res.data.files;
+
+        if (files === undefined || !files.length)
+            return this.client.postMessage("No such file found!", miscParams.channel);
+
+        let file = files[0],
+            fileLink = file.webViewLink,
+            response;
+
+        if (command === "update") {
+            let permission_res = await drive.listPermission(file.id);
+            if (permission_res !== undefined || !permission_res.length) {
+
+            response = await drive.updateCollaborators(
+                this._getPermissionParamsForUpdateCollab(file, usernames, permission_res.data.permissions,
+                        miscParams.permissionList));
+                if (response)
+                    this.client.postMessage("Updated collaborators to file " + fileName + " successfully\n" +
+                        "Here is the link for the same: " + fileLink, miscParams.channel);
+                else
+                    return this.client.postMessage("Error occurred while adding collaborators.!! :(", miscParams.channel);
+            } else {
+                response = await drive.addCollaborators(
+                    this._getPermissionParamsForAddCollab(file, miscParams.permissionList, usernames));
+
+                if (response) {
+                    this._sendDirecMessageToUsers(usernames, fileName, fileLink);
+                    this.client.postMessage("Updated collaborators to file " + fileName + " successfully\n" +
+                        "Here is the link for the same: " + fileLink, miscParams.channel);
+                } else
+                    return this.client.postMessage("Error occurred while adding collaborators.!! :(", miscParams.channel);
+            }
+        }
+
+        if (command === "add") {
+            response = await drive.addCollaborators(
+                this._getPermissionParamsForAddCollab(file, miscParams.permissionList, usernames));
+
+            if (response) {
+                this._sendDirecMessageToUsers(usernames, fileName, fileLink);
+                this.client.postMessage("Updated collaborators to file " + fileName + " successfully\n" +
+                    "Here is the link for the same: " + fileLink, miscParams.channel);
+            } else
+                return this.client.postMessage("Error occurred while adding collaborators.!! :(", miscParams.channel);
+        }
+    }
+
+    _getParamsforUpdateFile(msg) {
+        let params = {}
+        params.channel = msg.broadcast.channel_id,
+        params.sender = msg.data.sender_name.split('@')[1],
+        params.senderUserID = this.client.getUserIDByUsername(params.sender),
+        params.splittedMessageBySpace = JSON.parse(msg.data.post).message.split(" "),
+        params.collaboatorList = params.splittedMessageBySpace.filter(x => x.includes('@') && x !== "@alfred"),
+        params.permissionList = params.splittedMessageBySpace.filter(x => ["read", "edit", "comment"]
+            .includes(x.toLowerCase()))
+        .map(x => x.toLowerCase())
+        return params;
+    }
+
+    _getPermissionParamsForUpdateCollab(file, usernames, permission_res, permissionList) {
+        let updateParams = {},
+            perm = [];
+        updateParams.fileId = file.id;
+        let mclient = this.client;
+        usernames.forEach(function (username, index) {
+            let role = 'reader',
+                element = permissionList[index],
+                permission = permission_res.filter(p =>
+                    p.emailAddress == mclient.getUserEmailByUsername(username))[0];
+            if (element === 'comment') role = 'commenter';
+            else if (element === 'edit') role = 'writer';
+            perm.push({
+                permissionId: permission.id,
+                role: role
+            });
+        });
+        updateParams.permissions = perm;
+
+        return updateParams;
+    }
+
+    _getPermissionParamsForAddCollab(file, permissionList, usernames) {
+        let params = {};
+
+        params.fileId = file.id;
+        let permissions = [];
+
+        let mclient = this.client;
+
+        permissionList.forEach(function(element, index) {
+            let role, permission = {
+                'type': 'user'
+            };
+
+            if (element === 'comment') role = 'commenter';
+            else if (element === 'edit') role = 'writer';
+            else role = 'reader';
+            permission.role = role;
+            permission.emailAddress = mclient.getUserEmailByUsername(usernames[index]);
+
+            permissions.push(permission);
+        });
+
+        params.permissions = permissions;
+
+        return params;
     }
 
     async downloadFile(msg) {
@@ -36,45 +209,57 @@ class Handler {
         if (!this.validateUser(user, channel)) return;
 
         let post = JSON.parse(msg.data.post);
-        let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
+        let fileName = post.message.split("\"")[1];
+        console.log("fileName: ", fileName);
+        //let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
 
-        _validateFile(fileName);
+        this._validateFile(fileName, channel);
 
         let files = await this._listFiles();
+        //console.log("Filelist: ",files);
 
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
+        } else if (fileName.split(".")[1] === undefined) {
+            let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}.pdf`;
+            drive.downloadGFile(files.get(fileName))
+                .then(result => createEphemeralFile(result.data, ephemeralPath))
+                .then(() => this.uploadFileToMattermost(ephemeralPath, channel))
+                .catch(error => this.sendGenericErrorMsg(error, "Failed to download file", channel))
+                .finally(() => unlinkFile(ephemeralPath));
         } else {
             let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}`;
             drive.downloadFile(files.get(fileName))
                 .then(result => createEphemeralFile(result.data, ephemeralPath))
                 .then(() => this.uploadFileToMattermost(ephemeralPath, channel))
-                .catch(error => this.sendGenericErrorMsg(error, "Failed to download file"))
+                .catch(error => this.sendGenericErrorMsg(error, "Failed to download file", channel))
                 .finally(() => unlinkFile(ephemeralPath));
         }
     }
 
     async fetchCommentsInFile(msg) {
         let channel = msg.broadcast.channel_id;
+        console.log("Rchannel: ",channel);
         let user = msg.data.sender_name.split('@')[1];
 
         if (!this.validateUser(user, channel)) return;
 
         let post = JSON.parse(msg.data.post);
-        let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
-        let fileExtension = fileName.split(".")[1];
+        let fileName = post.message.split("\"")[1];
+        //let fileExtension = fileName.split(".")[1];
 
-        _validateFile(fileName);
+        this._validateFile(fileName, channel);
 
-        if (fileExtension == "doc")
-            fileName = fileName.split(".")[0];
+        // if(fileExtension != undefined)
+        //     console.log("fileExtension: ",fileExtension)
 
-        let files = await this._listFiles();
+        let files = await this._listFiles(channel);
 
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
         } else {
             drive.fetchComments(files.get(fileName))
+                .then()
                 .then(result => _prepareComments(result.data.comments))
                 .then(comments => {
                     let msg = `${comments.length} comment(s) found on file ${fileName}`
@@ -82,7 +267,7 @@ class Handler {
                         + `${comments.slice(0, 5).reverse().join('\r\n')}`;
                     this.client.postMessage(msg, channel);
                 })
-                .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments"))
+                .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments", channel))
         }
     }
 
@@ -92,11 +277,11 @@ class Handler {
 
 
 
-    async _listFiles() {
+    async _listFiles(channel) {
         return drive.listFiles()
             .then(result => _extractFileInfo(result.data.files))
             .catch(error => {
-                this.sendGenericErrorMsg(error, "Failed to retrive file IDs");
+                this.sendGenericErrorMsg(error, "Failed to retrive file IDs", channel);
                 return new Map();
             });
     }
@@ -134,9 +319,43 @@ class Handler {
         })
     }
 
-    sendGenericErrorMsg(error, text) {
+    sendGenericErrorMsg(error, text, channel) {
         console.error(text, error);
         this.client.postMessage(text, channel);
+    }
+
+    _validateFile(fileName, channel) {
+        if (!helper.checkValidFile(fileName)){
+            console.log("Vchannel: ",channel);
+            console.log("client: ",this.client)
+            return this.client.postMessage("Please Enter a valid file name", channel);
+        }
+
+        //let fileExtension = fileName.split(".")[1];
+        // if (!helper.checkValidFileExtension(fileExtension))
+        //     return this.client.postMessage("Please enter a supported file extension.\n" +
+        //         "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpeg", channel);
+    }
+
+    //function to check invalid users
+    _checkInvalidUsernames(usernames) {
+        let invalidUsernames = []
+        usernames.map((uname) => {
+            let id = this.client.getUserIDByUsername(uname);
+            if (!id.length) {
+                invalidUsernames.push(uname);
+            }
+        });
+        return invalidUsernames
+    }
+
+    _sendDirecMessageToUsers(usernames, fileName, fileLink) {
+        let userIDS = usernames.map(username => this.client.getUserIDByUsername(username));
+        for (let userID in userIDS) {
+            let user_channel = this.client.getUserDirectMessageChannel(userIDS[userID]).id;
+            this.client.postMessage("You have been added as a collaborator for " + fileName + "\n" +
+                "Here is the link for the same: " + fileLink, user_channel);
+        }
     }
 }
 
@@ -150,17 +369,6 @@ function unlinkFile(filePath) {
     return fs.unlink(filePath, err => {
         if (err) console.error(err);
     })
-}
-
-function _validateFile(fileName) {
-    if (!helper.checkValidFile(fileName))
-        return this.client.postMessage("Please Enter a valid file name", channel);
-
-    let fileExtension = fileName.split(".")[1];
-
-    if (!helper.checkValidFileExtension(fileExtension))
-        return this.client.postMessage("Please enter a supported file extension.\n" +
-            "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpeg", channel);
 }
 
 function _extractFileInfo(files, filter = fileFilter) {

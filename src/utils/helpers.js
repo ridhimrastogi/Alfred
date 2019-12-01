@@ -43,7 +43,7 @@ function getMIMEType(fileExtension) {
 }
 
 function checkValidFile(fileName) {
-    return !(fileName === undefined || fileName.length == 0);
+    return (fileName != undefined && fileName.length != 0);
 }
 
 function checkValidFileExtension(fileExtension) {
