@@ -5,8 +5,8 @@ const TEST_PASSWORD = process.env.MM_TEST_PASSWORD;
 
 // Test Config
 const PROCESSING = 2000;
-const HEADLESS = false;
-const SLO_MO = 50;
+const HEADLESS = process.env.HEADLESS || false;
+const SLO_MO = 0;
 
 module.exports = {
     MM_URL,
