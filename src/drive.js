@@ -10,7 +10,7 @@ var oAuth2Client = null;
 fs.readFile(constants.CLIENT_SECRETS, (err, content) => {
 	if (err) return console.log('Error loading client secret file:', err);
 	const { client_secret, client_id, redirect_uris } = JSON.parse(content).web;
-	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[constants.TS_REDIRECT_INDEX]);
 });
 
 // Token Server
@@ -142,7 +142,6 @@ async function addCollaborators(params) {
 			}
 		}))
 	});
-
 	return arr;
 }
 
@@ -156,8 +155,6 @@ async function listPermission(fileId) {
 
 async function updateCollaborators(params) {
 	let arr = [];
-	console.log("\n\n\n\n" + JSON.stringify(params) + "\n\n\n");
-
 	params.permissions.forEach(permission => {
 		arr.push(drive.permissions.update({
 			auth: oAuth2Client,
@@ -175,7 +172,6 @@ async function updateCollaborators(params) {
 			}
 		}))
 	});
-
 	return arr;
 }
 

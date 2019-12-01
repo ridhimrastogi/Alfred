@@ -1,3 +1,5 @@
+# Deployment Configuration - Test Environment
+
 # Mattermost Server
 MM_HOST: 'mattermost-csc510-9-test.herokuapp.com'
 MM_GROUP: 'alfredtest'
@@ -11,4 +13,5 @@ SCOPES:
 
 # Token Server
 TS_PORT: 7066
-TS_REDIRECT_URI: 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/'
+TS_REDIRECT_URI: 'https://mattermost-csc510-9-test.herokuapp.com/alfredtest/channels/'
+TS_REDIRECT_INDEX: 1
