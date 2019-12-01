@@ -25,6 +25,7 @@ class Handler {
             .then(files => {
                 let msg = files.length ? files.join('\n') : "No files found";
                 this.client.postMessage(msg, channel);
+                this.client.postMessage("TEST MESSAGE", channel);
             })
             .catch(error => this.sendGenericErrorMsg(error, "Failed to list files", channel));
     }
