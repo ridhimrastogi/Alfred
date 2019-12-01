@@ -3,23 +3,20 @@ const APP_ROOT = require('app-root-path');
 const CLIENT_SECRETS = APP_ROOT + '/credentials.json';
 const EPHEMERAL_FILES = APP_ROOT + '/ephemeral-files';
 
+var config = require('config')
+
 // Mattermost Server
-const MM_HOST = 'mattermost-csc510-9.herokuapp.com';
-const MM_GROUP = 'alfred';
-const BOT_HANDLE = '@alfred';
+const MM_HOST = config.get('MM_HOST');
+const MM_GROUP = config.get('MM_GROUP');
+const BOT_HANDLE = config.get('BOT_HANDLE');
 
 // Google Drive
-const DRIVE_VERSION = 'v3';
-const SCOPES = [
-    'https://www.googleapis.com/auth/drive',
-    'https://www.googleapis.com/auth/drive.file',
-    'https://www.googleapis.com/auth/drive.appfolder',
-    'https://www.googleapis.com/auth/drive.metadata'
-];
+const DRIVE_VERSION = config.get('DRIVE_VERSION');
+const SCOPES = config.get('SCOPES');
 
 // Token Server
-const TS_PORT = 3000;
-const TS_REDIRECT_URI = 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/';
+const TS_PORT = config.get('TS_PORT');
+const TS_REDIRECT_URI = config.get('TS_REDIRECT_URI');
 
 module.exports = {
     APP_ROOT,
