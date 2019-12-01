@@ -1,0 +1,16 @@
+# Mattermost Server
+MM_HOST: 'mattermost-csc510-9-test.herokuapp.com'
+MM_GROUP: 'alfredtest'
+BOT_HANDLE: '@alfred'
+
+# Google Drive
+DRIVE_VERSION: 'v3'
+SCOPES: 
+    - 'https://www.googleapis.com/auth/drive'
+    - 'https://www.googleapis.com/auth/drive.file'
+    - 'https://www.googleapis.com/auth/drive.appfolder'
+    - 'https://www.googleapis.com/auth/drive.metadata'
+
+# Token Server
+TS_PORT: 7066
+TS_REDIRECT_URI: 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/'

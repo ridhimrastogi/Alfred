@@ -15,7 +15,9 @@
   "author": "Alfred Devs",
   "license": "ISC",
   "dependencies": {
-    "async": "^3.1.0",
+    "app-root-path": "^3.0.0",
+    "base64url": "^3.0.1",
+    "config": "^3.2.4",
     "express": "^4.17.1",
     "extend": "^3.0.2",
     "googleapis": "^39.2.0",
@@ -27,9 +29,7 @@
     "request": "^2.88.0",
     "text-encoding": "^0.5.5",
     "underscore": "^1.9.1",
-    "ws": ">=3.3.1",
-    "base64url": "^3.0.1",
-    "app-root-path": "^3.0.0"
+    "ws": ">=3.3.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",
