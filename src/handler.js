@@ -251,7 +251,7 @@ class Handler {
                         + `${comments.slice(0, 5).reverse().join('\r\n')}`;
                     this.client.postMessage(msg, channel);
                 })
-                .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments", channel))
+                .catch(error => this.sendGenericErrorMsg(error, "No comments found", channel))
         }
     }
 
