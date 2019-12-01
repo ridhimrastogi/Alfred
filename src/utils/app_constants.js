@@ -13,8 +13,6 @@ const DRIVE_VERSION = 'v3';
 const SCOPES = [
     'https://www.googleapis.com/auth/drive',
     'https://www.googleapis.com/auth/drive.file',
-    'https://www.googleapis.com/auth/drive.appfolder',
-    'https://www.googleapis.com/auth/drive.metadata'
 ];
 
 // Token Server
