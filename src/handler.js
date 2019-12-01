@@ -65,7 +65,7 @@ class Handler {
         if (usernames.length > 0) {
             this.updateCollaboratorsInFile(msg, "add");
         }
-        this._sendDirecMessageToUsers(usernames, fileName, fileLink);
+        //this._sendDirecMessageToUsers(usernames, fileName, fileLink);
         this.client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
     }
 
@@ -83,7 +83,7 @@ class Handler {
 
         if (!this.validateUser(miscParams.sender, miscParams.channel)) return;
 
-        this._validateFile(fileName, channel);
+        this._validateFile(fileName, miscParams.channel);
 
         let res = await drive.getFileByFilter("name=" + "'" + fileName + "'"),
             files = res.data.files;
