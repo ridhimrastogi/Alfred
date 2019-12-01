@@ -27,9 +27,9 @@ There are mainly two Jenkins Jobs:
 ### Acceptance test instructions:
 
 * **Pre-requisites:**
- * User must be configured in the mattermost server.
- * User must also give consent to alfred so that it can access the user's google drive.
- * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx, .pdf, .jpeg, .jpg
+   * User must be configured in the mattermost server.
+   * User must also give consent to alfred so that it can access the user's google drive.
+   * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx, .pdf, .jpeg, .jpg
 
 * **Create file:**
    * **As** a workspace user in mattermost</br>
