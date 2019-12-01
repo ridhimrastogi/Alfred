@@ -12,5 +12,6 @@ SCOPES:
     - 'https://www.googleapis.com/auth/drive.file'
 
 # Token Server
-TS_PORT: 3000
+TS_PORT: 7065
 TS_REDIRECT_URI: 'https://mattermost-csc510-9.herokuapp.com/alfred/channels/'
+TS_REDIRECT_INDEX: 0

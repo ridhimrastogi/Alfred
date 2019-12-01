@@ -10,7 +10,7 @@ var oAuth2Client = null;
 fs.readFile(constants.CLIENT_SECRETS, (err, content) => {
 	if (err) return console.log('Error loading client secret file:', err);
 	const { client_secret, client_id, redirect_uris } = JSON.parse(content).web;
-	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[0]);
+	oAuth2Client = new google.auth.OAuth2(client_id, client_secret, redirect_uris[constants.TS_REDIRECT_INDEX]);
 });
 
 // Token Server

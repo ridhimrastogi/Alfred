@@ -17,6 +17,7 @@ const SCOPES = config.get('SCOPES');
 // Token Server
 const TS_PORT = config.get('TS_PORT');
 const TS_REDIRECT_URI = config.get('TS_REDIRECT_URI');
+const TS_REDIRECT_INDEX= config.get('TS_REDIRECT_INDEX');
 
 module.exports = {
     APP_ROOT,
