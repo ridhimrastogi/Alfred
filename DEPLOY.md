@@ -35,7 +35,7 @@ There are mainly two Jenkins Jobs:
    * **As** a workspace user in mattermost</br>
      **I want** to create a file named notes.docx on google drive<br>
      **So that** I can use it to save information on the drive<br>
-     **Scenario:** User creates a file on google drive<br>
+     **Scenario:** User creates a file on google drive<br><br>
      *“Given that I’m in a role of registered mattermost user and alfred has consent to access my google drive<br>
      When I send a message ```@alfred Create file "<filename>.<file extension>"```<br>
      Then on successful creation, alfred responds with the web link to access the file.*<br>
