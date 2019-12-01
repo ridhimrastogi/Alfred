@@ -60,7 +60,7 @@ There are mainly two Jenkins Jobs:
 * **Fetch comments:**
    * **As** a user in mattermost workspace, **I want** to fetch comments of an existing file on google drive, **so that** I can review the comments from the team<br><br>
      **Scenario:** User fetches comments present for a file on google drive<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Fetch comments of "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with all the comments present on the requested file.*<br><br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Fetch comments of "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with the first 5 comments present on the requested file.*<br><br>
 * **Update file:**
    * **As** a user in mattermost workspace, **I want** to add collaborators to an existing file on google drive, **so that** I can share the document within the team<br><br>
      **Scenario 1:** User adds one collaborator to a file on google drive<br>
