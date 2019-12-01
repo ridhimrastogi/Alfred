@@ -53,6 +53,7 @@ function checkValidFileExtension(fileExtension) {
         if(getMIMEType(fileExtension) == null)
             return false;
     }
+    return true;
 }
 
 function getFileName(msg){
