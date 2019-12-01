@@ -16,3 +16,5 @@ A Mattermost bot that provides file sharing capabilities on Google Drive!
 ## Bot integration and testing details can be found in [BOT.md](../master/BOT.md)
 
 ## Process details can be found at [PROCESS.md](../master/PROCESS.md)
+
+## Deployment details can be found at [DEPLOY.md](../master/DEPLOY.md)

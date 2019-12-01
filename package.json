@@ -4,7 +4,8 @@
   "description": "mattermost-bot",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "forever start src/index.js"
   },
   "keywords": [
     "mattermost",
@@ -22,7 +23,7 @@
     "https-proxy-agent": "^2.2.3",
     "log": "^1.4.0",
     "nock": "^11.4.0",
-    "puppeteer": "^1.20.0",
+    "puppeteer": "^2.0.0",
     "request": "^2.88.0",
     "text-encoding": "^0.5.5",
     "underscore": "^1.9.1",
