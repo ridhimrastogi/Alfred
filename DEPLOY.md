@@ -67,4 +67,4 @@ There are mainly two Jenkins Jobs:
      
     * **As** a user in mattermost workspace, **I want** to update permissions of certain collaborators, **so that** I can change the access rights of the associated collaborators in the document<br><br>
      **Scenario 1:** User update the permission of the collaborators in a file on google drive<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Change/Update @john access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br><br
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Change/Update @john access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br>
