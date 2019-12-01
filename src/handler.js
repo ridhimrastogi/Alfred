@@ -104,8 +104,7 @@ class Handler {
 
         if (command === "update") {
             let permission_res = await drive.listPermission(file.id);
-            if (permission_res !== undefined || !permission_res.length) {
-
+            if (permission_res !== undefined || !permission_res.data.permissions.length) {
             response = await drive.updateCollaborators(
                 this._getPermissionParamsForUpdateCollab(file, usernames, permission_res.data.permissions,
                         miscParams.permissionList));
@@ -159,9 +158,9 @@ class Handler {
         updateParams.fileId = file.id;
         let mclient = this.client;
         usernames.forEach(function (username, index) {
-            let role = 'reader',
-                element = permissionList[index],
-                permission = permission_res.filter(p =>
+            let role = 'reader';
+            let element = permissionList[index];
+            let permission = permission_res.filter(p =>
                     p.emailAddress == mclient.getUserEmailByUsername(username))[0];
             if (element === 'comment') role = 'commenter';
             else if (element === 'edit') role = 'writer';
@@ -210,7 +209,6 @@ class Handler {
 
         let post = JSON.parse(msg.data.post);
         let fileName = post.message.split("\"")[1];
-        console.log("fileName: ", fileName);
         //let fileName = post.message.split(" ").filter(x => x.includes('.'))[0];
 
         this._validateFile(fileName, channel);
@@ -239,7 +237,6 @@ class Handler {
 
     async fetchCommentsInFile(msg) {
         let channel = msg.broadcast.channel_id;
-        console.log("Rchannel: ",channel);
         let user = msg.data.sender_name.split('@')[1];
 
         if (!this.validateUser(user, channel)) return;
@@ -251,7 +248,7 @@ class Handler {
         this._validateFile(fileName, channel);
 
         // if(fileExtension != undefined)
-        //     console.log("fileExtension: ",fileExtension)
+       //  console.log("fileExtension: ",fileExtension)
 
         let files = await this._listFiles(channel);
 
@@ -326,8 +323,6 @@ class Handler {
 
     _validateFile(fileName, channel) {
         if (!helper.checkValidFile(fileName)){
-            console.log("Vchannel: ",channel);
-            console.log("client: ",this.client)
             return this.client.postMessage("Please Enter a valid file name", channel);
         }
 
