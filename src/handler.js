@@ -42,9 +42,9 @@ class Handler {
 
         let fileExtension = fileName.split(".")[1];
 
-        if (!helper.checkValidFileExtension(fileExtension))
-            return this.client.postMessage("Please enter a supported file extension.\n" +
-                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
+        // if (!helper.checkValidFileExtension(fileExtension))
+        //     return this.client.postMessage("Please enter a supported file extension.\n" +
+        //         "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", channel);
 
          let usernames = post.message.split(" ").filter(x => x.includes('@') && x !== "@alfred").map(uh => uh.replace('@', ''))
          let invalidUsernames = this._checkInvalidUsernames(usernames, this.client)
@@ -88,9 +88,9 @@ class Handler {
 
         if (!this.validateUser(miscParams.sender, miscParams.channel)) return;
 
-        if (!helper.checkValidFileExtension(fileName.split(".")[1]))
-            return this.client.postMessage("Please enter a supported file extension.\n" +
-                "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
+        // if (!helper.checkValidFileExtension(fileName.split(".")[1]))
+        //     return this.client.postMessage("Please enter a supported file extension.\n" +
+        //         "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf", miscParams.channel);
 
         let res = await drive.getFileByFilter("name="+ "'" + fileName + "'"),
             files = res.data.files;
