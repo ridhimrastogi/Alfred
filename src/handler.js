@@ -25,7 +25,6 @@ class Handler {
             .then(files => {
                 let msg = files.length ? files.join('\n') : "No files found";
                 this.client.postMessage(msg, channel);
-                this.client.postMessage("TEST MESSAGE", channel);
             })
             .catch(error => this.sendGenericErrorMsg(error, "Failed to list files", channel));
     }
@@ -66,7 +65,7 @@ class Handler {
         if (usernames.length > 0) {
             this.updateCollaboratorsInFile(msg, "add");
         }
-        this._sendDirecMessageToUsers(usernames, fileName, fileLink);
+        //this._sendDirecMessageToUsers(usernames, fileName, fileLink);
         this.client.postMessage("Created file " + fileName + " successfully\n" + "Here is the link for the same: " + fileLink, channel);
     }
 
@@ -84,7 +83,7 @@ class Handler {
 
         if (!this.validateUser(miscParams.sender, miscParams.channel)) return;
 
-        this._validateFile(fileName, channel);
+        this._validateFile(fileName, miscParams.channel);
 
         let res = await drive.getFileByFilter("name=" + "'" + fileName + "'"),
             files = res.data.files;
@@ -252,7 +251,7 @@ class Handler {
                         + `${comments.slice(0, 5).reverse().join('\r\n')}`;
                     this.client.postMessage(msg, channel);
                 })
-                .catch(error => this.sendGenericErrorMsg(error, "Failed to fetch comments", channel))
+                .catch(error => this.sendGenericErrorMsg(error, "No comments found", channel))
         }
     }
 

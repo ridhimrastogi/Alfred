@@ -10,3 +10,5 @@ ephemeral-files/
 
 # Secrets
 credentials.json
+
+alfred-scripts/secrets

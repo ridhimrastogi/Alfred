@@ -1,0 +1,22 @@
+- hosts: localhost
+  become: yes
+
+  vars:
+    app_url: "https://{{githubuser}}:{{githubpassword | urlencode}}@github.ncsu.edu/csc510-fall2019/CSC510-9.git"
+    app_path: "/home/apateri/Alfred/CSC510-9"
+
+  tasks:
+    - name: Pull latest changes from repository CSC510-9
+      git:
+        repo: "{{app_url}}"
+        dest: "{{app_path}}"
+        update: yes
+    
+    - name: Pre-deployment cleanup
+      command: sudo pkill -f index.js
+
+    - name: Deploying Alfred to Test environment
+      script: ./envs/test.sh
+   
+    - name: Deploying Alfred to Prod environment
+      script: ./envs/prod.sh    
