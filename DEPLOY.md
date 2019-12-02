@@ -71,11 +71,9 @@ In order for the instructors to test our bot in real time, they must signup on t
      
 * **Update file:**
    * **As** a user in mattermost workspace, **I want** to add collaborators to an existing file on google drive, **so that** I can share the document within the team<br><br>
-     **Scenario 1:** User adds one collaborator to a file on google drive<br>
+     **Scenario:** User adds one collaborator to a file on google drive<br>
      ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred add @<member_1> as collaborator with read access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the user and pings the collaborator with the file web link having appropriate access rights.*<br><br>
-     **Scenario 2:** User adds multiple collaborators to an existing file<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred add @<member_1> @<member_2> as collaborators with read and edit access in "<filename>.<file extension>"```, **then** on successful updation, alfred responds with the web link to access the file to the invoker user and pings the added collaborators with the file web link having appropriate access rights.*<br>
      
     * **As** a user in mattermost workspace, **I want** to update permissions of certain collaborators, **so that** I can change the access rights of the associated collaborators in the document<br><br>
-     **Scenario 1:** User updates the permission of the collaborators in a file on google drive<br>
+     **Scenario:** User updates the permission of the collaborators in a file on google drive<br>
      ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred change/update @<member_1> access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br>
