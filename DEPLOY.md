@@ -30,12 +30,13 @@ In order for the instructors to test our bot in real time, they must signup on t
 
 ![](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/uat.png)
 
-### Acceptance test instructions:
+### Acceptance Test Instructions:
 
 * **Pre-requisites:**
    * User must be configured in the mattermost server.
    * User must also give consent to alfred so that it can access the user's google drive.
    * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx, .pdf, .jpeg, .jpg
+   * User can check the files present on their drive using `@alfred list` given that the user is authenticated.
 
 * **Create file:**
    * **As** a workspace user in mattermost</br>
