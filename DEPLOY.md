@@ -2,13 +2,13 @@
 
 ### Deployment Scripts and CI using Jenkins
 
-We are using Ansible on top of Jenkins for the CI process. We maintain three separete environments for Mattermost and Alfred, configurations can be found [here]().
+We are using Ansible on top of Jenkins for the CI process. We maintain three separete environments for Mattermost and Alfred, configurations can be found [here](https://github.ncsu.edu/csc510-fall2019/CSC510-9/tree/master/config).
 
 There are mainly two Jenkins Jobs:
 
-* **Setup Job:** This Jenkins job runs an ansible playbook [setup.yml]() to prepare the deployment environment.
+* **Setup Job:** This Jenkins job runs an ansible playbook [setup.yml](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/alfred-scripts/setup.yml) to prepare the deployment environment.
 
-* **Deploy Job:** This Jenkins job runs an ansible playbook [deploy.yml]() to deploy bot on Test and Prod environments.
+* **Deploy Job:** This Jenkins job runs an ansible playbook [deploy.yml](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/alfred-scripts/deploy.yml) to deploy bot on Test and Prod environments.
 
 Apart from these two jobs, every two minutes, Jenkins polls the master branch on GitHub repository for changes. If a change is encountered, the existing bots are brought down and changes are automatically deployed.
 
@@ -27,6 +27,8 @@ The user must be registered on our Mattermost Server with a gmail id, in this ca
 In order for the instructors to test our bot in real time, they must signup on the server using this [link](https://mattermost-csc510-9-test.herokuapp.com/signup_user_complete/?id=ykxytjtzjbr8uqkze3us8pagfh) with their NCSU email address.
 
 **NOTE: While performing the accepatance tests, please create a private channel or use Alfred's DM to post messages/commands as shown below. This way, tester can make sure the bot works fine in all settings and there is no way developers can have access to the interactions between Alfred and the tester.**
+
+![](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/uat.png)
 
 ### Acceptance test instructions:
 
