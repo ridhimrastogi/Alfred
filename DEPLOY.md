@@ -52,7 +52,7 @@ In order for the instructors to test our bot in real time, they must signup on t
      **So that** I and my team member can share information and work in a collaborative information space<br>
      **Scenario:** User creates a file on google drive with a team member as collaborator<br><br>
      *“Given that I’m in a role of registered mattermost user and alfred has consent to access my google drive<br>
-     When I send a message ```@alfred create file "<filename>.<file extension> and add @<memeber_1> as collaborator with edit access"```<br>
+     When I send a message ```@alfred create file "<filename>.<file extension> and add @<member_1> as collaborator with edit access"```<br>
      Then on successful creation, alfred responds with a direct message to me as well as the collaborator with the web link to      access the file."*<br><br>
      
 * **Download file:**
@@ -67,15 +67,15 @@ In order for the instructors to test our bot in real time, they must signup on t
 * **Fetch comments:**
    * **As** a user in mattermost workspace, **I want** to fetch comments of an existing file on google drive, **so that** I can review the comments from the team<br><br>
      **Scenario:** User fetches comments present for a file on google drive<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Fetch comments of "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with the first 5 comments present on the requested file.*<br><br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred fetch comments of "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with the first 5 comments present on the requested file.*<br><br>
      
 * **Update file:**
    * **As** a user in mattermost workspace, **I want** to add collaborators to an existing file on google drive, **so that** I can share the document within the team<br><br>
      **Scenario 1:** User adds one collaborator to a file on google drive<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Add @john as collaborator with read access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the user and pings the collaborator with the file web link having appropriate access rights.*<br><br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred add @<member_1> as collaborator with read access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the user and pings the collaborator with the file web link having appropriate access rights.*<br><br>
      **Scenario 2:** User adds multiple collaborators to an existing file<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Add @john @mathew as collaborators with read and edit access in "<filename>.<file extension>"```, **then** on successful updation, alfred responds with the web link to access the file to the invoker user and pings the added collaborators with the file web link having appropriate access rights.*<br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred add @<member_1> @<member_2> as collaborators with read and edit access in "<filename>.<file extension>"```, **then** on successful updation, alfred responds with the web link to access the file to the invoker user and pings the added collaborators with the file web link having appropriate access rights.*<br>
      
     * **As** a user in mattermost workspace, **I want** to update permissions of certain collaborators, **so that** I can change the access rights of the associated collaborators in the document<br><br>
      **Scenario 1:** User updates the permission of the collaborators in a file on google drive<br>
-     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Change/Update @john access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br>
+     ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred change/update @<member_1> access to edit access in "<filename>.<file extension>"```, **then** on                successful updation, alfred responds with the web link to access the file to the invoker user, with the updated access rights.*<br>
