@@ -66,7 +66,7 @@ async function listFiles() {
 	params = {
 		auth: oAuth2Client,
 		pageSize: 100,
-		fields: 'nextPageToken, files(id, name)',
+		fields: 'nextPageToken, files(id, name, mimeType)',
 	};
 	return drive.files.list(params);
 }
@@ -75,7 +75,7 @@ async function downloadFile(fileId) {
 	params = {
 		auth: oAuth2Client,
 		fileId: fileId,
-		alt: 'media'
+		alt: 'media',
 	};
 	options = {
 		responseType: 'stream'
@@ -83,11 +83,11 @@ async function downloadFile(fileId) {
 	return drive.files.get(params, options);
 }
 
-async function downloadGFile(fileId) {
+async function downloadGFile(fileId, mimeType) {
 	params = {
 		auth: oAuth2Client,
 		fileId: fileId,
-		mimeType: 'application/pdf'
+		mimeType: mimeType
 	};
 	options = {
 		responseType: 'stream'

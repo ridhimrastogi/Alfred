@@ -42,6 +42,36 @@ function getMIMEType(fileExtension) {
     return type;
 }
 
+//function to get the MIME type of a particular file
+function getExtensionFromMIMEType(mimeType) {
+    let type = null;
+
+    switch (mimeType) {
+        case "application/vnd.google-apps.document":
+            type = "docx|application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+            break;
+
+        case "application/vnd.google-apps.presentation":
+            type = "pptx|application/vnd.openxmlformats-officedocument.presentationml.presentation";
+            break;
+
+        case "application/vnd.google-apps.spreadsheet":
+            type = "xlsx|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+            break;
+
+        case "application/pdf":
+            type = "pdf";
+            break;
+        
+        case "image/jpeg":
+            type = "jpg";
+            break;
+    }
+    return type;
+}
+
+
+
 function checkValidFile(fileName) {
     return (fileName != undefined && fileName.length != 0);
 }
@@ -72,6 +102,7 @@ function getFileName(msg){
 }
 
 exports.getMIMEType = getMIMEType;
+exports.getExtensionFromMIMEType = getExtensionFromMIMEType;
 exports.checkValidFile = checkValidFile;
 exports.checkValidFileExtension = checkValidFileExtension;
 exports.getFileName = getFileName;

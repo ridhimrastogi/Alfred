@@ -7,6 +7,7 @@ const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
 const fileFilter = "";
+const fileSeparator = "|";
 
 class Handler {
     constructor(client) {
@@ -54,7 +55,7 @@ class Handler {
         }
 
         let fileParams = {
-            "name": fileName,
+            "name": fileName.split(".")[0],
             "mimeType": helper.getMIMEType(fileExtension)
         }
 
@@ -210,15 +211,17 @@ class Handler {
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
         } else if (fileName.split(".")[1] === undefined) {
-            let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}.pdf`;
-            drive.downloadGFile(files.get(fileName))
+            let mimeType = files.get(fileName).split(fileSeparator)[1];
+            let meta = helper.getExtensionFromMIMEType(mimeType).split(fileSeparator);
+            let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}.${meta[0]}`;
+            drive.downloadGFile(files.get(fileName).split(fileSeparator)[0], meta[1])
                 .then(result => createEphemeralFile(result.data, ephemeralPath))
                 .then(() => this.uploadFileToMattermost(ephemeralPath, channel))
                 .catch(error => this.sendGenericErrorMsg(error, "Failed to download file", channel))
                 .finally(() => unlinkFile(ephemeralPath));
         } else {
             let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}`;
-            drive.downloadFile(files.get(fileName))
+            drive.downloadFile(files.get(fileName).split(fileSeparator)[0])
                 .then(result => createEphemeralFile(result.data, ephemeralPath))
                 .then(() => this.uploadFileToMattermost(ephemeralPath, channel))
                 .catch(error => this.sendGenericErrorMsg(error, "Failed to download file", channel))
@@ -242,8 +245,7 @@ class Handler {
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
         } else {
-            drive.fetchComments(files.get(fileName))
-                .then()
+            drive.fetchComments(files.get(fileName).split(fileSeparator)[0])
                 .then(result => _prepareComments(result.data.comments))
                 .then(comments => {
                     let msg = `${comments.length} comment(s) found on file ${fileName}`
@@ -351,7 +353,7 @@ function _extractFileInfo(files, filter = fileFilter) {
     let names = new Map();
     if (files.length) {
         files.filter((file) => file.name.startsWith(filter))
-            .map((file) => names.set(`${file.name}`, `${file.id}`));
+            .map((file) => names.set(`${file.name}`, `${file.id}${fileSeparator}${file.mimeType}`));
     } else {
         console.log('No files found');
     }
