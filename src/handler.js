@@ -6,8 +6,8 @@ const stream = require('stream');
 const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
-const fileFilter = "";
 const fileSeparator = "|";
+const fileFilter = "alfred-";
 
 class Handler {
     constructor(client) {
@@ -24,7 +24,8 @@ class Handler {
             .then(result => _extractFileInfo(result.data.files))
             .then(files => Array.from(files.keys()))
             .then(files => {
-                let msg = files.length ? files.join('\n') : "No files found";
+                let msg = "Here are the files I found on your google drive::\n"
+                msg = files.length ? msg + files.join('\n') : "No files found";
                 this.client.postMessage(msg, channel);
             })
             .catch(error => this.sendGenericErrorMsg(error, "Failed to list files", channel));
