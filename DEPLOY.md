@@ -1,28 +1,32 @@
 ## Deployment
 
-### Deployment scripts
+### Deployment Scripts and CI using Jenkins
 
-We are using Ansible playbooks in combination with Jenkins for deployment of our project.
+We are using Ansible on top of Jenkins for the CI process. We maintain three separete environments for Mattermost and Alfred, configurations can be found [here]().
+
 There are mainly two Jenkins Jobs:
 
-* **Setup Job:** This Jenkins job will be executing an ansible playbook which will refer the setup tasks specified in the *setup.yml*. The tasks are as follows:
-  * Install nodejs
-  * Install forever package
-  * Clone repository CSC510-9
-  * Install node modules for CSC510-9
+* **Setup Job:** This Jenkins job runs an ansible playbook [setup.yml]() to prepare the deployment environment.
 
-* **Deploy Job:** Similarly, as above this Jenkins job will be executing an ansible playbook which refer the tasks specified in the *deploy.yml*. The tasks are as follows:
-  * Pull the latest code changes for CSC510-9
-  * Prepare test environement
-  * Run the Integration test cases
-  * Prepare the production environment
-  * Deploy the filebot to production environment
+* **Deploy Job:** This Jenkins job runs an ansible playbook [deploy.yml]() to deploy bot on Test and Prod environments.
 
+Apart from these two jobs, every two minutes, Jenkins polls the master branch on GitHub repository for changes. If a change is encountered, the existing bots are brought down and changes are automatically deployed.
 
+While we have made the scripts available, we made sure to keep secrets like BOTTOKENS and GitHub credentials within the VCL image that we are using to deploy the bot or within the Jenkins vault. Only the admin has access to these secrets. More about it can be found in the screencast.
+
+Link to [`Screencast`](https://drive.google.com/file/d/1dMQIJ_WIPiX-oXSVt5A9f7ofmdo5z3DH/view?usp=sharing)
 
 ## Acceptance tests
 
 ### Login Credentials:
+
+**How authentication and authorization works?** <br> 
+
+The user must be registered on our Mattermost Server with a gmail id, in this case with **ncsu.edu**. Since the primary concern of this project is to enable easy file sharing within an organization, the users must be part of same private organization. <br>
+
+In order for the instructors to test our bot in real time, they must signup on the server using this [link](https://mattermost-csc510-9-test.herokuapp.com/signup_user_complete/?id=ykxytjtzjbr8uqkze3us8pagfh) with their NCSU email address.
+
+**NOTE: While performing the accepatance tests, please create a private channel or use Alfred's DM to post messages/commands as shown below. This way, tester can make sure the bot works fine in all settings and there is no way developers can have access to the interactions between Alfred and the tester.**
 
 ### Acceptance test instructions:
 
@@ -55,12 +59,13 @@ There are mainly two Jenkins Jobs:
      **Scenario:** User downloads a file from google drive<br><br>
      *“Given that I’m in a role of registered mattermost user and alfred has consent to access my google drive<br>
      When I send a message ```@alfred download file "<filename>.<file extension>"```<br>
-     Then on successful download, alfred responds with a link to download the file."*<br><br>
+     Then on successful download, alfred responds with the requested file in the requesting channel."*<br><br>
      
 * **Fetch comments:**
    * **As** a user in mattermost workspace, **I want** to fetch comments of an existing file on google drive, **so that** I can review the comments from the team<br><br>
      **Scenario:** User fetches comments present for a file on google drive<br>
      ***Given** that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred Fetch comments of "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with the first 5 comments present on the requested file.*<br><br>
+     
 * **Update file:**
    * **As** a user in mattermost workspace, **I want** to add collaborators to an existing file on google drive, **so that** I can share the document within the team<br><br>
      **Scenario 1:** User adds one collaborator to a file on google drive<br>
