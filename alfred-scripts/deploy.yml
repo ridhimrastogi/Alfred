@@ -15,7 +15,6 @@
     - name: Pre-deployment cleanup
       command: sudo pkill -f index.js
 
- 
     - name: Deploying Alfred to Test environment
       script: ./envs/test.sh
    
