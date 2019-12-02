@@ -6,7 +6,7 @@ const stream = require('stream');
 const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
-const fileFilter = "";
+const fileFilter = "alfred-";
 
 class Handler {
     constructor(client) {
