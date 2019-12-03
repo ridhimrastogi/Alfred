@@ -30,6 +30,7 @@ function hears(msg, text) {
 
     if (msg.data.post) {
         let post = JSON.parse(msg.data.post);
+        post.message = post.message.split("\"")[0];
         if (post.message.indexOf(text) >= 0) {
             return true;
         }

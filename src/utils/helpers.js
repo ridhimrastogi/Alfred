@@ -26,18 +26,6 @@ function getMIMEType(fileExtension) {
         case "xlsx":
             type = "application/vnd.google-apps.spreadsheet";
             break;
-
-        case "pdf":
-            type = "application/pdf";
-            break;
-        
-        case "jpeg":    
-            type = "image/jpeg";
-            break;
-        
-        case "jpg":
-            type = "image/jpeg";
-            break;
     }
     return type;
 }
@@ -58,48 +46,38 @@ function getExtensionFromMIMEType(mimeType) {
         case "application/vnd.google-apps.spreadsheet":
             type = "xlsx|application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
             break;
-
-        case "application/pdf":
-            type = "pdf";
-            break;
-        
-        case "image/jpeg":
-            type = "jpg";
-            break;
     }
     return type;
 }
-
-
 
 function checkValidFile(fileName) {
     return (fileName != undefined && fileName.length != 0);
 }
 
 function checkValidFileExtension(fileExtension) {
-    if(fileExtension === undefined)
-        return true;
+    if (fileExtension === undefined)
+        return false;
     else {
-        if(getMIMEType(fileExtension) == null)
+        if (getMIMEType(fileExtension) == null)
             return false;
     }
     return true;
 }
 
-function getFileName(msg){
-    let fileName = null;
-    try{
-        fileName = msg.message.match(/"(.*?)"/)[1];
-   }
-   catch {
-       return null;
-    }
+// function getFileName(msg) {
+//     let fileName = null;
+//     try {
+//         fileName = msg.message.match(/"(.*?)"/)[1];
+//     }
+//     catch {
+//         return null;
+//     }
 
-   if (!checkValidFile(fileName))
-       return fileName;
+//     if (!checkValidFile(fileName))
+//         return fileName;
 
-    return fileName;
-}
+//     return fileName;
+// }
 
 exports.getMIMEType = getMIMEType;
 exports.getExtensionFromMIMEType = getExtensionFromMIMEType;
