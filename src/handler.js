@@ -208,10 +208,14 @@ class Handler {
         this._validateFile(fileName, channel, false);
 
         let files = await this._listFiles();
+        
+        if (files.get(fileName).split(fileSeparator)[2] === "drive#file") {
+            fileName = fileName.split(".")[0];
+        }
 
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
-        } else if (fileName.split(".")[1] === undefined || files.get(fileName).split(fileSeparator)[2] === "drive#file") {
+        } else if (fileName.split(".")[1] === undefined) {
             let mimeType = files.get(fileName).split(fileSeparator)[1];
             let meta = helper.getExtensionFromMIMEType(mimeType).split(fileSeparator);
             let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}.${meta[0]}`;
