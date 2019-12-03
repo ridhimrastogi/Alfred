@@ -66,7 +66,7 @@ async function listFiles() {
 	params = {
 		auth: oAuth2Client,
 		pageSize: 100,
-		fields: 'nextPageToken, files(id, name, mimeType)',
+		fields: 'nextPageToken, files(id, name, mimeType, kind)',
 	};
 	return drive.files.list(params);
 }

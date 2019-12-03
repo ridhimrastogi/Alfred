@@ -211,7 +211,7 @@ class Handler {
 
         if (!files.has(fileName)) {
             return this.client.postMessage("No such file found!", channel);
-        } else if (fileName.split(".")[1] === undefined) {
+        } else if (fileName.split(".")[1] === undefined || files.get(fileName).split(fileSeparator)[2] === "drive#file") {
             let mimeType = files.get(fileName).split(fileSeparator)[1];
             let meta = helper.getExtensionFromMIMEType(mimeType).split(fileSeparator);
             let ephemeralPath = `${constants.EPHEMERAL_FILES}/${fileName}.${meta[0]}`;
@@ -356,7 +356,7 @@ function _extractFileInfo(files, filter = fileFilter) {
     let names = new Map();
     if (files.length) {
         files.filter((file) => file.name.startsWith(filter))
-            .map((file) => names.set(`${file.name}`, `${file.id}${fileSeparator}${file.mimeType}`));
+            .map((file) => names.set(`${file.name}`, `${file.id}${fileSeparator}${file.mimeType}${fileSeparator}${file.kind}`));
     } else {
         console.log('No files found');
     }
