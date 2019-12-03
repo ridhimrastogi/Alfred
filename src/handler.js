@@ -314,7 +314,7 @@ class Handler {
             let fileExtension = fileName.split(".")[1];
             if (!helper.checkValidFileExtension(fileExtension))
                 return this.client.postMessage("Please enter a supported file extension.\n" +
-                    "Supported file extenstion: doc, docx, ppt, pptx, xls, xlsx, pdf, jpg, jpeg", channel);
+                    "Supported file extenstions: doc, docx, ppt, pptx, xls, xlsx", channel);
         }
     }
 
