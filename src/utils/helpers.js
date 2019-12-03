@@ -83,4 +83,4 @@ exports.getMIMEType = getMIMEType;
 exports.getExtensionFromMIMEType = getExtensionFromMIMEType;
 exports.checkValidFile = checkValidFile;
 exports.checkValidFileExtension = checkValidFileExtension;
-exports.getFileName = getFileName;
+// exports.getFileName = getFileName;
