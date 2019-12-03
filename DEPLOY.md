@@ -77,7 +77,7 @@ In order for the instructors to test our bot in real time, they must signup on t
    **Scenario:** User fetches comments present for a file on google drive<br></br>
    *“Given that I’m a registered mattermost user and alfred has consent to access my google drive, **when** I put up a      message ```@alfred fetch comments "<filename>.<file extension>"```, **then** on successful retrieval, alfred responds with the first 5 comments present on the requested file."*<br>
      
-     **QUICKTEST: ```@alfred fetch comments "uat-test-2.docx"```<br><br>** (you will see 0 comments at this time; if you go to thi file, add comments and run again, you shall see those comments)
+     **QUICKTEST: ```@alfred fetch comments "uat-test-2.docx"```<br><br>** (you will see 0 comments at this time; if you go to the file, add comments and run again, you shall see those comments)
      
 * **Update file:**
    * **As** a user in mattermost workspace</br>
