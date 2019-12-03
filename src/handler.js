@@ -209,8 +209,9 @@ class Handler {
 
         let files = await this._listFiles();
         
-        if (files.get(fileName).split(fileSeparator)[2] === "drive#file") {
-            fileName = fileName.split(".")[0];
+        fileNameDriveFile = fileName.split(".")[0];
+        if (files.get(fileNameDriveFile) && files.get(fileNameDriveFile).split(fileSeparator)[2] === "drive#file") {
+            fileName = fileNameDriveFile
         }
 
         if (!files.has(fileName)) {
