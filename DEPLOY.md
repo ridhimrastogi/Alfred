@@ -34,9 +34,8 @@ In order for the instructors to test our bot in real time, they must signup on t
 
 * **Pre-requisites:**
    * User must be configured in the mattermost server.
-   * User must also give consent to alfred so that it can access the user's google drive.
-   * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx, .pdf, .jpeg, .jpg
-   * User can check the files present on their drive using `@alfred list` given that the user is authenticated.
+   * User must also give consent to alfred so that it can access the user's google drive when asked for by Alfred while running the tests.
+   * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx for all use cases. Apart from this for download files usecase, we support all file extensions.
 
 * **Create file:**
    * **As** a workspace user in mattermost</br>
