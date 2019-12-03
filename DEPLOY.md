@@ -35,7 +35,7 @@ In order for the instructors to test our bot in real time, they must signup on t
 * **Pre-requisites:**
    * User must be configured in the mattermost server.
    * User must also give consent to alfred so that it can access the user's google drive when asked for by Alfred while running the tests.
-   * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx for all usecases and for download files usecase, we support all file extensions.
+   * Supported file extensions for our usecases are .doc, .docx, .ppt, .pptx, .xls, .xlsx for all usecases and for download files usecase, we support all common file extensions like .jpeg, .png, .pdf etc.
 
 * **Create file:**
    * **As** a workspace user in mattermost</br>
@@ -51,7 +51,7 @@ In order for the instructors to test our bot in real time, they must signup on t
      **So that** I and my team member can share information and work in a collaborative information space<br>
      **Scenario:** User creates a file on google drive with a team member as collaborator<br><br>
      *“Given that I’m in a role of registered mattermost user and alfred has consent to access my google drive<br>
-     When I send a message ```@alfred create file "<filename>.<file extension> and add @<member_1> as collaborator with edit access"```<br>
+     When I send a message ```@alfred create file "<filename>.<file extension>" and add @<member_1> as collaborator with edit access```<br>
      Then on successful creation, alfred responds with a direct message to me as well as the collaborator with the web link to      access the file."*<br><br>
      
 * **Download file:**
