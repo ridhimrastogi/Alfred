@@ -7,7 +7,7 @@ const constants = require('./utils/app_constants');
 
 // Only for developer testing, change to "" if user not jaymindesai
 const fileSeparator = "|";
-const fileFilter = "alfred-";
+const fileFilter = "";
 
 class Handler {
     constructor(client) {
