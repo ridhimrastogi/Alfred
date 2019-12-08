@@ -26,7 +26,7 @@ Consider the scenario mentioned above. The typical steps involved can look somet
  - After adding all the names (assuming you dont want to share the file with entire organization but just your team members), 
  notify everyone that they must have received a link via email
  - Make sure only the team members have edit permissions
- - Give just comment permission to the scrum master so he couldn't edit your notes ;)
+ - Give just comment permission to the scrum master so he/she couldn't edit your notes ;)
  - Once all the team members have finished posting their MoMs, repeat steps 1-3 again.
  - Search and open the file
  - Export the document as a Doc file
