@@ -17,7 +17,7 @@ horizontal steps in that perfect burndown chart.
 
 Consider the scenario mentioned above. The typical steps involved can look something like this:
 
- - Take some time to loose that frowny face
+ - Take some time to loose that frown off your face
  - Assuming your scrum master sent this message to you on Mattermost, go to Google Drive
  - Wish for your browser to remember the credentials for your email account
  - Create a new Google Docs file
