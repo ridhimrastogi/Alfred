@@ -21,4 +21,4 @@ The details regarding different milestones on this project can be found as follo
 
 ## [Deployment](../master/DEPLOY.md)
 
-## [Final Report](../master/REPORT.md)
+## [Report](../master/REPORT.md)
