@@ -29,7 +29,7 @@ Consider the scenario mentioned above. The typical steps involved can look somet
  - Give just comment permission to the scrum master so he/she couldn't edit your notes ;)
  - Once all the team members have finished posting their MoMs, repeat steps 1-3 again.
  - Search and open the file
- - Export the document as a Doc file
+ - Export the document as a .doc/.docx file
  - Go back to Mattermost and upload this file on the team channel
 
 Phew!! See, we told you it is not as easy as it sounds BUT...
