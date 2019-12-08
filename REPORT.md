@@ -21,7 +21,7 @@ Consider the scenario mentioned above. The typical steps involved can look somet
  - Assuming your scrum master sent this message to you on Mattermost, go to Google Drive
  - Wish for your browser to remember the credentials for your email account
  - Create a new Google Docs file
- - Try sharing it with your team members; Oops! you need to name it first. Give a name, for example "retro-notes-s8"
+ - Try sharing it with your team members; Oops! you need to name it first. Give it a name, "retro-notes-s8"
  - Once you do that, it asks you to mention the email addresses of users you want to share that file with
  - After adding all the names (assuming you dont want to share the file with entire organization but just your team members), 
  notify everyone that they must have received a link via email
