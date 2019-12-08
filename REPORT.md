@@ -35,7 +35,7 @@ Consider the scenario mentioned above. The typical steps involved can look somet
  - Export the document as a Doc file
  - Go back to Mattermost and upload this file on the team channel
 
-Phew!! See, we told you it is not easy as it sounds but...
+Phew!! See, we told you it is not as easy as it sounds BUT...
 
 What if you never had to leave Mattermost to **create** "retro-notes-s8.doc" on your Google Drive? What if you never had to look for 
 all those email addresses because their **@Mattermost** handles was all you needed? What if you could just **add** everyone 
