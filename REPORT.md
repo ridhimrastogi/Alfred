@@ -36,7 +36,7 @@ Phew!! See, we told you it is not as easy as it sounds BUT...
 
 What if you never had to leave Mattermost to **create** "retro-notes-s8.doc" on your Google Drive? What if you never had to look for 
 all those email addresses because their **@Mattermost** handles was all you needed? What if you could just **add** everyone 
-in your team as collaborators at the time of creating this doc right away with **edit** permissions? What if you could **update** the permissions for the scrum master to **comment** by typing just 4 words? What if you could **download** this doc on your team's channel without going anywhere? What if you had someone (**Alfred, the FileBot**) to do all this for you? What if you just had to _authorize_ Alfred _once_ to perform tasks on your behalf? What if you never had to loose that frowny face because Alfred didn't let you make one in first place?
+in your team as collaborators at the time of creating this doc right away with **edit** permissions? What if you could **update** the permissions for the scrum master to **comment** by typing just 4 words? What if you could **download** this doc on your team's channel without going anywhere? What if you had someone (**Alfred, the FileBot**) to do all this for you? What if you just had to _authorize_ Alfred _once_ using a single click, to perform these tasks on your behalf? What if you never had to loose that frowny face because Alfred didn't let you make one in first place?
 
 This is exactly the solution we are proposing with **Alfred, your very own File Butler!** We have created a short [`video`](https://drive.google.com/file/d/1O2kYCTakZoHZc5ZsZX--Qsdbpt-AxwFo/view)
 that tries to portray a similar setting using more than just plain text and shows Alfred in action.
