@@ -1,10 +1,7 @@
 ## Problem and Proposed Solution
 
 Scenario: As a scrum team member, you are assigned a task by your scrum master to consolidate Minutes of 
-Meetings (moms) from the retrospective that your team conducted yesterday for the sprint that just ended. Scrum master wants to keep 
-track of moms you gather in real-time and at the same time also wants to comment on the notes posted by different team members. 
-Once everyone is done posting their notes, you are asked to send the document to all the team members including the product 
-owner.
+Meetings (MoM) from the retrospective that your team conducted yesterday for the sprint that just ended. Scrum master wants to keep track of MoMs you gather in real-time and at the same time also wants to comment on the notes posted by different team members. Once everyone is done posting their notes, you are asked to send the document to all the team members including the product owner.
 
 Sounds easy? We don't think so!
 
@@ -30,7 +27,7 @@ Consider the scenario mentioned above. The typical steps involved can look somet
  notify everyone that they must have received a link via email
  - Make sure the team members have edit permissions
  - Give comment permission to the scrum master
- - Once all the team members have finished posting their moms, repeat steps 1-3 again.
+ - Once all the team members have finished posting their MoMs, repeat steps 1-3 again.
  - Search and open the file
  - Export the document as a Doc file
  - Go back to Mattermost and upload this file on the team channel
