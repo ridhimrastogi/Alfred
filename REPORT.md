@@ -72,7 +72,7 @@ The former is kind of an enhancement task which suits Kanban methodology while t
 
 We tried to follow Scrum as much as we can, as prescribed in the Agile Manifesto. We broke down bigger tasks in a Scrum manner which helped us deliver small working flows incrementally and regularly. For the bug/review fixes, we sometimes created a new task on the fly, a-la Kanban and prioritized it. For example, this image below represents the details for a task that was added to the Sprint in between, after the Sprint planning meeting. Had it been **just** Scrum, this might have been a part of next Sprint's backlog.
 
-![Kanban Example]()
+![Kanban Example](https://github.ncsu.edu/csc510-fall2019/CSC510-9/blob/master/img/Kanban.png)
 
 #### Pair & Mob Programming
 
