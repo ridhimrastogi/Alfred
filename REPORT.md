@@ -47,7 +47,52 @@ that tries to portray a similar setting using more than just plain text and show
 
 ## Reflection - Development Process & Project
 
+Considering both the aspects, development process and project overall, we found few things that really helped and at the same time things that we could have done better.
 
+### Things that helped
+
+#### Brainstorming
+
+What we think we did best is gave a lot of thought to answer this question: _"what problem we are going to solve?"_ We had hours long healthy debates and discussions to arrive at a common ground. We decided to tackle the issues faced by developers or people working in an enterprise setup in general when it comes to sharing files and keeping track of changes on shared files. 
+
+We noticed that Dr. Parnin asked many students during the final presentations that whether they will be using their bot or did they use it during the development process. To be very honest, now that we have Alfred in production, a bot that can talk to Google Drive for us, we do use it in our daily routine. I download at least 3 files everyday using Alfred. I created a file or two this morning to take notes for the final project meetings of other subjects. It's always a special feeling when we solve a real problem no matter how small it is.
+
+#### Mocking
+
+We mocked the third-party API calls using Nock, a Node.js framework that we used hands-on during one of the workshops. We had lots of actual Google Drive integration work left at the time when BOT milestone was due. The only way we could have completed the Bot Interations was using mock data. Mocking the API calls using Nock was unexpectedly fast and fairly straight forward but it took some time to create mock data. This helped everyone finish their usecase flows in time. Our key takeaway from this is that mocking might take some time depending on the project and design of external APIs but it helps separate concerns and allows faster development in general.
+
+#### Scrum-Ban
+
+For our project, in PROCESS milestone, we had to do two things:
+
+  - Improve the previously written usecase flows with better bot interactions and error handling
+  - Integrate Google Drive API calls in place of mocked API calls for all the usecases
+
+The former is kind of an enhancement task which suits Kanban methodology while the later requires delivering work fast, in increments which suits Scrum methodology. This made the our case an ideal candidate for Scrum-Ban!
+
+We tried to follow Scrum as much as we can, as prescribed in the Agile Manifesto. We broke down bigger tasks in a Scrum manner which helped us deliver small working flows incrementally and regularly. For the bug/review fixes, we sometimes created a new task on the fly, a-la Kanban and prioritized it. For example, this image below represents the details for a task that was added to the Sprint in between, after the Sprint planning meeting. Had it been **just** Scrum, this might have been a part of next Sprint's backlog.
+
+![Kanban Example]()
+
+#### Pair & Mob Programming
+
+We did a lot of Pair Programming as a part of this project. Most of the times, we sat together and did Pair Programming. But sometimes when the issue a pair is working on is a previously encountered problem or a common problem, both the pairs would start working on that issue. There were some problems which were solved quickly if all of us worked together on it. For example, when uploading a file on Mattermost, it expects a `ReadStream` created from file and we were passing in the BufferedStream. Nowhere in the Mattermost documentation it is mentioned that it requires a ReadStream. We tried to search the error message on the Mattermost Server repository on github but the messages were part of a generic locale translation file. We then tried to search the file usages and somehow figured that it requires a ReadStream. In all this, one of us had prior experience with GoLang which helped and one of us knew that finding file usage on GitHub is very easy using a ketbord shortcut `t`. One of us knew that Postman can be used to generate code. We had a POST request window open in Postman so it was very easy to figure out how to create a ReadStream in Node.js. None of us have worked enough on Node.js and we didn't even StackOverflow once. All four of us mobbed for 30 minutes to get this working.
+
+### Things that could have done better
+
+#### Establish Standards & Practices
+
+We should have decideed on the coding practices within the team before starting the development phase. We had to go through a phase of integration hell when we had very little time to spare. We did conduct reviews but the process was not stringent enough. 
+
+#### Unit Tests & Coverage
+
+We could have added more unit tests. We understand the importance of TDD and starting development of a tiniest feature with a failing test case. We should have followed this from the very start but now that we didn't, this is something that can be improved.
+
+#### Breaking Down Tasks
+
+One of the challenging things in this project from the development perspective was to segregate/break-down interdependent tasks. This seemed to be a minor problem during Sprint-1 but we did face issues, nearing the end of Sprint-2. For example if a developer is working on _download file_ usecase, listing files for reference is a sub-task. We started in a way that one developer is working on _list files_ while other is working on _download file_. Until the _list file_ task is completed, _download file_ cannot work because of the way Google Drive API works.
+
+What we think could be improved is to investigate more on the dependent APIs and also **spend more time in breaking down tasks**. We didn't think through some usecases in and out. We faced a similar problem with _create file_ and _update permissions_/_add collaborators_ usecase.
 
 ## Limitations
 
