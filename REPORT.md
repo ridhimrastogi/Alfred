@@ -47,25 +47,33 @@ that tries to portray a similar setting using more than just plain text and show
 
 1. Creating a supported file without any collaborators
 
+![Create file](img/Create_wo_collab.png)
 
 2. Creating a file with collaborators
+
+![Create file with collaborator](img/Create_with_collab.png)
 
 ### Updating file permissions
 
 1. Adding a new collaborator to a file
 
+![Add collaborator](img/Add_collab.png)
+
+![Add collaborator](img/Add_collab_gdoc.png)
 
 2. Changing permission of an existing collaborator
 
+![Change file premission](img/Change_collab.png)
+
+![Change file premission](img/Change_collab_gdoc.png)
 
 ### Downloading a file
 
-
-
+![Download File](img/Download_file.png)
 
 ### Fetching comments on a file
 
-
+![Fetch Comments](img/Comment.png)
 
 
 ## Reflection - Development Process & Project
