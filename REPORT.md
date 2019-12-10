@@ -43,6 +43,29 @@ that tries to portray a similar setting using more than just plain text and show
 
 ## Primary Features
 
+### Creating a file on google drive
+
+1. Creating a supported file without any collaborators
+
+
+2. Creating a file with collaborators
+
+### Updating file permissions
+
+1. Adding a new collaborator to a file
+
+
+2. Changing permission of an existing collaborator
+
+
+### Downloading a file
+
+
+
+
+### Fetching comments on a file
+
+
 
 
 ## Reflection - Development Process & Project
