@@ -136,6 +136,8 @@ The following are the limitations of our file bot(Alfred):
 
 ## Future Work
 
+* **Add all Channel Members to a Document**: Currently, Alfred does not allow user to add all the members present in the channel, as a collaborator to a particular document in one shot. Alfred should support the said usecase through the command ```@alfred add @all to "report.doc"```.
+
 * **Natural Language Processing and Understanding**: Presently, Alfred uses rule-based parsing of user commands to perceive the query intent. Natural language processing techniques is to be incorporated in Alfred, so that it can respond to a variety of input text rather than serving a fixed set of pre-defined user queries.
 
-* **Support for different platforms**: Alfred is currently functionally coupled with Mattermost and Google Drive. Alfred support is to be extended for different file storage and synchronization services like oneDrive, DropBox, etc., and various messaging platforms such as Slack, WhatsApp Business, etc. 
+* **Support for Different Platforms**: Alfred is currently functionally coupled with Mattermost and Google Drive. Alfred support is to be extended for different file storage and synchronization services like oneDrive, DropBox, etc., and various messaging platforms such as Slack, WhatsApp Business, etc. 
