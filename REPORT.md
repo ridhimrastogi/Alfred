@@ -127,6 +127,11 @@ What we think could be improved is to investigate more on the dependent APIs and
 
 ## Limitations
 
+The following are the limitations of our file bot(Alfred):
+
+* Alfred is currently available only for the Mattermost platform.
+* Alfred can perform file operations only on limited number of file types.
+* Alfred can perform file operations solely on the files of Google frive.
 
 
 ## Future Work
