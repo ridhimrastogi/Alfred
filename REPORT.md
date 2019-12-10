@@ -135,3 +135,7 @@ The following are the limitations of our file bot(Alfred):
 
 
 ## Future Work
+
+* **Natural Language Processing and Understanding**: Presently, Alfred uses rule-based parsing of user commands to perceive the query intent. Natural language processing techniques is to be incorporated in Alfred, so that it can respond to a variety of input text rather than serving a fixed set of pre-defined user queries.
+
+* **Support for different platforms**: Alfred is currently functionally coupled with Mattermost and Google Drive. Alfred support is to be extended for different file storage and synchronization services like oneDrive, DropBox, etc., and various messaging platforms such as Slack, WhatsApp Business, etc. 
