@@ -17,7 +17,7 @@
   "dependencies": {
     "app-root-path": "^3.0.0",
     "base64url": "^3.0.1",
-    "config": "^3.2.4",
+    "config": "^3.3.8",
     "express": "^4.17.1",
     "extend": "^3.0.2",
     "googleapis": "^39.2.0",
